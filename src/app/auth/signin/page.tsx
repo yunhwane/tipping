@@ -5,9 +5,8 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
-import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
-import { Lightbulb, Loader2 } from "lucide-react";
+import { Lightbulb, Loader2, Mail, Lock, AlertCircle } from "lucide-react";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -47,65 +46,86 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="flex min-h-[60vh] items-center justify-center">
-      <Card className="w-full max-w-sm">
-        <CardHeader className="text-center">
-          <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-100">
-            <Lightbulb className="h-7 w-7 text-amber-500" />
+    <div className="flex min-h-[70vh] items-center justify-center px-4">
+      <div className="w-full max-w-[400px]">
+        {/* 로고 영역 */}
+        <div className="mb-8 text-center">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 shadow-lg shadow-amber-500/20">
+            <Lightbulb className="h-8 w-8 text-white" />
           </div>
-          <h1 className="text-2xl font-bold">Tipping</h1>
-          <p className="text-sm text-muted-foreground">
-            개발자를 위한 팁 공유 커뮤니티
+          <h1 className="text-2xl font-bold tracking-tight">다시 오신 걸 환영합니다</h1>
+          <p className="mt-1.5 text-sm text-muted-foreground">
+            Tipping에 로그인하고 팁을 공유하세요
           </p>
-        </CardHeader>
-        <CardContent>
+        </div>
+
+        {/* 폼 */}
+        <div className="rounded-2xl border bg-card p-6 shadow-sm">
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-              <div className="rounded-lg bg-red-50 p-3 text-sm text-red-600">
-                {error}
+              <div className="flex items-start gap-2.5 rounded-lg bg-red-50 p-3 text-sm text-red-600 dark:bg-red-950/30 dark:text-red-400">
+                <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+                <span>{error}</span>
               </div>
             )}
-            <div className="space-y-2">
+
+            <div className="space-y-1.5">
               <label htmlFor="email" className="text-sm font-medium">
                 이메일
               </label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
+              <div className="relative">
+                <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="h-10 pl-9"
+                />
+              </div>
             </div>
-            <div className="space-y-2">
+
+            <div className="space-y-1.5">
               <label htmlFor="password" className="text-sm font-medium">
                 비밀번호
               </label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="8자 이상"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
+              <div className="relative">
+                <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="비밀번호 입력"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="h-10 pl-9"
+                />
+              </div>
             </div>
-            <Button type="submit" className="w-full" size="lg" disabled={loading}>
+
+            <Button
+              type="submit"
+              className="h-10 w-full bg-amber-500 font-semibold text-white hover:bg-amber-600"
+              disabled={loading}
+            >
               {loading ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : null}
               로그인
             </Button>
           </form>
-          <p className="mt-4 text-center text-sm text-muted-foreground">
-            계정이 없으신가요?{" "}
-            <Link href="/auth/signup" className="font-medium text-amber-600 hover:underline">
-              회원가입
-            </Link>
-          </p>
-        </CardContent>
-      </Card>
+        </div>
+
+        {/* 하단 링크 */}
+        <p className="mt-6 text-center text-sm text-muted-foreground">
+          계정이 없으신가요?{" "}
+          <Link href="/auth/signup" className="font-semibold text-amber-600 hover:text-amber-500 hover:underline">
+            회원가입
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

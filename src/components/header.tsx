@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { Button } from "~/components/ui/button";
 import {
   DropdownMenu,
@@ -11,7 +11,7 @@ import {
 } from "~/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { SearchBar } from "./search-bar";
-import { Lightbulb } from "lucide-react";
+import { Lightbulb, LogIn, UserPlus } from "lucide-react";
 
 export function Header() {
   const { data: session } = useSession();
@@ -45,13 +45,13 @@ export function Header() {
 
           {session ? (
             <DropdownMenu>
-              <DropdownMenuTrigger className="relative h-8 w-8 rounded-full">
-                <Avatar className="h-8 w-8">
+              <DropdownMenuTrigger className="relative h-9 w-9 rounded-full">
+                <Avatar className="h-9 w-9">
                   <AvatarImage
                     src={session.user.image ?? ""}
                     alt={session.user.name ?? ""}
                   />
-                  <AvatarFallback>
+                  <AvatarFallback className="bg-amber-100 text-amber-700 text-sm font-semibold">
                     {session.user.name?.charAt(0) ?? "U"}
                   </AvatarFallback>
                 </Avatar>
@@ -77,9 +77,20 @@ export function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button onClick={() => signIn("github")} size="sm">
-              GitHub 로그인
-            </Button>
+            <div className="flex items-center gap-2.5">
+              <Link href="/auth/signin">
+                <Button variant="outline" className="h-9 gap-2 px-4 text-sm font-medium">
+                  <LogIn className="h-4 w-4" />
+                  로그인
+                </Button>
+              </Link>
+              <Link href="/auth/signup">
+                <Button className="h-9 gap-2 bg-amber-500 px-4 text-sm font-medium text-white hover:bg-amber-600">
+                  <UserPlus className="h-4 w-4" />
+                  회원가입
+                </Button>
+              </Link>
+            </div>
           )}
         </div>
       </div>
