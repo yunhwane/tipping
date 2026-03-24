@@ -16,6 +16,8 @@ import {
   Eye,
   EyeOff,
   CircleAlert,
+  Trash2,
+  Plus,
 } from "lucide-react";
 import { Collapsible } from "@base-ui/react/collapsible";
 
@@ -133,6 +135,8 @@ export function ProfileSettings({
 
   const [name, setName] = useState("");
   const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
+  const [bio, setBio] = useState("");
+  const [links, setLinks] = useState<{ label: string; url: string }[]>([]);
   const [passwordOpen, setPasswordOpen] = useState(false);
 
   const [currentPassword, setCurrentPassword] = useState("");
@@ -154,6 +158,12 @@ export function ProfileSettings({
   useEffect(() => {
     if (profile) {
       setName(profile.name ?? "");
+      setBio((profile.bio as string) ?? "");
+      setLinks(
+        Array.isArray(profile.links)
+          ? (profile.links as { label: string; url: string }[])
+          : [],
+      );
       if (profile.image) {
         const matchingSeed = AVATAR_SEEDS.find(
           (seed) => getAvatarUrl(seed) === profile.image,
@@ -209,6 +219,8 @@ export function ProfileSettings({
     updateProfile.mutate({
       name: trimmedName,
       ...(selectedAvatar ? { image: selectedAvatar } : {}),
+      bio: bio,
+      links: links.filter((l) => l.label.trim() && l.url.trim()),
     });
   };
 
@@ -248,7 +260,12 @@ export function ProfileSettings({
   const currentImage = selectedAvatar ?? profile?.image;
   const hasProfileChanges =
     name.trim() !== (profile?.name ?? "") ||
-    (selectedAvatar !== null && selectedAvatar !== profile?.image);
+    (selectedAvatar !== null && selectedAvatar !== profile?.image) ||
+    bio !== ((profile?.bio as string) ?? "") ||
+    JSON.stringify(links) !==
+      JSON.stringify(
+        Array.isArray(profile?.links) ? profile.links : [],
+      );
 
   // Password confirm match indicator
   const passwordsMatch =
@@ -348,6 +365,92 @@ export function ProfileSettings({
               </p>
             </div>
           </div>
+
+          {/* Bio */}
+          <div className="space-y-3">
+            <label htmlFor="bio" className="text-sm font-medium">
+              한줄 소개
+            </label>
+            <textarea
+              id="bio"
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              placeholder="나를 한 줄로 소개해주세요"
+              maxLength={100}
+              rows={2}
+              className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            />
+            <div className="flex justify-end">
+              <p
+                className={cn(
+                  "text-xs transition-colors",
+                  bio.length > 90
+                    ? "text-amber-500"
+                    : "text-muted-foreground",
+                )}
+              >
+                {bio.length}/100
+              </p>
+            </div>
+          </div>
+
+          {/* Social Links */}
+          <div className="space-y-3">
+            <label className="text-sm font-medium">소셜 링크</label>
+            <div className="space-y-2">
+              {links.map((link, index) => (
+                <div key={index} className="flex items-center gap-2">
+                  <Input
+                    value={link.label}
+                    onChange={(e) => {
+                      const newLinks = [...links];
+                      newLinks[index] = { ...link, label: e.target.value };
+                      setLinks(newLinks);
+                    }}
+                    placeholder="라벨 (예: 블로그)"
+                    maxLength={20}
+                    className="w-28 shrink-0"
+                  />
+                  <Input
+                    value={link.url}
+                    onChange={(e) => {
+                      const newLinks = [...links];
+                      newLinks[index] = { ...link, url: e.target.value };
+                      setLinks(newLinks);
+                    }}
+                    placeholder="https://..."
+                    className="flex-1"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setLinks(links.filter((_, i) => i !== index))}
+                    className="shrink-0 rounded-md p-2 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              ))}
+            </div>
+            {links.length < 5 && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setLinks([...links, { label: "", url: "" }])}
+                className="gap-1.5"
+              >
+                <Plus className="h-3.5 w-3.5" />
+                링크 추가
+              </Button>
+            )}
+            {links.length > 0 && (
+              <p className="text-xs text-muted-foreground">
+                최대 5개까지 추가할 수 있습니다 ({links.length}/5)
+              </p>
+            )}
+          </div>
+
+          <Separator />
 
           {/* Profile Message */}
           {profileMessage && (
