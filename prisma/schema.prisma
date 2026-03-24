@@ -67,6 +67,8 @@ model User {
     emailVerified DateTime?
     password      String?
     image         String?
+    bio           String?
+    links         Json?
     role          Role          @default(USER)
     accounts      Account[]
     sessions      Session[]
