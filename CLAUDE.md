@@ -35,16 +35,50 @@ T3 Stack: Next.js 15 (App Router, React 19) + tRPC 11 + Prisma 6 (PostgreSQL) + 
 
 See [docs/workflow.md](docs/workflow.md) for full workflow details.
 
-## Feature Request Process (MUST follow)
+## Feature Request Lifecycle (MUST follow)
 
-When user requests a new feature or change, follow this order strictly:
+When user requests a feature, fix, or change, execute ALL steps in order. Do NOT skip any step.
 
-### 1. Before coding — Write requirement & plan
-- Create `docs/requirements/<date>-<feature-name>.md`
+```
+User request
+  → Step 1: Create branch from master
+  → Step 2: Write requirement doc
+  → Step 3: Get user confirmation
+  → Step 4: Implement
+  → Step 5: Write review doc
+  → Step 6: Commit & push branch
+  → Step 7: Create PR
+```
+
+### Step 1 — Branch
+- `git checkout master && git pull origin master`
+- `git checkout -b <type>/<feature-name>` (e.g., `feat/bookmark-export`)
+- Determine type from request: feature → `feat/`, bug → `fix/`, config → `chore/`
+
+### Step 2 — Requirement doc
+- Create `docs/requirements/YYYY-MM-DD-<feature-name>.md`
 - Contents: background, requirements, scope, technical approach, affected files
-- Get user confirmation before proceeding to implementation
 
-### 2. After coding — Write development review
-- Create `docs/reviews/<date>-<feature-name>.md`
-- Contents: what was implemented, key decisions, files changed, testing notes, known limitations
-- This serves as a changelog and decision log for future reference
+### Step 3 — User confirmation
+- Present the requirement doc summary to user
+- **Wait for approval before writing any code**
+
+### Step 4 — Implement
+- Write code on the feature branch
+- Follow Key Conventions above
+- Run `npm run typecheck` to verify before committing
+
+### Step 5 — Review doc
+- Create `docs/reviews/YYYY-MM-DD-<feature-name>.md`
+- Contents: what was implemented, key decisions, files changed, known limitations
+
+### Step 6 — Commit & push
+- Stage all changed files (exclude `.env`, credentials, `.claude/`)
+- Commit with Conventional Commits format: `<type>: <description>`
+- `git push origin <branch-name>`
+
+### Step 7 — Create PR
+- PR title: same as commit message
+- PR body: use `.github/pull_request_template.md`
+- Merge method: Squash and Merge
+- Inform user of PR URL
