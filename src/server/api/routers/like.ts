@@ -1,0 +1,64 @@
+import { z } from "zod";
+import {
+  createTRPCRouter,
+  publicProcedure,
+  protectedProcedure,
+} from "~/server/api/trpc";
+
+export const likeRouter = createTRPCRouter({
+  toggle: protectedProcedure
+    .input(z.object({ tipId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const existing = await ctx.db.like.findUnique({
+        where: {
+          userId_tipId: {
+            userId: ctx.session.user.id,
+            tipId: input.tipId,
+          },
+        },
+      });
+
+      if (existing) {
+        await ctx.db.like.delete({
+          where: {
+            userId_tipId: {
+              userId: ctx.session.user.id,
+              tipId: input.tipId,
+            },
+          },
+        });
+        return { liked: false };
+      }
+
+      await ctx.db.like.create({
+        data: {
+          userId: ctx.session.user.id,
+          tipId: input.tipId,
+        },
+      });
+      return { liked: true };
+    }),
+
+  getStatus: protectedProcedure
+    .input(z.object({ tipId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const like = await ctx.db.like.findUnique({
+        where: {
+          userId_tipId: {
+            userId: ctx.session.user.id,
+            tipId: input.tipId,
+          },
+        },
+      });
+      return { liked: !!like };
+    }),
+
+  getCount: publicProcedure
+    .input(z.object({ tipId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const count = await ctx.db.like.count({
+        where: { tipId: input.tipId },
+      });
+      return { count };
+    }),
+});
