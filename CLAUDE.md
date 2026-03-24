@@ -25,7 +25,8 @@ T3 Stack: Next.js 15 (App Router, React 19) + tRPC 11 + Prisma 6 (PostgreSQL) + 
 
 ## Workflow Rules (MUST follow)
 
-- **Never commit directly to `main`** — always branch → PR → Squash Merge
+- Default branch is `master` (serves as production branch)
+- **Never commit directly to `master`** — always branch → PR → Squash Merge
 - Branch naming: `feat/`, `fix/`, `chore/`, `refactor/`, `docs/`, `style/`
 - Commit format: `<type>: <description>` (Conventional Commits)
 - PR title follows the same commit format
@@ -33,3 +34,17 @@ T3 Stack: Next.js 15 (App Router, React 19) + tRPC 11 + Prisma 6 (PostgreSQL) + 
 - Delete branch after merge
 
 See [docs/workflow.md](docs/workflow.md) for full workflow details.
+
+## Feature Request Process (MUST follow)
+
+When user requests a new feature or change, follow this order strictly:
+
+### 1. Before coding — Write requirement & plan
+- Create `docs/requirements/<date>-<feature-name>.md`
+- Contents: background, requirements, scope, technical approach, affected files
+- Get user confirmation before proceeding to implementation
+
+### 2. After coding — Write development review
+- Create `docs/reviews/<date>-<feature-name>.md`
+- Contents: what was implemented, key decisions, files changed, testing notes, known limitations
+- This serves as a changelog and decision log for future reference

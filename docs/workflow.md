@@ -4,7 +4,7 @@
 
 | Branch | Purpose |
 |--------|---------|
-| `main` | Production. Always deployable. **No direct pushes.** |
+| `master` | Production. Always deployable. **No direct pushes.** |
 | `feat/<name>` | New feature (e.g., `feat/bookmark-page`) |
 | `fix/<name>` | Bug fix (e.g., `fix/tag-position`) |
 | `chore/<name>` | Config, CI, dependencies (e.g., `chore/ci-setup`) |
@@ -13,7 +13,7 @@
 | `style/<name>` | UI/styling changes |
 
 Rules:
-- Create branches from `main`
+- Create branches from `master`
 - Keep branches short-lived (1-3 days)
 - Delete branches after merge
 
@@ -42,13 +42,13 @@ refactor: simplify tRPC router structure
 
 - **Title**: Same format as commit convention
 - **Body**: Use the PR template (`.github/pull_request_template.md`)
-- **Merge method**: Squash and Merge (keeps `main` history clean)
+- **Merge method**: Squash and Merge (keeps `master` history clean)
 - **Merge condition**: CI must pass (typecheck + build)
 - **Post-merge**: Branch auto-deleted
 
 ## CI (GitHub Actions)
 
-Triggered on PRs targeting `main`. Pipeline:
+Triggered on PRs targeting `master`. Pipeline:
 
 1. `npm ci` — Install dependencies
 2. `npx prisma generate` — Generate Prisma client types
@@ -61,14 +61,14 @@ Note: CI uses dummy env vars for `DATABASE_URL` and auth secrets — no real DB 
 
 ## Deployment
 
-- Vercel auto-deploys on merge to `main`
+- Vercel auto-deploys on merge to `master`
 - PR branches get Vercel preview deployments automatically
 
 ## GitHub Repository Settings
 
 Required one-time setup in GitHub Settings:
 
-1. **Branch protection** on `main`:
+1. **Branch protection** on `master`:
    - Require pull request before merging
    - Require status checks to pass → select "Typecheck & Build"
 2. **Merge settings**:
