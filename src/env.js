@@ -11,12 +11,14 @@ export const env = createEnv({
       process.env.NODE_ENV === "production"
         ? z.string()
         : z.string().optional(),
-    AUTH_GITHUB_ID: z.string(),
-    AUTH_GITHUB_SECRET: z.string(),
     DATABASE_URL: z.string().url(),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
+    SMTP_HOST: z.string().optional(),
+    SMTP_PORT: z.string().optional(),
+    SMTP_USER: z.string().optional(),
+    SMTP_PASSWORD: z.string().optional(),
   },
 
   /**
@@ -25,7 +27,7 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   client: {
-    // NEXT_PUBLIC_CLIENTVAR: z.string(),
+    NEXT_PUBLIC_APP_URL: z.string().url().optional(),
   },
 
   /**
@@ -34,10 +36,13 @@ export const env = createEnv({
    */
   runtimeEnv: {
     AUTH_SECRET: process.env.AUTH_SECRET,
-    AUTH_GITHUB_ID: process.env.AUTH_GITHUB_ID,
-    AUTH_GITHUB_SECRET: process.env.AUTH_GITHUB_SECRET,
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
+    SMTP_HOST: process.env.SMTP_HOST,
+    SMTP_PORT: process.env.SMTP_PORT,
+    SMTP_USER: process.env.SMTP_USER,
+    SMTP_PASSWORD: process.env.SMTP_PASSWORD,
+    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

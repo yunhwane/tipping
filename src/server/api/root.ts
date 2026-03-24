@@ -7,6 +7,7 @@ import { likeRouter } from "./routers/like";
 import { bookmarkRouter } from "./routers/bookmark";
 import { projectRouter } from "./routers/project";
 import { adminRouter } from "./routers/admin";
+import { authRouter } from "./routers/auth";
 
 export const appRouter = createTRPCRouter({
   category: categoryRouter,
@@ -17,6 +18,7 @@ export const appRouter = createTRPCRouter({
   bookmark: bookmarkRouter,
   project: projectRouter,
   admin: adminRouter,
+  auth: authRouter,
 });
 
 export type AppRouter = typeof appRouter;
