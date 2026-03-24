@@ -8,36 +8,71 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Button } from "~/components/ui/button";
 import { TipCard } from "~/components/tip-card";
 import { ProjectCard } from "~/components/project-card";
+import { ProfileSettings } from "~/components/profile-settings";
+import { Settings } from "lucide-react";
+import { useCallback, useState } from "react";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
+  const { data: profile } = api.user.getProfile.useQuery(undefined, {
+    enabled: !!session,
+  });
+  const [activeTab, setActiveTab] = useState("tips");
+
+  const handleProfileUpdate = useCallback(() => {
+    // Tab stays on settings, header refreshes via invalidated query
+  }, []);
 
   if (status === "loading") return null;
   if (!session) redirect("/api/auth/signin");
 
+  // Use server profile data (fresh) with session as fallback
+  const displayName = profile?.name ?? session.user.name;
+  const displayImage = profile?.image ?? session.user.image;
+  const displayEmail = profile?.email ?? session.user.email;
+
   return (
     <div className="mx-auto max-w-4xl space-y-6">
-      <div className="flex items-center gap-4">
-        <Avatar className="h-16 w-16">
-          <AvatarImage
-            src={session.user.image ?? ""}
-            alt={session.user.name ?? ""}
-          />
-          <AvatarFallback className="text-xl">
-            {session.user.name?.charAt(0) ?? "U"}
-          </AvatarFallback>
-        </Avatar>
-        <div>
-          <h1 className="text-2xl font-bold">{session.user.name}</h1>
-          <p className="text-muted-foreground">{session.user.email}</p>
+      {/* Profile Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <Avatar className="h-16 w-16 ring-2 ring-foreground/5 ring-offset-2 ring-offset-background">
+            <AvatarImage
+              src={displayImage ?? ""}
+              alt={displayName ?? ""}
+            />
+            <AvatarFallback className="bg-amber-100 text-xl text-amber-700">
+              {displayName?.charAt(0) ?? "U"}
+            </AvatarFallback>
+          </Avatar>
+          <div>
+            <h1 className="text-2xl font-bold">{displayName}</h1>
+            <p className="text-sm text-muted-foreground">{displayEmail}</p>
+          </div>
         </div>
+
+        {/* Quick Settings Button */}
+        {activeTab !== "settings" && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setActiveTab("settings")}
+            className="text-muted-foreground"
+          >
+            <Settings className="h-5 w-5" />
+          </Button>
+        )}
       </div>
 
-      <Tabs defaultValue="tips">
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
           <TabsTrigger value="tips">내 팁</TabsTrigger>
           <TabsTrigger value="bookmarks">북마크</TabsTrigger>
           <TabsTrigger value="projects">내 프로젝트</TabsTrigger>
+          <TabsTrigger value="settings">
+            <Settings className="mr-1 h-3.5 w-3.5" />
+            설정
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="tips" className="mt-4">
@@ -50,6 +85,10 @@ export default function ProfilePage() {
 
         <TabsContent value="projects" className="mt-4">
           <MyProjects />
+        </TabsContent>
+
+        <TabsContent value="settings" className="mt-4">
+          <ProfileSettings onProfileUpdate={handleProfileUpdate} />
         </TabsContent>
       </Tabs>
     </div>
