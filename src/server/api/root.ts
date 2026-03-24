@@ -8,6 +8,7 @@ import { bookmarkRouter } from "./routers/bookmark";
 import { projectRouter } from "./routers/project";
 import { adminRouter } from "./routers/admin";
 import { authRouter } from "./routers/auth";
+import { userRouter } from "./routers/user";
 
 export const appRouter = createTRPCRouter({
   category: categoryRouter,
@@ -19,6 +20,7 @@ export const appRouter = createTRPCRouter({
   project: projectRouter,
   admin: adminRouter,
   auth: authRouter,
+  user: userRouter,
 });
 
 export type AppRouter = typeof appRouter;
