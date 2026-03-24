@@ -47,6 +47,11 @@ export default function TipDetailPage() {
   const colorClass =
     categoryColors[tip.category.slug] ?? categoryColors.etc;
 
+  const statusConfig: Record<string, { label: string; className: string }> = {
+    PENDING: { label: "검수 대기", className: "bg-yellow-100 text-yellow-800 border-yellow-300" },
+    REJECTED: { label: "반려", className: "bg-red-100 text-red-800 border-red-300" },
+  };
+
   return (
     <article className="mx-auto max-w-3xl">
       {/* 뒤로가기 */}
@@ -58,13 +63,26 @@ export default function TipDetailPage() {
         팁 목록
       </Link>
 
+      {/* 비공개 상태 배너 */}
+      {tip.status !== "APPROVED" && statusConfig[tip.status] && (
+        <div className={cn("mb-4 rounded-lg border px-4 py-3 text-sm", statusConfig[tip.status]!.className)}>
+          <span className="font-medium">{statusConfig[tip.status]!.label}</span>
+          {tip.status === "REJECTED" && tip.rejectionReason && (
+            <span> — {tip.rejectionReason}</span>
+          )}
+          {tip.status === "PENDING" && (
+            <span> — 관리자 검수 후 공개됩니다.</span>
+          )}
+        </div>
+      )}
+
       {/* 헤더 */}
       <header className="space-y-4">
         <div className="flex items-center gap-2">
           <Link href={`/category/${tip.category.slug}`}>
             <span
               className={cn(
-                "rounded-full px-3 py-1 text-xs font-medium ring-1 ring-inset transition-opacity hover:opacity-80",
+                "rounded-full px-3 py-1 text-xs leading-none font-medium ring-1 ring-inset transition-opacity hover:opacity-80",
                 colorClass,
               )}
             >

@@ -13,13 +13,22 @@ interface ProjectCardProps {
     imageUrl: string | null;
     viewCount: number;
     createdAt: Date;
+    status?: string;
+    rejectionReason?: string | null;
     author: { id: string; name: string | null; image: string | null };
     tags: { id: string; name: string }[];
     _count: { likes: number };
   };
+  showStatus?: boolean;
 }
 
-export function ProjectCard({ project }: ProjectCardProps) {
+const statusConfig: Record<string, { label: string; className: string }> = {
+  PENDING: { label: "검수 대기", className: "bg-yellow-100 text-yellow-800" },
+  APPROVED: { label: "공개", className: "bg-green-100 text-green-800" },
+  REJECTED: { label: "반려", className: "bg-red-100 text-red-800" },
+};
+
+export function ProjectCard({ project, showStatus = false }: ProjectCardProps) {
   return (
     <Link href={`/projects/${project.id}`}>
       <Card className="transition-shadow hover:shadow-md">
@@ -33,9 +42,19 @@ export function ProjectCard({ project }: ProjectCardProps) {
           </div>
         )}
         <CardHeader className="pb-3">
-          <h3 className="line-clamp-1 text-lg font-semibold">
-            {project.title}
-          </h3>
+          <div className="flex items-center gap-2">
+            <h3 className="line-clamp-1 text-lg font-semibold flex-1">
+              {project.title}
+            </h3>
+            {showStatus && project.status && statusConfig[project.status] && (
+              <span className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${statusConfig[project.status]!.className}`}>
+                {statusConfig[project.status]!.label}
+              </span>
+            )}
+          </div>
+          {showStatus && project.status === "REJECTED" && project.rejectionReason && (
+            <p className="text-xs text-red-600 mt-1">사유: {project.rejectionReason}</p>
+          )}
           <div className="flex items-center gap-1 text-xs text-muted-foreground">
             <Avatar className="h-5 w-5">
               <AvatarImage

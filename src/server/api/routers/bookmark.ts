@@ -3,11 +3,21 @@ import {
   createTRPCRouter,
   protectedProcedure,
 } from "~/server/api/trpc";
+import { TRPCError } from "@trpc/server";
 
 export const bookmarkRouter = createTRPCRouter({
   toggle: protectedProcedure
     .input(z.object({ tipId: z.string() }))
     .mutation(async ({ ctx, input }) => {
+      // Only allow bookmarking APPROVED tips
+      const tip = await ctx.db.tip.findUnique({
+        where: { id: input.tipId },
+        select: { status: true },
+      });
+      if (!tip || tip.status !== "APPROVED") {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Cannot bookmark non-approved content" });
+      }
+
       const existing = await ctx.db.bookmark.findUnique({
         where: {
           userId_tipId: {
@@ -52,20 +62,44 @@ export const bookmarkRouter = createTRPCRouter({
       return { bookmarked: !!bookmark };
     }),
 
-  getMyBookmarks: protectedProcedure.query(async ({ ctx }) => {
-    return ctx.db.bookmark.findMany({
-      where: { userId: ctx.session.user.id },
-      include: {
-        tip: {
-          include: {
-            author: { select: { id: true, name: true, image: true } },
-            category: true,
-            tags: true,
-            _count: { select: { likes: true, comments: true } },
+  getMyBookmarks: protectedProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(50).default(20),
+        cursor: z.string().nullish(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const { limit, cursor } = input;
+
+      const items = await ctx.db.bookmark.findMany({
+        take: limit + 1,
+        cursor: cursor
+          ? { userId_tipId: { userId: ctx.session.user.id, tipId: cursor } }
+          : undefined,
+        where: {
+          userId: ctx.session.user.id,
+          tip: { status: "APPROVED" },
+        },
+        include: {
+          tip: {
+            include: {
+              author: { select: { id: true, name: true, image: true } },
+              category: true,
+              tags: true,
+              _count: { select: { likes: true, comments: true } },
+            },
           },
         },
-      },
-      orderBy: { createdAt: "desc" },
-    });
-  }),
+        orderBy: { createdAt: "desc" },
+      });
+
+      let nextCursor: string | undefined = undefined;
+      if (items.length > limit) {
+        const nextItem = items.pop();
+        nextCursor = nextItem!.tipId;
+      }
+
+      return { items, nextCursor };
+    }),
 });

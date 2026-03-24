@@ -22,6 +22,7 @@ export const projectRouter = createTRPCRouter({
       const items = await ctx.db.project.findMany({
         take: limit + 1,
         cursor: cursor ? { id: cursor } : undefined,
+        where: { status: "APPROVED" },
         orderBy: { createdAt: "desc" },
         include: {
           author: { select: { id: true, name: true, image: true } },
@@ -42,15 +43,66 @@ export const projectRouter = createTRPCRouter({
   getById: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
-      return ctx.db.project.update({
+      const project = await ctx.db.project.findUnique({
         where: { id: input.id },
-        data: { viewCount: { increment: 1 } },
         include: {
           author: { select: { id: true, name: true, image: true } },
           tags: true,
           _count: { select: { likes: true } },
         },
       });
+
+      if (!project) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Project not found" });
+      }
+
+      // Access control: non-APPROVED content only visible to author or ADMIN
+      if (project.status !== "APPROVED") {
+        const userId = ctx.session?.user?.id;
+        const userRole = ctx.session?.user?.role;
+        if (project.authorId !== userId && userRole !== "ADMIN") {
+          throw new TRPCError({ code: "NOT_FOUND", message: "Project not found" });
+        }
+      }
+
+      // Increment view count
+      await ctx.db.project.update({
+        where: { id: input.id },
+        data: { viewCount: { increment: 1 } },
+      });
+
+      return { ...project, viewCount: project.viewCount + 1 };
+    }),
+
+  getMyProjects: protectedProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(50).default(20),
+        cursor: z.string().nullish(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const { limit, cursor } = input;
+
+      const items = await ctx.db.project.findMany({
+        take: limit + 1,
+        cursor: cursor ? { id: cursor } : undefined,
+        where: { authorId: ctx.session.user.id },
+        orderBy: { createdAt: "desc" },
+        include: {
+          author: { select: { id: true, name: true, image: true } },
+          tags: true,
+          _count: { select: { likes: true } },
+        },
+      });
+
+      let nextCursor: typeof cursor = undefined;
+      if (items.length > limit) {
+        const nextItem = items.pop();
+        nextCursor = nextItem!.id;
+      }
+
+      return { items, nextCursor };
     }),
 
   create: protectedProcedure
@@ -71,6 +123,7 @@ export const projectRouter = createTRPCRouter({
           url: input.url,
           imageUrl: input.imageUrl,
           authorId: ctx.session.user.id,
+          status: "PENDING",
           tags: {
             connectOrCreate: input.tagNames.map((name) => ({
               where: { name },
@@ -107,6 +160,10 @@ export const projectRouter = createTRPCRouter({
           description: input.description,
           url: input.url,
           imageUrl: input.imageUrl,
+          status: "PENDING",
+          rejectionReason: null,
+          reviewedAt: null,
+          reviewedBy: null,
           tags: {
             set: [],
             connectOrCreate: input.tagNames.map((name) => ({
@@ -133,6 +190,15 @@ export const projectRouter = createTRPCRouter({
   toggleLike: protectedProcedure
     .input(z.object({ projectId: z.string() }))
     .mutation(async ({ ctx, input }) => {
+      // Only allow liking APPROVED projects
+      const project = await ctx.db.project.findUnique({
+        where: { id: input.projectId },
+        select: { status: true },
+      });
+      if (!project || project.status !== "APPROVED") {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Cannot like non-approved content" });
+      }
+
       const existing = await ctx.db.projectLike.findUnique({
         where: {
           userId_projectId: {

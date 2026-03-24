@@ -11,22 +11,59 @@ interface TipCardProps {
     content: string;
     viewCount: number;
     createdAt: Date;
+    status?: string;
+    rejectionReason?: string | null;
     author: { id: string; name: string | null; image: string | null };
     category: { name: string; slug: string };
     tags: { id: string; name: string }[];
     _count: { likes: number; comments: number };
   };
+  showStatus?: boolean;
   variant?: "default" | "compact";
 }
 
-const categoryColors: Record<string, string> = {
-  frontend: "bg-blue-50 text-blue-700 ring-blue-200",
-  backend: "bg-emerald-50 text-emerald-700 ring-emerald-200",
-  devops: "bg-orange-50 text-orange-700 ring-orange-200",
-  database: "bg-purple-50 text-purple-700 ring-purple-200",
-  mobile: "bg-pink-50 text-pink-700 ring-pink-200",
-  "ai-ml": "bg-indigo-50 text-indigo-700 ring-indigo-200",
-  etc: "bg-gray-50 text-gray-700 ring-gray-200",
+const categoryStyle: Record<
+  string,
+  { bg: string; icon: string }
+> = {
+  frontend: {
+    bg: "bg-blue-100/80 text-blue-700 border-blue-200/60",
+    icon: "🎨",
+  },
+  backend: {
+    bg: "bg-emerald-100/80 text-emerald-700 border-emerald-200/60",
+    icon: "⚙️",
+  },
+  devops: {
+    bg: "bg-orange-100/80 text-orange-700 border-orange-200/60",
+    icon: "🚀",
+  },
+  database: {
+    bg: "bg-purple-100/80 text-purple-700 border-purple-200/60",
+    icon: "🗄️",
+  },
+  mobile: {
+    bg: "bg-pink-100/80 text-pink-700 border-pink-200/60",
+    icon: "📱",
+  },
+  "ai-ml": {
+    bg: "bg-indigo-100/80 text-indigo-700 border-indigo-200/60",
+    icon: "🤖",
+  },
+  etc: {
+    bg: "bg-gray-100/80 text-gray-600 border-gray-200/60",
+    icon: "💡",
+  },
+};
+
+const categoryBarColor: Record<string, string> = {
+  frontend: "bg-blue-500",
+  backend: "bg-emerald-500",
+  devops: "bg-orange-500",
+  database: "bg-purple-500",
+  mobile: "bg-pink-500",
+  "ai-ml": "bg-indigo-500",
+  etc: "bg-gray-400",
 };
 
 function getPreview(content: string) {
@@ -52,9 +89,14 @@ function timeAgo(date: Date) {
   return new Date(date).toLocaleDateString("ko-KR");
 }
 
-export function TipCard({ tip, variant = "default" }: TipCardProps) {
-  const colorClass =
-    categoryColors[tip.category.slug] ?? categoryColors.etc;
+const statusConfig: Record<string, { label: string; className: string }> = {
+  PENDING: { label: "검수 대기", className: "bg-yellow-100 text-yellow-800" },
+  APPROVED: { label: "공개", className: "bg-green-100 text-green-800" },
+  REJECTED: { label: "반려", className: "bg-red-100 text-red-800" },
+};
+
+export function TipCard({ tip, showStatus = false, variant = "default" }: TipCardProps) {
+  const style = categoryStyle[tip.category.slug] ?? categoryStyle.etc!;
 
   if (variant === "compact") {
     return (
@@ -67,7 +109,13 @@ export function TipCard({ tip, variant = "default" }: TipCardProps) {
             {tip.title}
           </h3>
           <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
-            <span className={cn("rounded-full px-1.5 py-0.5 text-[10px] font-medium ring-1 ring-inset", colorClass)}>
+            <span
+              className={cn(
+                "inline-flex items-center gap-1 rounded-md border px-1.5 py-0.5 text-[11px] leading-none font-semibold",
+                style.bg,
+              )}
+            >
+              <span className="text-[10px]">{style.icon}</span>
               {tip.category.name}
             </span>
             <span className="flex items-center gap-0.5">
@@ -89,13 +137,7 @@ export function TipCard({ tip, variant = "default" }: TipCardProps) {
       <div
         className={cn(
           "h-1 w-full transition-all group-hover:h-1.5",
-          tip.category.slug === "frontend" && "bg-blue-500",
-          tip.category.slug === "backend" && "bg-emerald-500",
-          tip.category.slug === "devops" && "bg-orange-500",
-          tip.category.slug === "database" && "bg-purple-500",
-          tip.category.slug === "mobile" && "bg-pink-500",
-          tip.category.slug === "ai-ml" && "bg-indigo-500",
-          tip.category.slug === "etc" && "bg-gray-400",
+          categoryBarColor[tip.category.slug] ?? "bg-gray-400",
         )}
       />
 
@@ -104,10 +146,11 @@ export function TipCard({ tip, variant = "default" }: TipCardProps) {
         <div className="flex items-center justify-between">
           <span
             className={cn(
-              "rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset",
-              colorClass,
+              "inline-flex items-center gap-1.5 rounded-lg border px-3 py-1 text-xs font-semibold",
+              style.bg,
             )}
           >
+            <span className="text-sm leading-none">{style.icon}</span>
             {tip.category.name}
           </span>
           <span className="text-xs text-muted-foreground">
@@ -120,6 +163,18 @@ export function TipCard({ tip, variant = "default" }: TipCardProps) {
           {tip.title}
         </h3>
 
+        {/* 상태 뱃지 */}
+        {showStatus && tip.status && statusConfig[tip.status] && (
+          <div className="mt-2 space-y-1">
+            <span className={cn("rounded-full px-2 py-0.5 text-xs font-medium", statusConfig[tip.status]!.className)}>
+              {statusConfig[tip.status]!.label}
+            </span>
+            {tip.status === "REJECTED" && tip.rejectionReason && (
+              <p className="text-xs text-red-600">사유: {tip.rejectionReason}</p>
+            )}
+          </div>
+        )}
+
         {/* 미리보기 */}
         <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
           {getPreview(tip.content)}
@@ -130,15 +185,10 @@ export function TipCard({ tip, variant = "default" }: TipCardProps) {
           {tip.tags.length > 0 && (
             <div className="mt-3 flex flex-wrap gap-1.5 pb-4">
               {tip.tags.slice(0, 3).map((tag) => (
-                <span
-                  key={tag.id}
-                  className="rounded-md bg-secondary px-2 py-0.5 text-xs text-secondary-foreground"
-                >
-                  #{tag.name}
-                </span>
+                <TagBadge key={tag.id} name={tag.name} size="sm" />
               ))}
               {tip.tags.length > 3 && (
-                <span className="text-xs text-muted-foreground">
+                <span className="inline-flex items-center rounded-lg bg-muted/80 px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
                   +{tip.tags.length - 3}
                 </span>
               )}

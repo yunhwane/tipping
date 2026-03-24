@@ -66,6 +66,11 @@ export function Header() {
                 <DropdownMenuItem>
                   <Link href="/projects/new" className="w-full">프로젝트 등록</Link>
                 </DropdownMenuItem>
+                {session.user.role === "ADMIN" && (
+                  <DropdownMenuItem>
+                    <Link href="/admin" className="w-full">관리자</Link>
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem onClick={() => signOut()}>
                   로그아웃
                 </DropdownMenuItem>

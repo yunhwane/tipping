@@ -80,6 +80,36 @@ export type Project = $Result.DefaultSelection<Prisma.$ProjectPayload>
 export type ProjectLike = $Result.DefaultSelection<Prisma.$ProjectLikePayload>
 
 /**
+ * Enums
+ */
+export namespace $Enums {
+  export const Role: {
+  USER: 'USER',
+  ADMIN: 'ADMIN'
+};
+
+export type Role = (typeof Role)[keyof typeof Role]
+
+
+export const ContentStatus: {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+};
+
+export type ContentStatus = (typeof ContentStatus)[keyof typeof ContentStatus]
+
+}
+
+export type Role = $Enums.Role
+
+export const Role: typeof $Enums.Role
+
+export type ContentStatus = $Enums.ContentStatus
+
+export const ContentStatus: typeof $Enums.ContentStatus
+
+/**
  * ##  Prisma Client ʲˢ
  *
  * Type-safe database client for TypeScript & Node.js
@@ -5476,6 +5506,7 @@ export namespace Prisma {
     email: string | null
     emailVerified: Date | null
     image: string | null
+    role: $Enums.Role | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -5484,6 +5515,7 @@ export namespace Prisma {
     email: string | null
     emailVerified: Date | null
     image: string | null
+    role: $Enums.Role | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -5492,6 +5524,7 @@ export namespace Prisma {
     email: number
     emailVerified: number
     image: number
+    role: number
     _all: number
   }
 
@@ -5502,6 +5535,7 @@ export namespace Prisma {
     email?: true
     emailVerified?: true
     image?: true
+    role?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -5510,6 +5544,7 @@ export namespace Prisma {
     email?: true
     emailVerified?: true
     image?: true
+    role?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -5518,6 +5553,7 @@ export namespace Prisma {
     email?: true
     emailVerified?: true
     image?: true
+    role?: true
     _all?: true
   }
 
@@ -5599,6 +5635,7 @@ export namespace Prisma {
     email: string | null
     emailVerified: Date | null
     image: string | null
+    role: $Enums.Role
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -5624,6 +5661,7 @@ export namespace Prisma {
     email?: boolean
     emailVerified?: boolean
     image?: boolean
+    role?: boolean
     accounts?: boolean | User$accountsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     tips?: boolean | User$tipsArgs<ExtArgs>
@@ -5641,6 +5679,7 @@ export namespace Prisma {
     email?: boolean
     emailVerified?: boolean
     image?: boolean
+    role?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -5649,6 +5688,7 @@ export namespace Prisma {
     email?: boolean
     emailVerified?: boolean
     image?: boolean
+    role?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
@@ -5657,9 +5697,10 @@ export namespace Prisma {
     email?: boolean
     emailVerified?: boolean
     image?: boolean
+    role?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "role", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | User$accountsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
@@ -5692,6 +5733,7 @@ export namespace Prisma {
       email: string | null
       emailVerified: Date | null
       image: string | null
+      role: $Enums.Role
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -6128,6 +6170,7 @@ export namespace Prisma {
     readonly email: FieldRef<"User", 'String'>
     readonly emailVerified: FieldRef<"User", 'DateTime'>
     readonly image: FieldRef<"User", 'String'>
+    readonly role: FieldRef<"User", 'Role'>
   }
     
 
@@ -9942,6 +9985,10 @@ export namespace Prisma {
     title: string | null
     content: string | null
     viewCount: number | null
+    status: $Enums.ContentStatus | null
+    rejectionReason: string | null
+    reviewedAt: Date | null
+    reviewedBy: string | null
     createdAt: Date | null
     updatedAt: Date | null
     authorId: string | null
@@ -9953,6 +10000,10 @@ export namespace Prisma {
     title: string | null
     content: string | null
     viewCount: number | null
+    status: $Enums.ContentStatus | null
+    rejectionReason: string | null
+    reviewedAt: Date | null
+    reviewedBy: string | null
     createdAt: Date | null
     updatedAt: Date | null
     authorId: string | null
@@ -9964,6 +10015,10 @@ export namespace Prisma {
     title: number
     content: number
     viewCount: number
+    status: number
+    rejectionReason: number
+    reviewedAt: number
+    reviewedBy: number
     createdAt: number
     updatedAt: number
     authorId: number
@@ -9985,6 +10040,10 @@ export namespace Prisma {
     title?: true
     content?: true
     viewCount?: true
+    status?: true
+    rejectionReason?: true
+    reviewedAt?: true
+    reviewedBy?: true
     createdAt?: true
     updatedAt?: true
     authorId?: true
@@ -9996,6 +10055,10 @@ export namespace Prisma {
     title?: true
     content?: true
     viewCount?: true
+    status?: true
+    rejectionReason?: true
+    reviewedAt?: true
+    reviewedBy?: true
     createdAt?: true
     updatedAt?: true
     authorId?: true
@@ -10007,6 +10070,10 @@ export namespace Prisma {
     title?: true
     content?: true
     viewCount?: true
+    status?: true
+    rejectionReason?: true
+    reviewedAt?: true
+    reviewedBy?: true
     createdAt?: true
     updatedAt?: true
     authorId?: true
@@ -10105,6 +10172,10 @@ export namespace Prisma {
     title: string
     content: string
     viewCount: number
+    status: $Enums.ContentStatus
+    rejectionReason: string | null
+    reviewedAt: Date | null
+    reviewedBy: string | null
     createdAt: Date
     updatedAt: Date
     authorId: string
@@ -10135,6 +10206,10 @@ export namespace Prisma {
     title?: boolean
     content?: boolean
     viewCount?: boolean
+    status?: boolean
+    rejectionReason?: boolean
+    reviewedAt?: boolean
+    reviewedBy?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     authorId?: boolean
@@ -10153,6 +10228,10 @@ export namespace Prisma {
     title?: boolean
     content?: boolean
     viewCount?: boolean
+    status?: boolean
+    rejectionReason?: boolean
+    reviewedAt?: boolean
+    reviewedBy?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     authorId?: boolean
@@ -10166,6 +10245,10 @@ export namespace Prisma {
     title?: boolean
     content?: boolean
     viewCount?: boolean
+    status?: boolean
+    rejectionReason?: boolean
+    reviewedAt?: boolean
+    reviewedBy?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     authorId?: boolean
@@ -10179,13 +10262,17 @@ export namespace Prisma {
     title?: boolean
     content?: boolean
     viewCount?: boolean
+    status?: boolean
+    rejectionReason?: boolean
+    reviewedAt?: boolean
+    reviewedBy?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     authorId?: boolean
     categoryId?: boolean
   }
 
-  export type TipOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "content" | "viewCount" | "createdAt" | "updatedAt" | "authorId" | "categoryId", ExtArgs["result"]["tip"]>
+  export type TipOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "content" | "viewCount" | "status" | "rejectionReason" | "reviewedAt" | "reviewedBy" | "createdAt" | "updatedAt" | "authorId" | "categoryId", ExtArgs["result"]["tip"]>
   export type TipInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     author?: boolean | UserDefaultArgs<ExtArgs>
     category?: boolean | CategoryDefaultArgs<ExtArgs>
@@ -10219,6 +10306,10 @@ export namespace Prisma {
       title: string
       content: string
       viewCount: number
+      status: $Enums.ContentStatus
+      rejectionReason: string | null
+      reviewedAt: Date | null
+      reviewedBy: string | null
       createdAt: Date
       updatedAt: Date
       authorId: string
@@ -10656,6 +10747,10 @@ export namespace Prisma {
     readonly title: FieldRef<"Tip", 'String'>
     readonly content: FieldRef<"Tip", 'String'>
     readonly viewCount: FieldRef<"Tip", 'Int'>
+    readonly status: FieldRef<"Tip", 'ContentStatus'>
+    readonly rejectionReason: FieldRef<"Tip", 'String'>
+    readonly reviewedAt: FieldRef<"Tip", 'DateTime'>
+    readonly reviewedBy: FieldRef<"Tip", 'String'>
     readonly createdAt: FieldRef<"Tip", 'DateTime'>
     readonly updatedAt: FieldRef<"Tip", 'DateTime'>
     readonly authorId: FieldRef<"Tip", 'String'>
@@ -14343,6 +14438,10 @@ export namespace Prisma {
     url: string | null
     imageUrl: string | null
     viewCount: number | null
+    status: $Enums.ContentStatus | null
+    rejectionReason: string | null
+    reviewedAt: Date | null
+    reviewedBy: string | null
     createdAt: Date | null
     updatedAt: Date | null
     authorId: string | null
@@ -14355,6 +14454,10 @@ export namespace Prisma {
     url: string | null
     imageUrl: string | null
     viewCount: number | null
+    status: $Enums.ContentStatus | null
+    rejectionReason: string | null
+    reviewedAt: Date | null
+    reviewedBy: string | null
     createdAt: Date | null
     updatedAt: Date | null
     authorId: string | null
@@ -14367,6 +14470,10 @@ export namespace Prisma {
     url: number
     imageUrl: number
     viewCount: number
+    status: number
+    rejectionReason: number
+    reviewedAt: number
+    reviewedBy: number
     createdAt: number
     updatedAt: number
     authorId: number
@@ -14389,6 +14496,10 @@ export namespace Prisma {
     url?: true
     imageUrl?: true
     viewCount?: true
+    status?: true
+    rejectionReason?: true
+    reviewedAt?: true
+    reviewedBy?: true
     createdAt?: true
     updatedAt?: true
     authorId?: true
@@ -14401,6 +14512,10 @@ export namespace Prisma {
     url?: true
     imageUrl?: true
     viewCount?: true
+    status?: true
+    rejectionReason?: true
+    reviewedAt?: true
+    reviewedBy?: true
     createdAt?: true
     updatedAt?: true
     authorId?: true
@@ -14413,6 +14528,10 @@ export namespace Prisma {
     url?: true
     imageUrl?: true
     viewCount?: true
+    status?: true
+    rejectionReason?: true
+    reviewedAt?: true
+    reviewedBy?: true
     createdAt?: true
     updatedAt?: true
     authorId?: true
@@ -14512,6 +14631,10 @@ export namespace Prisma {
     url: string | null
     imageUrl: string | null
     viewCount: number
+    status: $Enums.ContentStatus
+    rejectionReason: string | null
+    reviewedAt: Date | null
+    reviewedBy: string | null
     createdAt: Date
     updatedAt: Date
     authorId: string
@@ -14543,6 +14666,10 @@ export namespace Prisma {
     url?: boolean
     imageUrl?: boolean
     viewCount?: boolean
+    status?: boolean
+    rejectionReason?: boolean
+    reviewedAt?: boolean
+    reviewedBy?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     authorId?: boolean
@@ -14559,6 +14686,10 @@ export namespace Prisma {
     url?: boolean
     imageUrl?: boolean
     viewCount?: boolean
+    status?: boolean
+    rejectionReason?: boolean
+    reviewedAt?: boolean
+    reviewedBy?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     authorId?: boolean
@@ -14572,6 +14703,10 @@ export namespace Prisma {
     url?: boolean
     imageUrl?: boolean
     viewCount?: boolean
+    status?: boolean
+    rejectionReason?: boolean
+    reviewedAt?: boolean
+    reviewedBy?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     authorId?: boolean
@@ -14585,12 +14720,16 @@ export namespace Prisma {
     url?: boolean
     imageUrl?: boolean
     viewCount?: boolean
+    status?: boolean
+    rejectionReason?: boolean
+    reviewedAt?: boolean
+    reviewedBy?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     authorId?: boolean
   }
 
-  export type ProjectOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "url" | "imageUrl" | "viewCount" | "createdAt" | "updatedAt" | "authorId", ExtArgs["result"]["project"]>
+  export type ProjectOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "url" | "imageUrl" | "viewCount" | "status" | "rejectionReason" | "reviewedAt" | "reviewedBy" | "createdAt" | "updatedAt" | "authorId", ExtArgs["result"]["project"]>
   export type ProjectInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     author?: boolean | UserDefaultArgs<ExtArgs>
     tags?: boolean | Project$tagsArgs<ExtArgs>
@@ -14618,6 +14757,10 @@ export namespace Prisma {
       url: string | null
       imageUrl: string | null
       viewCount: number
+      status: $Enums.ContentStatus
+      rejectionReason: string | null
+      reviewedAt: Date | null
+      reviewedBy: string | null
       createdAt: Date
       updatedAt: Date
       authorId: string
@@ -15053,6 +15196,10 @@ export namespace Prisma {
     readonly url: FieldRef<"Project", 'String'>
     readonly imageUrl: FieldRef<"Project", 'String'>
     readonly viewCount: FieldRef<"Project", 'Int'>
+    readonly status: FieldRef<"Project", 'ContentStatus'>
+    readonly rejectionReason: FieldRef<"Project", 'String'>
+    readonly reviewedAt: FieldRef<"Project", 'DateTime'>
+    readonly reviewedBy: FieldRef<"Project", 'String'>
     readonly createdAt: FieldRef<"Project", 'DateTime'>
     readonly updatedAt: FieldRef<"Project", 'DateTime'>
     readonly authorId: FieldRef<"Project", 'String'>
@@ -16615,7 +16762,8 @@ export namespace Prisma {
     name: 'name',
     email: 'email',
     emailVerified: 'emailVerified',
-    image: 'image'
+    image: 'image',
+    role: 'role'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -16654,6 +16802,10 @@ export namespace Prisma {
     title: 'title',
     content: 'content',
     viewCount: 'viewCount',
+    status: 'status',
+    rejectionReason: 'rejectionReason',
+    reviewedAt: 'reviewedAt',
+    reviewedBy: 'reviewedBy',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     authorId: 'authorId',
@@ -16699,6 +16851,10 @@ export namespace Prisma {
     url: 'url',
     imageUrl: 'imageUrl',
     viewCount: 'viewCount',
+    status: 'status',
+    rejectionReason: 'rejectionReason',
+    reviewedAt: 'reviewedAt',
+    reviewedBy: 'reviewedBy',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     authorId: 'authorId'
@@ -16784,6 +16940,34 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Role'
+   */
+  export type EnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role'>
+    
+
+
+  /**
+   * Reference to a field of type 'Role[]'
+   */
+  export type ListEnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ContentStatus'
+   */
+  export type EnumContentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContentStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'ContentStatus[]'
+   */
+  export type ListEnumContentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContentStatus[]'>
     
 
 
@@ -17004,6 +17188,7 @@ export namespace Prisma {
     email?: StringNullableFilter<"User"> | string | null
     emailVerified?: DateTimeNullableFilter<"User"> | Date | string | null
     image?: StringNullableFilter<"User"> | string | null
+    role?: EnumRoleFilter<"User"> | $Enums.Role
     accounts?: AccountListRelationFilter
     sessions?: SessionListRelationFilter
     tips?: TipListRelationFilter
@@ -17020,6 +17205,7 @@ export namespace Prisma {
     email?: SortOrderInput | SortOrder
     emailVerified?: SortOrderInput | SortOrder
     image?: SortOrderInput | SortOrder
+    role?: SortOrder
     accounts?: AccountOrderByRelationAggregateInput
     sessions?: SessionOrderByRelationAggregateInput
     tips?: TipOrderByRelationAggregateInput
@@ -17039,6 +17225,7 @@ export namespace Prisma {
     name?: StringNullableFilter<"User"> | string | null
     emailVerified?: DateTimeNullableFilter<"User"> | Date | string | null
     image?: StringNullableFilter<"User"> | string | null
+    role?: EnumRoleFilter<"User"> | $Enums.Role
     accounts?: AccountListRelationFilter
     sessions?: SessionListRelationFilter
     tips?: TipListRelationFilter
@@ -17055,6 +17242,7 @@ export namespace Prisma {
     email?: SortOrderInput | SortOrder
     emailVerified?: SortOrderInput | SortOrder
     image?: SortOrderInput | SortOrder
+    role?: SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -17069,6 +17257,7 @@ export namespace Prisma {
     email?: StringNullableWithAggregatesFilter<"User"> | string | null
     emailVerified?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     image?: StringNullableWithAggregatesFilter<"User"> | string | null
+    role?: EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
   }
 
   export type TopCategoryWhereInput = {
@@ -17225,6 +17414,10 @@ export namespace Prisma {
     title?: StringFilter<"Tip"> | string
     content?: StringFilter<"Tip"> | string
     viewCount?: IntFilter<"Tip"> | number
+    status?: EnumContentStatusFilter<"Tip"> | $Enums.ContentStatus
+    rejectionReason?: StringNullableFilter<"Tip"> | string | null
+    reviewedAt?: DateTimeNullableFilter<"Tip"> | Date | string | null
+    reviewedBy?: StringNullableFilter<"Tip"> | string | null
     createdAt?: DateTimeFilter<"Tip"> | Date | string
     updatedAt?: DateTimeFilter<"Tip"> | Date | string
     authorId?: StringFilter<"Tip"> | string
@@ -17242,6 +17435,10 @@ export namespace Prisma {
     title?: SortOrder
     content?: SortOrder
     viewCount?: SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrderInput | SortOrder
+    reviewedAt?: SortOrderInput | SortOrder
+    reviewedBy?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     authorId?: SortOrder
@@ -17262,6 +17459,10 @@ export namespace Prisma {
     title?: StringFilter<"Tip"> | string
     content?: StringFilter<"Tip"> | string
     viewCount?: IntFilter<"Tip"> | number
+    status?: EnumContentStatusFilter<"Tip"> | $Enums.ContentStatus
+    rejectionReason?: StringNullableFilter<"Tip"> | string | null
+    reviewedAt?: DateTimeNullableFilter<"Tip"> | Date | string | null
+    reviewedBy?: StringNullableFilter<"Tip"> | string | null
     createdAt?: DateTimeFilter<"Tip"> | Date | string
     updatedAt?: DateTimeFilter<"Tip"> | Date | string
     authorId?: StringFilter<"Tip"> | string
@@ -17279,6 +17480,10 @@ export namespace Prisma {
     title?: SortOrder
     content?: SortOrder
     viewCount?: SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrderInput | SortOrder
+    reviewedAt?: SortOrderInput | SortOrder
+    reviewedBy?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     authorId?: SortOrder
@@ -17298,6 +17503,10 @@ export namespace Prisma {
     title?: StringWithAggregatesFilter<"Tip"> | string
     content?: StringWithAggregatesFilter<"Tip"> | string
     viewCount?: IntWithAggregatesFilter<"Tip"> | number
+    status?: EnumContentStatusWithAggregatesFilter<"Tip"> | $Enums.ContentStatus
+    rejectionReason?: StringNullableWithAggregatesFilter<"Tip"> | string | null
+    reviewedAt?: DateTimeNullableWithAggregatesFilter<"Tip"> | Date | string | null
+    reviewedBy?: StringNullableWithAggregatesFilter<"Tip"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Tip"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Tip"> | Date | string
     authorId?: StringWithAggregatesFilter<"Tip"> | string
@@ -17470,6 +17679,10 @@ export namespace Prisma {
     url?: StringNullableFilter<"Project"> | string | null
     imageUrl?: StringNullableFilter<"Project"> | string | null
     viewCount?: IntFilter<"Project"> | number
+    status?: EnumContentStatusFilter<"Project"> | $Enums.ContentStatus
+    rejectionReason?: StringNullableFilter<"Project"> | string | null
+    reviewedAt?: DateTimeNullableFilter<"Project"> | Date | string | null
+    reviewedBy?: StringNullableFilter<"Project"> | string | null
     createdAt?: DateTimeFilter<"Project"> | Date | string
     updatedAt?: DateTimeFilter<"Project"> | Date | string
     authorId?: StringFilter<"Project"> | string
@@ -17485,6 +17698,10 @@ export namespace Prisma {
     url?: SortOrderInput | SortOrder
     imageUrl?: SortOrderInput | SortOrder
     viewCount?: SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrderInput | SortOrder
+    reviewedAt?: SortOrderInput | SortOrder
+    reviewedBy?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     authorId?: SortOrder
@@ -17503,6 +17720,10 @@ export namespace Prisma {
     url?: StringNullableFilter<"Project"> | string | null
     imageUrl?: StringNullableFilter<"Project"> | string | null
     viewCount?: IntFilter<"Project"> | number
+    status?: EnumContentStatusFilter<"Project"> | $Enums.ContentStatus
+    rejectionReason?: StringNullableFilter<"Project"> | string | null
+    reviewedAt?: DateTimeNullableFilter<"Project"> | Date | string | null
+    reviewedBy?: StringNullableFilter<"Project"> | string | null
     createdAt?: DateTimeFilter<"Project"> | Date | string
     updatedAt?: DateTimeFilter<"Project"> | Date | string
     authorId?: StringFilter<"Project"> | string
@@ -17518,6 +17739,10 @@ export namespace Prisma {
     url?: SortOrderInput | SortOrder
     imageUrl?: SortOrderInput | SortOrder
     viewCount?: SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrderInput | SortOrder
+    reviewedAt?: SortOrderInput | SortOrder
+    reviewedBy?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     authorId?: SortOrder
@@ -17538,6 +17763,10 @@ export namespace Prisma {
     url?: StringNullableWithAggregatesFilter<"Project"> | string | null
     imageUrl?: StringNullableWithAggregatesFilter<"Project"> | string | null
     viewCount?: IntWithAggregatesFilter<"Project"> | number
+    status?: EnumContentStatusWithAggregatesFilter<"Project"> | $Enums.ContentStatus
+    rejectionReason?: StringNullableWithAggregatesFilter<"Project"> | string | null
+    reviewedAt?: DateTimeNullableWithAggregatesFilter<"Project"> | Date | string | null
+    reviewedBy?: StringNullableWithAggregatesFilter<"Project"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Project"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Project"> | Date | string
     authorId?: StringWithAggregatesFilter<"Project"> | string
@@ -17799,6 +18028,7 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    role?: $Enums.Role
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     tips?: TipCreateNestedManyWithoutAuthorInput
@@ -17815,6 +18045,7 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    role?: $Enums.Role
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     tips?: TipUncheckedCreateNestedManyWithoutAuthorInput
@@ -17831,6 +18062,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     tips?: TipUpdateManyWithoutAuthorNestedInput
@@ -17847,6 +18079,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     tips?: TipUncheckedUpdateManyWithoutAuthorNestedInput
@@ -17863,6 +18096,7 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    role?: $Enums.Role
   }
 
   export type UserUpdateManyMutationInput = {
@@ -17871,6 +18105,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -17879,6 +18114,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
   }
 
   export type TopCategoryCreateInput = {
@@ -18034,6 +18270,10 @@ export namespace Prisma {
     title: string
     content: string
     viewCount?: number
+    status?: $Enums.ContentStatus
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    reviewedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     author: UserCreateNestedOneWithoutTipsInput
@@ -18049,6 +18289,10 @@ export namespace Prisma {
     title: string
     content: string
     viewCount?: number
+    status?: $Enums.ContentStatus
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    reviewedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     authorId: string
@@ -18064,6 +18308,10 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     viewCount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     author?: UserUpdateOneRequiredWithoutTipsNestedInput
@@ -18079,6 +18327,10 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     viewCount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: StringFieldUpdateOperationsInput | string
@@ -18094,6 +18346,10 @@ export namespace Prisma {
     title: string
     content: string
     viewCount?: number
+    status?: $Enums.ContentStatus
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    reviewedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     authorId: string
@@ -18105,6 +18361,10 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     viewCount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -18114,6 +18374,10 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     viewCount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: StringFieldUpdateOperationsInput | string
@@ -18261,6 +18525,10 @@ export namespace Prisma {
     url?: string | null
     imageUrl?: string | null
     viewCount?: number
+    status?: $Enums.ContentStatus
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    reviewedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     author: UserCreateNestedOneWithoutProjectsInput
@@ -18275,6 +18543,10 @@ export namespace Prisma {
     url?: string | null
     imageUrl?: string | null
     viewCount?: number
+    status?: $Enums.ContentStatus
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    reviewedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     authorId: string
@@ -18289,6 +18561,10 @@ export namespace Prisma {
     url?: NullableStringFieldUpdateOperationsInput | string | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     viewCount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     author?: UserUpdateOneRequiredWithoutProjectsNestedInput
@@ -18303,6 +18579,10 @@ export namespace Prisma {
     url?: NullableStringFieldUpdateOperationsInput | string | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     viewCount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: StringFieldUpdateOperationsInput | string
@@ -18317,6 +18597,10 @@ export namespace Prisma {
     url?: string | null
     imageUrl?: string | null
     viewCount?: number
+    status?: $Enums.ContentStatus
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    reviewedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     authorId: string
@@ -18329,6 +18613,10 @@ export namespace Prisma {
     url?: NullableStringFieldUpdateOperationsInput | string | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     viewCount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -18340,6 +18628,10 @@ export namespace Prisma {
     url?: NullableStringFieldUpdateOperationsInput | string | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     viewCount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: StringFieldUpdateOperationsInput | string
@@ -18631,6 +18923,13 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
+  export type EnumRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
+  }
+
   export type AccountListRelationFilter = {
     every?: AccountWhereInput
     some?: AccountWhereInput
@@ -18717,6 +19016,7 @@ export namespace Prisma {
     email?: SortOrder
     emailVerified?: SortOrder
     image?: SortOrder
+    role?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -18725,6 +19025,7 @@ export namespace Prisma {
     email?: SortOrder
     emailVerified?: SortOrder
     image?: SortOrder
+    role?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -18733,6 +19034,7 @@ export namespace Prisma {
     email?: SortOrder
     emailVerified?: SortOrder
     image?: SortOrder
+    role?: SortOrder
   }
 
   export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -18747,6 +19049,16 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type EnumRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRoleFilter<$PrismaModel>
+    _max?: NestedEnumRoleFilter<$PrismaModel>
   }
 
   export type CategoryListRelationFilter = {
@@ -18832,6 +19144,13 @@ export namespace Prisma {
     not?: NestedIntFilter<$PrismaModel> | number
   }
 
+  export type EnumContentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ContentStatus | EnumContentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ContentStatus[] | ListEnumContentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ContentStatus[] | ListEnumContentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumContentStatusFilter<$PrismaModel> | $Enums.ContentStatus
+  }
+
   export type CategoryScalarRelationFilter = {
     is?: CategoryWhereInput
     isNot?: CategoryWhereInput
@@ -18852,6 +19171,10 @@ export namespace Prisma {
     title?: SortOrder
     content?: SortOrder
     viewCount?: SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrder
+    reviewedAt?: SortOrder
+    reviewedBy?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     authorId?: SortOrder
@@ -18867,6 +19190,10 @@ export namespace Prisma {
     title?: SortOrder
     content?: SortOrder
     viewCount?: SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrder
+    reviewedAt?: SortOrder
+    reviewedBy?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     authorId?: SortOrder
@@ -18878,6 +19205,10 @@ export namespace Prisma {
     title?: SortOrder
     content?: SortOrder
     viewCount?: SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrder
+    reviewedAt?: SortOrder
+    reviewedBy?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     authorId?: SortOrder
@@ -18902,6 +19233,16 @@ export namespace Prisma {
     _sum?: NestedIntFilter<$PrismaModel>
     _min?: NestedIntFilter<$PrismaModel>
     _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type EnumContentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ContentStatus | EnumContentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ContentStatus[] | ListEnumContentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ContentStatus[] | ListEnumContentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumContentStatusWithAggregatesFilter<$PrismaModel> | $Enums.ContentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumContentStatusFilter<$PrismaModel>
+    _max?: NestedEnumContentStatusFilter<$PrismaModel>
   }
 
   export type TipScalarRelationFilter = {
@@ -18986,6 +19327,10 @@ export namespace Prisma {
     url?: SortOrder
     imageUrl?: SortOrder
     viewCount?: SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrder
+    reviewedAt?: SortOrder
+    reviewedBy?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     authorId?: SortOrder
@@ -19002,6 +19347,10 @@ export namespace Prisma {
     url?: SortOrder
     imageUrl?: SortOrder
     viewCount?: SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrder
+    reviewedAt?: SortOrder
+    reviewedBy?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     authorId?: SortOrder
@@ -19014,6 +19363,10 @@ export namespace Prisma {
     url?: SortOrder
     imageUrl?: SortOrder
     viewCount?: SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrder
+    reviewedAt?: SortOrder
+    reviewedBy?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     authorId?: SortOrder
@@ -19213,6 +19566,10 @@ export namespace Prisma {
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
     set?: Date | string | null
+  }
+
+  export type EnumRoleFieldUpdateOperationsInput = {
+    set?: $Enums.Role
   }
 
   export type AccountUpdateManyWithoutUserNestedInput = {
@@ -19685,6 +20042,10 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
+  }
+
+  export type EnumContentStatusFieldUpdateOperationsInput = {
+    set?: $Enums.ContentStatus
   }
 
   export type UserUpdateOneRequiredWithoutTipsNestedInput = {
@@ -20166,6 +20527,13 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
+  export type NestedEnumRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
+  }
+
   export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -20178,6 +20546,23 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRoleFilter<$PrismaModel>
+    _max?: NestedEnumRoleFilter<$PrismaModel>
+  }
+
+  export type NestedEnumContentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ContentStatus | EnumContentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ContentStatus[] | ListEnumContentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ContentStatus[] | ListEnumContentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumContentStatusFilter<$PrismaModel> | $Enums.ContentStatus
   }
 
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
@@ -20207,12 +20592,23 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
+  export type NestedEnumContentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ContentStatus | EnumContentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ContentStatus[] | ListEnumContentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ContentStatus[] | ListEnumContentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumContentStatusWithAggregatesFilter<$PrismaModel> | $Enums.ContentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumContentStatusFilter<$PrismaModel>
+    _max?: NestedEnumContentStatusFilter<$PrismaModel>
+  }
+
   export type UserCreateWithoutAccountsInput = {
     id?: string
     name?: string | null
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    role?: $Enums.Role
     sessions?: SessionCreateNestedManyWithoutUserInput
     tips?: TipCreateNestedManyWithoutAuthorInput
     comments?: CommentCreateNestedManyWithoutAuthorInput
@@ -20228,6 +20624,7 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    role?: $Enums.Role
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     tips?: TipUncheckedCreateNestedManyWithoutAuthorInput
     comments?: CommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -20259,6 +20656,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     sessions?: SessionUpdateManyWithoutUserNestedInput
     tips?: TipUpdateManyWithoutAuthorNestedInput
     comments?: CommentUpdateManyWithoutAuthorNestedInput
@@ -20274,6 +20672,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     tips?: TipUncheckedUpdateManyWithoutAuthorNestedInput
     comments?: CommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -20289,6 +20688,7 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    role?: $Enums.Role
     accounts?: AccountCreateNestedManyWithoutUserInput
     tips?: TipCreateNestedManyWithoutAuthorInput
     comments?: CommentCreateNestedManyWithoutAuthorInput
@@ -20304,6 +20704,7 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    role?: $Enums.Role
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     tips?: TipUncheckedCreateNestedManyWithoutAuthorInput
     comments?: CommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -20335,6 +20736,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     accounts?: AccountUpdateManyWithoutUserNestedInput
     tips?: TipUpdateManyWithoutAuthorNestedInput
     comments?: CommentUpdateManyWithoutAuthorNestedInput
@@ -20350,6 +20752,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     tips?: TipUncheckedUpdateManyWithoutAuthorNestedInput
     comments?: CommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -20426,6 +20829,10 @@ export namespace Prisma {
     title: string
     content: string
     viewCount?: number
+    status?: $Enums.ContentStatus
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    reviewedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     category: CategoryCreateNestedOneWithoutTipsInput
@@ -20440,6 +20847,10 @@ export namespace Prisma {
     title: string
     content: string
     viewCount?: number
+    status?: $Enums.ContentStatus
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    reviewedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     categoryId: string
@@ -20530,6 +20941,10 @@ export namespace Prisma {
     url?: string | null
     imageUrl?: string | null
     viewCount?: number
+    status?: $Enums.ContentStatus
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    reviewedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     tags?: TagCreateNestedManyWithoutProjectsInput
@@ -20543,6 +20958,10 @@ export namespace Prisma {
     url?: string | null
     imageUrl?: string | null
     viewCount?: number
+    status?: $Enums.ContentStatus
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    reviewedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     tags?: TagUncheckedCreateNestedManyWithoutProjectsInput
@@ -20664,6 +21083,10 @@ export namespace Prisma {
     title?: StringFilter<"Tip"> | string
     content?: StringFilter<"Tip"> | string
     viewCount?: IntFilter<"Tip"> | number
+    status?: EnumContentStatusFilter<"Tip"> | $Enums.ContentStatus
+    rejectionReason?: StringNullableFilter<"Tip"> | string | null
+    reviewedAt?: DateTimeNullableFilter<"Tip"> | Date | string | null
+    reviewedBy?: StringNullableFilter<"Tip"> | string | null
     createdAt?: DateTimeFilter<"Tip"> | Date | string
     updatedAt?: DateTimeFilter<"Tip"> | Date | string
     authorId?: StringFilter<"Tip"> | string
@@ -20773,6 +21196,10 @@ export namespace Prisma {
     url?: StringNullableFilter<"Project"> | string | null
     imageUrl?: StringNullableFilter<"Project"> | string | null
     viewCount?: IntFilter<"Project"> | number
+    status?: EnumContentStatusFilter<"Project"> | $Enums.ContentStatus
+    rejectionReason?: StringNullableFilter<"Project"> | string | null
+    reviewedAt?: DateTimeNullableFilter<"Project"> | Date | string | null
+    reviewedBy?: StringNullableFilter<"Project"> | string | null
     createdAt?: DateTimeFilter<"Project"> | Date | string
     updatedAt?: DateTimeFilter<"Project"> | Date | string
     authorId?: StringFilter<"Project"> | string
@@ -20878,6 +21305,10 @@ export namespace Prisma {
     title: string
     content: string
     viewCount?: number
+    status?: $Enums.ContentStatus
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    reviewedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     author: UserCreateNestedOneWithoutTipsInput
@@ -20892,6 +21323,10 @@ export namespace Prisma {
     title: string
     content: string
     viewCount?: number
+    status?: $Enums.ContentStatus
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    reviewedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     authorId: string
@@ -20955,6 +21390,10 @@ export namespace Prisma {
     title: string
     content: string
     viewCount?: number
+    status?: $Enums.ContentStatus
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    reviewedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     author: UserCreateNestedOneWithoutTipsInput
@@ -20969,6 +21408,10 @@ export namespace Prisma {
     title: string
     content: string
     viewCount?: number
+    status?: $Enums.ContentStatus
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    reviewedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     authorId: string
@@ -20990,6 +21433,10 @@ export namespace Prisma {
     url?: string | null
     imageUrl?: string | null
     viewCount?: number
+    status?: $Enums.ContentStatus
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    reviewedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     author: UserCreateNestedOneWithoutProjectsInput
@@ -21003,6 +21450,10 @@ export namespace Prisma {
     url?: string | null
     imageUrl?: string | null
     viewCount?: number
+    status?: $Enums.ContentStatus
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    reviewedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     authorId: string
@@ -21052,6 +21503,7 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    role?: $Enums.Role
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     comments?: CommentCreateNestedManyWithoutAuthorInput
@@ -21067,6 +21519,7 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    role?: $Enums.Role
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     comments?: CommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -21200,6 +21653,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     comments?: CommentUpdateManyWithoutAuthorNestedInput
@@ -21215,6 +21669,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     comments?: CommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -21329,6 +21784,7 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    role?: $Enums.Role
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     tips?: TipCreateNestedManyWithoutAuthorInput
@@ -21344,6 +21800,7 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    role?: $Enums.Role
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     tips?: TipUncheckedCreateNestedManyWithoutAuthorInput
@@ -21363,6 +21820,10 @@ export namespace Prisma {
     title: string
     content: string
     viewCount?: number
+    status?: $Enums.ContentStatus
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    reviewedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     author: UserCreateNestedOneWithoutTipsInput
@@ -21377,6 +21838,10 @@ export namespace Prisma {
     title: string
     content: string
     viewCount?: number
+    status?: $Enums.ContentStatus
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    reviewedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     authorId: string
@@ -21408,6 +21873,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     tips?: TipUpdateManyWithoutAuthorNestedInput
@@ -21423,6 +21889,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     tips?: TipUncheckedUpdateManyWithoutAuthorNestedInput
@@ -21448,6 +21915,10 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     viewCount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     author?: UserUpdateOneRequiredWithoutTipsNestedInput
@@ -21462,6 +21933,10 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     viewCount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: StringFieldUpdateOperationsInput | string
@@ -21477,6 +21952,7 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    role?: $Enums.Role
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     tips?: TipCreateNestedManyWithoutAuthorInput
@@ -21492,6 +21968,7 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    role?: $Enums.Role
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     tips?: TipUncheckedCreateNestedManyWithoutAuthorInput
@@ -21511,6 +21988,10 @@ export namespace Prisma {
     title: string
     content: string
     viewCount?: number
+    status?: $Enums.ContentStatus
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    reviewedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     author: UserCreateNestedOneWithoutTipsInput
@@ -21525,6 +22006,10 @@ export namespace Prisma {
     title: string
     content: string
     viewCount?: number
+    status?: $Enums.ContentStatus
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    reviewedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     authorId: string
@@ -21556,6 +22041,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     tips?: TipUpdateManyWithoutAuthorNestedInput
@@ -21571,6 +22057,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     tips?: TipUncheckedUpdateManyWithoutAuthorNestedInput
@@ -21596,6 +22083,10 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     viewCount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     author?: UserUpdateOneRequiredWithoutTipsNestedInput
@@ -21610,6 +22101,10 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     viewCount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: StringFieldUpdateOperationsInput | string
@@ -21625,6 +22120,7 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    role?: $Enums.Role
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     tips?: TipCreateNestedManyWithoutAuthorInput
@@ -21640,6 +22136,7 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    role?: $Enums.Role
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     tips?: TipUncheckedCreateNestedManyWithoutAuthorInput
@@ -21659,6 +22156,10 @@ export namespace Prisma {
     title: string
     content: string
     viewCount?: number
+    status?: $Enums.ContentStatus
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    reviewedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     author: UserCreateNestedOneWithoutTipsInput
@@ -21673,6 +22174,10 @@ export namespace Prisma {
     title: string
     content: string
     viewCount?: number
+    status?: $Enums.ContentStatus
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    reviewedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     authorId: string
@@ -21704,6 +22209,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     tips?: TipUpdateManyWithoutAuthorNestedInput
@@ -21719,6 +22225,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     tips?: TipUncheckedUpdateManyWithoutAuthorNestedInput
@@ -21744,6 +22251,10 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     viewCount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     author?: UserUpdateOneRequiredWithoutTipsNestedInput
@@ -21758,6 +22269,10 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     viewCount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: StringFieldUpdateOperationsInput | string
@@ -21773,6 +22288,7 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    role?: $Enums.Role
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     tips?: TipCreateNestedManyWithoutAuthorInput
@@ -21788,6 +22304,7 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    role?: $Enums.Role
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     tips?: TipUncheckedCreateNestedManyWithoutAuthorInput
@@ -21856,6 +22373,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     tips?: TipUpdateManyWithoutAuthorNestedInput
@@ -21871,6 +22389,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     tips?: TipUncheckedUpdateManyWithoutAuthorNestedInput
@@ -21918,6 +22437,7 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    role?: $Enums.Role
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     tips?: TipCreateNestedManyWithoutAuthorInput
@@ -21933,6 +22453,7 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    role?: $Enums.Role
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     tips?: TipUncheckedCreateNestedManyWithoutAuthorInput
@@ -21954,6 +22475,10 @@ export namespace Prisma {
     url?: string | null
     imageUrl?: string | null
     viewCount?: number
+    status?: $Enums.ContentStatus
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    reviewedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     author: UserCreateNestedOneWithoutProjectsInput
@@ -21967,6 +22492,10 @@ export namespace Prisma {
     url?: string | null
     imageUrl?: string | null
     viewCount?: number
+    status?: $Enums.ContentStatus
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    reviewedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     authorId: string
@@ -21995,6 +22524,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     tips?: TipUpdateManyWithoutAuthorNestedInput
@@ -22010,6 +22540,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     tips?: TipUncheckedUpdateManyWithoutAuthorNestedInput
@@ -22037,6 +22568,10 @@ export namespace Prisma {
     url?: NullableStringFieldUpdateOperationsInput | string | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     viewCount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     author?: UserUpdateOneRequiredWithoutProjectsNestedInput
@@ -22050,6 +22585,10 @@ export namespace Prisma {
     url?: NullableStringFieldUpdateOperationsInput | string | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     viewCount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: StringFieldUpdateOperationsInput | string
@@ -22082,6 +22621,10 @@ export namespace Prisma {
     title: string
     content: string
     viewCount?: number
+    status?: $Enums.ContentStatus
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    reviewedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     categoryId: string
@@ -22111,6 +22654,10 @@ export namespace Prisma {
     url?: string | null
     imageUrl?: string | null
     viewCount?: number
+    status?: $Enums.ContentStatus
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    reviewedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -22188,6 +22735,10 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     viewCount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     category?: CategoryUpdateOneRequiredWithoutTipsNestedInput
@@ -22202,6 +22753,10 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     viewCount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     categoryId?: StringFieldUpdateOperationsInput | string
@@ -22216,6 +22771,10 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     viewCount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     categoryId?: StringFieldUpdateOperationsInput | string
@@ -22279,6 +22838,10 @@ export namespace Prisma {
     url?: NullableStringFieldUpdateOperationsInput | string | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     viewCount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tags?: TagUpdateManyWithoutProjectsNestedInput
@@ -22292,6 +22855,10 @@ export namespace Prisma {
     url?: NullableStringFieldUpdateOperationsInput | string | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     viewCount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tags?: TagUncheckedUpdateManyWithoutProjectsNestedInput
@@ -22305,6 +22872,10 @@ export namespace Prisma {
     url?: NullableStringFieldUpdateOperationsInput | string | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     viewCount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -22359,6 +22930,10 @@ export namespace Prisma {
     title: string
     content: string
     viewCount?: number
+    status?: $Enums.ContentStatus
+    rejectionReason?: string | null
+    reviewedAt?: Date | string | null
+    reviewedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     authorId: string
@@ -22369,6 +22944,10 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     viewCount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     author?: UserUpdateOneRequiredWithoutTipsNestedInput
@@ -22383,6 +22962,10 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     viewCount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: StringFieldUpdateOperationsInput | string
@@ -22397,6 +22980,10 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     viewCount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: StringFieldUpdateOperationsInput | string
@@ -22407,6 +22994,10 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     viewCount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     author?: UserUpdateOneRequiredWithoutTipsNestedInput
@@ -22421,6 +23012,10 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     viewCount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: StringFieldUpdateOperationsInput | string
@@ -22435,6 +23030,10 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     viewCount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: StringFieldUpdateOperationsInput | string
@@ -22448,6 +23047,10 @@ export namespace Prisma {
     url?: NullableStringFieldUpdateOperationsInput | string | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     viewCount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     author?: UserUpdateOneRequiredWithoutProjectsNestedInput
@@ -22461,6 +23064,10 @@ export namespace Prisma {
     url?: NullableStringFieldUpdateOperationsInput | string | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     viewCount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: StringFieldUpdateOperationsInput | string
@@ -22474,6 +23081,10 @@ export namespace Prisma {
     url?: NullableStringFieldUpdateOperationsInput | string | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     viewCount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: StringFieldUpdateOperationsInput | string

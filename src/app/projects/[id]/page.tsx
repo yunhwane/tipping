@@ -38,8 +38,26 @@ export default function ProjectDetailPage() {
 
   const isAuthor = session?.user.id === project.author.id;
 
+  const statusConfig: Record<string, { label: string; className: string }> = {
+    PENDING: { label: "검수 대기", className: "bg-yellow-100 text-yellow-800 border-yellow-300" },
+    REJECTED: { label: "반려", className: "bg-red-100 text-red-800 border-red-300" },
+  };
+
   return (
     <article className="mx-auto max-w-3xl space-y-6">
+      {/* 비공개 상태 배너 */}
+      {project.status !== "APPROVED" && statusConfig[project.status] && (
+        <div className={`rounded-lg border px-4 py-3 text-sm ${statusConfig[project.status]!.className}`}>
+          <span className="font-medium">{statusConfig[project.status]!.label}</span>
+          {project.status === "REJECTED" && project.rejectionReason && (
+            <span> — {project.rejectionReason}</span>
+          )}
+          {project.status === "PENDING" && (
+            <span> — 관리자 검수 후 공개됩니다.</span>
+          )}
+        </div>
+      )}
+
       {project.imageUrl && (
         <div className="aspect-video overflow-hidden rounded-lg">
           <img
