@@ -34,11 +34,12 @@ async function main() {
   // === 테스트 유저 ===
   const user1 = await prisma.user.upsert({
     where: { email: "dev1@tipping.test" },
-    update: {},
+    update: { role: "ADMIN" },
     create: {
       name: "김개발",
       email: "dev1@tipping.test",
       image: "https://api.dicebear.com/9.x/avataaars/svg?seed=dev1",
+      role: "ADMIN",
     },
   });
 
@@ -81,7 +82,20 @@ async function main() {
   }
 
   // === 팁 데이터 ===
-  const tips = [
+  type TipSeed = {
+    title: string;
+    content: string;
+    authorId: string;
+    categorySlug: string;
+    tags: string[];
+    viewCount: number;
+    status: "PENDING" | "APPROVED" | "REJECTED";
+    rejectionReason?: string;
+    reviewedAt?: Date;
+    reviewedBy?: string;
+  };
+
+  const tips: TipSeed[] = [
     {
       title: "React useEffect 클린업 함수, 왜 필요할까?",
       content: `## useEffect 클린업이 중요한 이유
@@ -111,6 +125,9 @@ useEffect(() => {
       categorySlug: "frontend",
       tags: ["React", "TypeScript"],
       viewCount: 342,
+      status: "APPROVED",
+      reviewedAt: new Date("2026-03-20"),
+      reviewedBy: user1.id,
     },
     {
       title: "TypeScript satisfies 연산자 활용법",
@@ -139,6 +156,9 @@ const config = {
       categorySlug: "frontend",
       tags: ["TypeScript", "React"],
       viewCount: 528,
+      status: "APPROVED",
+      reviewedAt: new Date("2026-03-19"),
+      reviewedBy: user1.id,
     },
     {
       title: "Next.js App Router에서 서버 컴포넌트 데이터 페칭 패턴",
@@ -171,6 +191,9 @@ export default async function PostsPage() {
       categorySlug: "frontend",
       tags: ["Next.js", "React", "TypeScript"],
       viewCount: 891,
+      status: "APPROVED",
+      reviewedAt: new Date("2026-03-18"),
+      reviewedBy: user1.id,
     },
     {
       title: "Tailwind CSS v4 마이그레이션 핵심 변경점",
@@ -201,6 +224,9 @@ tailwind.config.js 대신 CSS에서 직접 설정합니다.
       categorySlug: "frontend",
       tags: ["Tailwind", "Next.js"],
       viewCount: 673,
+      status: "APPROVED",
+      reviewedAt: new Date("2026-03-17"),
+      reviewedBy: user1.id,
     },
     {
       title: "Node.js에서 환경변수 안전하게 관리하는 법",
@@ -232,6 +258,9 @@ export const env = envSchema.parse(process.env);
       categorySlug: "backend",
       tags: ["Node.js", "TypeScript"],
       viewCount: 445,
+      status: "APPROVED",
+      reviewedAt: new Date("2026-03-16"),
+      reviewedBy: user1.id,
     },
     {
       title: "Prisma에서 N+1 문제 해결하기",
@@ -265,6 +294,9 @@ const users = await prisma.user.findMany({
       categorySlug: "backend",
       tags: ["Prisma", "Node.js", "PostgreSQL"],
       viewCount: 367,
+      status: "APPROVED",
+      reviewedAt: new Date("2026-03-15"),
+      reviewedBy: user1.id,
     },
     {
       title: "Docker 이미지 크기 80% 줄이는 멀티 스테이지 빌드",
@@ -301,6 +333,9 @@ CMD ["npm", "start"]
       categorySlug: "devops",
       tags: ["Docker", "Node.js", "CI/CD"],
       viewCount: 756,
+      status: "APPROVED",
+      reviewedAt: new Date("2026-03-14"),
+      reviewedBy: user1.id,
     },
     {
       title: "PostgreSQL 인덱스, 언제 어떤 걸 써야 할까?",
@@ -336,6 +371,9 @@ CREATE INDEX idx_orders_user_date ON orders(user_id, created_at DESC);
       categorySlug: "database",
       tags: ["PostgreSQL", "성능최적화"],
       viewCount: 489,
+      status: "APPROVED",
+      reviewedAt: new Date("2026-03-13"),
+      reviewedBy: user1.id,
     },
     {
       title: "Git 커밋 메시지 컨벤션 정리",
@@ -374,6 +412,9 @@ docs: update README with setup instructions
       categorySlug: "etc",
       tags: ["Git"],
       viewCount: 923,
+      status: "APPROVED",
+      reviewedAt: new Date("2026-03-12"),
+      reviewedBy: user1.id,
     },
     {
       title: "VS Code 생산성 200% 올리는 단축키 모음",
@@ -404,6 +445,7 @@ docs: update README with setup instructions
       categorySlug: "etc",
       tags: ["VS Code"],
       viewCount: 1203,
+      status: "PENDING",
     },
     {
       title: "REST API 설계 시 꼭 지켜야 할 5가지 규칙",
@@ -445,6 +487,7 @@ GET /posts?cursor=abc123&limit=20
       categorySlug: "backend",
       tags: ["REST API", "Node.js"],
       viewCount: 612,
+      status: "PENDING",
     },
     {
       title: "GitHub Actions CI/CD 파이프라인 5분 만에 세팅하기",
@@ -483,6 +526,10 @@ jobs:
       categorySlug: "devops",
       tags: ["CI/CD", "Git"],
       viewCount: 534,
+      status: "REJECTED",
+      rejectionReason: "내용이 너무 간략합니다. 실제 프로젝트 적용 사례를 추가해 주세요.",
+      reviewedAt: new Date("2026-03-22"),
+      reviewedBy: user1.id,
     },
   ];
 
@@ -499,6 +546,10 @@ jobs:
         authorId: tipData.authorId,
         categoryId: catMap[tipData.categorySlug]!,
         viewCount: tipData.viewCount,
+        status: tipData.status,
+        rejectionReason: tipData.rejectionReason ?? null,
+        reviewedAt: tipData.reviewedAt ?? null,
+        reviewedBy: tipData.reviewedBy ?? null,
         tags: {
           connect: tipData.tags.map((name) => ({ name })),
         },
@@ -507,7 +558,20 @@ jobs:
   }
 
   // === 프로젝트 데이터 ===
-  const projects = [
+  type ProjectSeed = {
+    title: string;
+    description: string;
+    url: string;
+    authorId: string;
+    tags: string[];
+    viewCount: number;
+    status: "PENDING" | "APPROVED" | "REJECTED";
+    rejectionReason?: string;
+    reviewedAt?: Date;
+    reviewedBy?: string;
+  };
+
+  const projects: ProjectSeed[] = [
     {
       title: "Tipping",
       description:
@@ -516,6 +580,9 @@ jobs:
       authorId: user1.id,
       tags: ["Next.js", "TypeScript", "Prisma", "Tailwind"],
       viewCount: 234,
+      status: "APPROVED",
+      reviewedAt: new Date("2026-03-18"),
+      reviewedBy: user1.id,
     },
     {
       title: "DevDash",
@@ -525,6 +592,9 @@ jobs:
       authorId: user2.id,
       tags: ["React", "Node.js", "GraphQL"],
       viewCount: 456,
+      status: "APPROVED",
+      reviewedAt: new Date("2026-03-17"),
+      reviewedBy: user1.id,
     },
     {
       title: "SQLPlayground",
@@ -534,6 +604,9 @@ jobs:
       authorId: user3.id,
       tags: ["PostgreSQL", "React", "TypeScript"],
       viewCount: 789,
+      status: "APPROVED",
+      reviewedAt: new Date("2026-03-16"),
+      reviewedBy: user1.id,
     },
     {
       title: "GitFlow CLI",
@@ -543,6 +616,7 @@ jobs:
       authorId: user1.id,
       tags: ["Go", "Git", "CI/CD"],
       viewCount: 321,
+      status: "PENDING",
     },
     {
       title: "DockerCompose Generator",
@@ -552,6 +626,10 @@ jobs:
       authorId: user3.id,
       tags: ["Docker", "React", "Node.js"],
       viewCount: 567,
+      status: "REJECTED",
+      rejectionReason: "프로젝트 설명에 실제 사용법과 스크린샷을 추가해 주세요.",
+      reviewedAt: new Date("2026-03-21"),
+      reviewedBy: user1.id,
     },
   ];
 
@@ -568,6 +646,10 @@ jobs:
         url: projData.url,
         authorId: projData.authorId,
         viewCount: projData.viewCount,
+        status: projData.status,
+        rejectionReason: projData.rejectionReason ?? null,
+        reviewedAt: projData.reviewedAt ?? null,
+        reviewedBy: projData.reviewedBy ?? null,
         tags: {
           connect: projData.tags.map((name) => ({ name })),
         },

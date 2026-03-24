@@ -45,6 +45,19 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+// === Enums ===
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum ContentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 // === 도메인 모델 ===
 
 model User {
@@ -53,6 +66,7 @@ model User {
   email         String?       @unique
   emailVerified DateTime?
   image         String?
+  role          Role          @default(USER)
   accounts      Account[]
   sessions      Session[]
   tips          Tip[]
@@ -88,24 +102,29 @@ model Tag {
 }
 
 model Tip {
-  id         String     @id @default(cuid())
-  title      String
-  content    String     @db.Text
-  viewCount  Int        @default(0)
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-  authorId   String
-  categoryId String
-  author     User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  category   Category   @relation(fields: [categoryId], references: [id])
-  tags       Tag[]      @relation("TipTags")
-  comments   Comment[]
-  likes      Like[]
-  bookmarks  Bookmark[]
+  id              String        @id @default(cuid())
+  title           String
+  content         String        @db.Text
+  viewCount       Int           @default(0)
+  status          ContentStatus @default(PENDING)
+  rejectionReason String?
+  reviewedAt      DateTime?
+  reviewedBy      String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  authorId        String
+  categoryId      String
+  author          User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  category        Category      @relation(fields: [categoryId], references: [id])
+  tags            Tag[]         @relation("TipTags")
+  comments        Comment[]
+  likes           Like[]
+  bookmarks       Bookmark[]
 
   @@index([authorId])
   @@index([categoryId])
   @@index([createdAt])
+  @@index([status, createdAt])
 }
 
 model Comment {
@@ -141,21 +160,26 @@ model Bookmark {
 }
 
 model Project {
-  id          String        @id @default(cuid())
-  title       String
-  description String        @db.Text
-  url         String?
-  imageUrl    String?
-  viewCount   Int           @default(0)
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  authorId    String
-  author      User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  tags        Tag[]         @relation("ProjectTags")
-  likes       ProjectLike[]
+  id              String        @id @default(cuid())
+  title           String
+  description     String        @db.Text
+  url             String?
+  imageUrl        String?
+  viewCount       Int           @default(0)
+  status          ContentStatus @default(PENDING)
+  rejectionReason String?
+  reviewedAt      DateTime?
+  reviewedBy      String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  authorId        String
+  author          User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  tags            Tag[]         @relation("ProjectTags")
+  likes           ProjectLike[]
 
   @@index([authorId])
   @@index([createdAt])
+  @@index([status, createdAt])
 }
 
 model ProjectLike {

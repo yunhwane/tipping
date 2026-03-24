@@ -27,6 +27,15 @@ export const commentRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      // Only allow commenting on APPROVED tips
+      const tip = await ctx.db.tip.findUnique({
+        where: { id: input.tipId },
+        select: { status: true },
+      });
+      if (!tip || tip.status !== "APPROVED") {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Cannot comment on non-approved content" });
+      }
+
       return ctx.db.comment.create({
         data: {
           content: input.content,

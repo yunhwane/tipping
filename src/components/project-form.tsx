@@ -31,15 +31,17 @@ export function ProjectForm({ mode, initialData }: ProjectFormProps) {
     initialData?.tags.map((t) => t.name).join(", ") ?? "",
   );
 
+  const [submitted, setSubmitted] = useState(false);
+
   const createProject = api.project.create.useMutation({
-    onSuccess: (data) => {
-      router.push(`/projects/${data.id}`);
+    onSuccess: () => {
+      setSubmitted(true);
     },
   });
 
   const updateProject = api.project.update.useMutation({
-    onSuccess: (data) => {
-      router.push(`/projects/${data.id}`);
+    onSuccess: () => {
+      setSubmitted(true);
     },
   });
 
@@ -66,6 +68,27 @@ export function ProjectForm({ mode, initialData }: ProjectFormProps) {
   };
 
   const isPending = createProject.isPending || updateProject.isPending;
+
+  if (submitted) {
+    return (
+      <div className="rounded-lg border bg-muted/50 p-8 text-center space-y-3">
+        <p className="text-lg font-semibold">
+          {mode === "create"
+            ? "프로젝트가 등록되었습니다!"
+            : "프로젝트가 수정되었습니다!"}
+        </p>
+        <p className="text-sm text-muted-foreground">
+          관리자 검수 후 공개됩니다. 검수 결과는 프로필에서 확인할 수 있습니다.
+        </p>
+        <div className="flex justify-center gap-2 pt-2">
+          <Button variant="outline" onClick={() => router.push("/profile")}>
+            내 프로필
+          </Button>
+          <Button onClick={() => router.push("/projects")}>프로젝트 목록</Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">

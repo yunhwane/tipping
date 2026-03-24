@@ -21,6 +21,7 @@ export const tipRouter = createTRPCRouter({
       const { limit, cursor, categorySlug, tagName, sortBy } = input;
 
       const where = {
+        status: "APPROVED" as const,
         ...(categorySlug && { category: { slug: categorySlug } }),
         ...(tagName && { tags: { some: { name: tagName } } }),
       };
@@ -58,9 +59,8 @@ export const tipRouter = createTRPCRouter({
   getById: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
-      const tip = await ctx.db.tip.update({
+      const tip = await ctx.db.tip.findUnique({
         where: { id: input.id },
-        data: { viewCount: { increment: 1 } },
         include: {
           author: { select: { id: true, name: true, image: true } },
           category: true,
@@ -70,7 +70,27 @@ export const tipRouter = createTRPCRouter({
           },
         },
       });
-      return tip;
+
+      if (!tip) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Tip not found" });
+      }
+
+      // Access control: non-APPROVED content only visible to author or ADMIN
+      if (tip.status !== "APPROVED") {
+        const userId = ctx.session?.user?.id;
+        const userRole = ctx.session?.user?.role;
+        if (tip.authorId !== userId && userRole !== "ADMIN") {
+          throw new TRPCError({ code: "NOT_FOUND", message: "Tip not found" });
+        }
+      }
+
+      // Increment view count
+      await ctx.db.tip.update({
+        where: { id: input.id },
+        data: { viewCount: { increment: 1 } },
+      });
+
+      return { ...tip, viewCount: tip.viewCount + 1 };
     }),
 
   getPopular: publicProcedure
@@ -82,6 +102,7 @@ export const tipRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       return ctx.db.tip.findMany({
         take: input.limit,
+        where: { status: "APPROVED" },
         orderBy: [{ likes: { _count: "desc" } }, { viewCount: "desc" }],
         include: {
           author: { select: { id: true, name: true, image: true } },
@@ -97,6 +118,7 @@ export const tipRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       return ctx.db.tip.findMany({
         where: {
+          status: "APPROVED",
           OR: [
             { title: { contains: input.query, mode: "insensitive" } },
             { content: { contains: input.query, mode: "insensitive" } },
@@ -111,6 +133,38 @@ export const tipRouter = createTRPCRouter({
         orderBy: { createdAt: "desc" },
         take: 50,
       });
+    }),
+
+  getMyTips: protectedProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(50).default(20),
+        cursor: z.string().nullish(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const { limit, cursor } = input;
+
+      const items = await ctx.db.tip.findMany({
+        take: limit + 1,
+        cursor: cursor ? { id: cursor } : undefined,
+        where: { authorId: ctx.session.user.id },
+        orderBy: { createdAt: "desc" },
+        include: {
+          author: { select: { id: true, name: true, image: true } },
+          category: true,
+          tags: true,
+          _count: { select: { likes: true, comments: true } },
+        },
+      });
+
+      let nextCursor: typeof cursor = undefined;
+      if (items.length > limit) {
+        const nextItem = items.pop();
+        nextCursor = nextItem!.id;
+      }
+
+      return { items, nextCursor };
     }),
 
   create: protectedProcedure
@@ -129,6 +183,7 @@ export const tipRouter = createTRPCRouter({
           content: input.content,
           authorId: ctx.session.user.id,
           categoryId: input.categoryId,
+          status: "PENDING",
           tags: {
             connectOrCreate: input.tagNames.map((name) => ({
               where: { name },
@@ -161,6 +216,10 @@ export const tipRouter = createTRPCRouter({
           title: input.title,
           content: input.content,
           categoryId: input.categoryId,
+          status: "PENDING",
+          rejectionReason: null,
+          reviewedAt: null,
+          reviewedBy: null,
           tags: {
             set: [],
             connectOrCreate: input.tagNames.map((name) => ({

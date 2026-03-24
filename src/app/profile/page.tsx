@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { api } from "~/trpc/react";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { Button } from "~/components/ui/button";
 import { TipCard } from "~/components/tip-card";
 import { ProjectCard } from "~/components/project-card";
 
@@ -40,7 +41,7 @@ export default function ProfilePage() {
         </TabsList>
 
         <TabsContent value="tips" className="mt-4">
-          <MyTips userId={session.user.id} />
+          <MyTips />
         </TabsContent>
 
         <TabsContent value="bookmarks" className="mt-4">
@@ -55,17 +56,16 @@ export default function ProfilePage() {
   );
 }
 
-function MyTips({ userId }: { userId: string }) {
-  const { data } = api.tip.getAll.useInfiniteQuery(
-    { limit: 20 },
-    { getNextPageParam: (lastPage) => lastPage.nextCursor },
-  );
+function MyTips() {
+  const { data, fetchNextPage, hasNextPage } =
+    api.tip.getMyTips.useInfiniteQuery(
+      { limit: 20 },
+      { getNextPageParam: (lastPage) => lastPage.nextCursor },
+    );
 
-  const tips = data?.pages
-    .flatMap((page) => page.items)
-    .filter((tip) => tip.author.id === userId);
+  const tips = data?.pages.flatMap((page) => page.items) ?? [];
 
-  if (!tips?.length) {
+  if (!tips.length) {
     return (
       <p className="text-center text-muted-foreground">
         작성한 팁이 없습니다.
@@ -74,18 +74,35 @@ function MyTips({ userId }: { userId: string }) {
   }
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {tips.map((tip) => (
-        <TipCard key={tip.id} tip={tip} />
-      ))}
+    <div className="space-y-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {tips.map((tip) => (
+          <TipCard key={tip.id} tip={tip} showStatus />
+        ))}
+      </div>
+      {hasNextPage && (
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={() => fetchNextPage()}
+        >
+          더 보기
+        </Button>
+      )}
     </div>
   );
 }
 
 function MyBookmarks() {
-  const { data: bookmarks } = api.bookmark.getMyBookmarks.useQuery();
+  const { data, fetchNextPage, hasNextPage } =
+    api.bookmark.getMyBookmarks.useInfiniteQuery(
+      { limit: 20 },
+      { getNextPageParam: (lastPage) => lastPage.nextCursor },
+    );
 
-  if (!bookmarks?.length) {
+  const bookmarks = data?.pages.flatMap((page) => page.items) ?? [];
+
+  if (!bookmarks.length) {
     return (
       <p className="text-center text-muted-foreground">
         북마크한 팁이 없습니다.
@@ -94,26 +111,35 @@ function MyBookmarks() {
   }
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {bookmarks.map((bookmark) => (
-        <TipCard key={bookmark.tip.id} tip={bookmark.tip} />
-      ))}
+    <div className="space-y-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {bookmarks.map((bookmark) => (
+          <TipCard key={bookmark.tip.id} tip={bookmark.tip} />
+        ))}
+      </div>
+      {hasNextPage && (
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={() => fetchNextPage()}
+        >
+          더 보기
+        </Button>
+      )}
     </div>
   );
 }
 
 function MyProjects() {
-  const { data } = api.project.getAll.useInfiniteQuery(
-    { limit: 20 },
-    { getNextPageParam: (lastPage) => lastPage.nextCursor },
-  );
+  const { data, fetchNextPage, hasNextPage } =
+    api.project.getMyProjects.useInfiniteQuery(
+      { limit: 20 },
+      { getNextPageParam: (lastPage) => lastPage.nextCursor },
+    );
 
-  const { data: session } = useSession();
-  const projects = data?.pages
-    .flatMap((page) => page.items)
-    .filter((p) => p.author.id === session?.user.id);
+  const projects = data?.pages.flatMap((page) => page.items) ?? [];
 
-  if (!projects?.length) {
+  if (!projects.length) {
     return (
       <p className="text-center text-muted-foreground">
         등록한 프로젝트가 없습니다.
@@ -122,10 +148,21 @@ function MyProjects() {
   }
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {projects.map((project) => (
-        <ProjectCard key={project.id} project={project} />
-      ))}
+    <div className="space-y-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {projects.map((project) => (
+          <ProjectCard key={project.id} project={project} showStatus />
+        ))}
+      </div>
+      {hasNextPage && (
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={() => fetchNextPage()}
+        >
+          더 보기
+        </Button>
+      )}
     </div>
   );
 }
