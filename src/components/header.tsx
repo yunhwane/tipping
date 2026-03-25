@@ -12,6 +12,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { SearchBar } from "./search-bar";
 import { Lightbulb, LogIn, UserPlus } from "lucide-react";
+import { NotificationBell } from "./notification-bell";
 
 export function Header() {
   const { data: session } = useSession();
@@ -44,6 +45,8 @@ export function Header() {
           <SearchBar />
 
           {session ? (
+            <>
+            <NotificationBell />
             <DropdownMenu>
               <DropdownMenuTrigger className="relative h-9 w-9 rounded-full">
                 <Avatar className="h-9 w-9">
@@ -76,6 +79,7 @@ export function Header() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+            </>
           ) : (
             <div className="flex items-center gap-2.5">
               <Link href="/auth/signin">

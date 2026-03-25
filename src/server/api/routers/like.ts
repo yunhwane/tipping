@@ -4,20 +4,13 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "~/server/api/trpc";
-import { TRPCError } from "@trpc/server";
+import { ensureApprovedTip } from "~/server/api/helpers/content-review";
 
 export const likeRouter = createTRPCRouter({
   toggle: protectedProcedure
     .input(z.object({ tipId: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      // Only allow liking APPROVED tips
-      const tip = await ctx.db.tip.findUnique({
-        where: { id: input.tipId },
-        select: { status: true },
-      });
-      if (!tip || tip.status !== "APPROVED") {
-        throw new TRPCError({ code: "BAD_REQUEST", message: "Cannot like non-approved content" });
-      }
+      await ensureApprovedTip(ctx.db, input.tipId);
 
       const existing = await ctx.db.like.findUnique({
         where: {

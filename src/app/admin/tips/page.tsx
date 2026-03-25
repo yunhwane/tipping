@@ -21,19 +21,19 @@ export default function AdminTipsPage() {
   >(undefined);
 
   const utils = api.useUtils();
-  const { data, fetchNextPage, hasNextPage } =
-    api.admin.getAllTips.useInfiniteQuery(
-      { limit: 20, status: statusFilter },
-      { getNextPageParam: (lastPage) => lastPage.nextCursor },
-    );
+  const { data } = api.admin.getAllContents.useQuery({
+    limit: 50,
+    type: "tip",
+    status: statusFilter,
+  });
 
-  const deleteTip = api.admin.deleteTip.useMutation({
+  const deleteContent = api.admin.deleteContent.useMutation({
     onSuccess: () => {
-      void utils.admin.getAllTips.invalidate();
+      void utils.admin.getAllContents.invalidate();
     },
   });
 
-  const tips = data?.pages.flatMap((p) => p.items) ?? [];
+  const tips = data?.items ?? [];
 
   return (
     <div className="space-y-6">
@@ -74,9 +74,9 @@ export default function AdminTipsPage() {
                     {new Date(tip.createdAt).toLocaleDateString("ko-KR")}
                   </span>
                   <span>·</span>
-                  <span>좋아요 {tip._count.likes}</span>
+                  <span>좋아요 {tip.likeCount}</span>
                   <span>·</span>
-                  <span>댓글 {tip._count.comments}</span>
+                  <span>댓글 {tip.commentCount}</span>
                 </div>
               </div>
               <Button
@@ -85,10 +85,10 @@ export default function AdminTipsPage() {
                 className="text-destructive hover:text-destructive shrink-0"
                 onClick={() => {
                   if (confirm("정말 삭제하시겠습니까? 댓글, 좋아요, 북마크가 함께 삭제됩니다.")) {
-                    deleteTip.mutate({ id: tip.id });
+                    deleteContent.mutate({ type: "tip", id: tip.id });
                   }
                 }}
-                disabled={deleteTip.isPending}
+                disabled={deleteContent.isPending}
               >
                 <Trash2 className="h-4 w-4" />
               </Button>
@@ -98,11 +98,6 @@ export default function AdminTipsPage() {
         {!tips.length && (
           <p className="text-center text-muted-foreground py-8">팁이 없습니다.</p>
         )}
-        {hasNextPage && (
-          <Button variant="outline" className="w-full" onClick={() => fetchNextPage()}>
-            더 보기
-          </Button>
-        )}
       </div>
     </div>
   );
@@ -110,13 +105,13 @@ export default function AdminTipsPage() {
 
 function StatusBadge({ status }: { status: string }) {
   const config = {
-    PENDING: { label: "검수 대기", variant: "outline" as const, className: "border-yellow-300 text-yellow-700" },
-    APPROVED: { label: "공개", variant: "outline" as const, className: "border-green-300 text-green-700" },
-    REJECTED: { label: "반려", variant: "outline" as const, className: "border-red-300 text-red-700" },
-  }[status] ?? { label: status, variant: "outline" as const, className: "" };
+    PENDING: { label: "검수 대기", className: "border-yellow-300 text-yellow-700" },
+    APPROVED: { label: "공개", className: "border-green-300 text-green-700" },
+    REJECTED: { label: "반려", className: "border-red-300 text-red-700" },
+  }[status] ?? { label: status, className: "" };
 
   return (
-    <Badge variant={config.variant} className={config.className}>
+    <Badge variant="outline" className={config.className}>
       {config.label}
     </Badge>
   );

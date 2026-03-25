@@ -5,6 +5,7 @@ import {
   protectedProcedure,
 } from "~/server/api/trpc";
 import { TRPCError } from "@trpc/server";
+import { checkContentAccess } from "~/server/api/helpers/content-review";
 
 export const projectRouter = createTRPCRouter({
   getAll: publicProcedure
@@ -56,14 +57,7 @@ export const projectRouter = createTRPCRouter({
         throw new TRPCError({ code: "NOT_FOUND", message: "Project not found" });
       }
 
-      // Access control: non-APPROVED content only visible to author or ADMIN
-      if (project.status !== "APPROVED") {
-        const userId = ctx.session?.user?.id;
-        const userRole = ctx.session?.user?.role;
-        if (project.authorId !== userId && userRole !== "ADMIN") {
-          throw new TRPCError({ code: "NOT_FOUND", message: "Project not found" });
-        }
-      }
+      checkContentAccess(project, ctx.session);
 
       // Increment view count
       await ctx.db.project.update({
@@ -153,6 +147,10 @@ export const projectRouter = createTRPCRouter({
         throw new TRPCError({ code: "FORBIDDEN" });
       }
 
+      // APPROVED 상태는 수정해도 유지 (사후 관리 방식)
+      // REJECTED인 경우에만 PENDING으로 재제출
+      const newStatus = project.status === "REJECTED" ? "PENDING" : project.status;
+
       return ctx.db.project.update({
         where: { id: input.id },
         data: {
@@ -160,10 +158,12 @@ export const projectRouter = createTRPCRouter({
           description: input.description,
           url: input.url,
           imageUrl: input.imageUrl,
-          status: "PENDING",
-          rejectionReason: null,
-          reviewedAt: null,
-          reviewedBy: null,
+          status: newStatus,
+          ...(project.status === "REJECTED" && {
+            rejectionReason: null,
+            reviewedAt: null,
+            reviewedBy: null,
+          }),
           tags: {
             set: [],
             connectOrCreate: input.tagNames.map((name) => ({

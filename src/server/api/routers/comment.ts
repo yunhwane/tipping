@@ -5,6 +5,7 @@ import {
   protectedProcedure,
 } from "~/server/api/trpc";
 import { TRPCError } from "@trpc/server";
+import { ensureApprovedTip } from "~/server/api/helpers/content-review";
 
 export const commentRouter = createTRPCRouter({
   getByTipId: publicProcedure
@@ -27,14 +28,7 @@ export const commentRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      // Only allow commenting on APPROVED tips
-      const tip = await ctx.db.tip.findUnique({
-        where: { id: input.tipId },
-        select: { status: true },
-      });
-      if (!tip || tip.status !== "APPROVED") {
-        throw new TRPCError({ code: "BAD_REQUEST", message: "Cannot comment on non-approved content" });
-      }
+      await ensureApprovedTip(ctx.db, input.tipId);
 
       return ctx.db.comment.create({
         data: {

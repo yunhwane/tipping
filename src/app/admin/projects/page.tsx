@@ -21,19 +21,19 @@ export default function AdminProjectsPage() {
   >(undefined);
 
   const utils = api.useUtils();
-  const { data, fetchNextPage, hasNextPage } =
-    api.admin.getAllProjects.useInfiniteQuery(
-      { limit: 20, status: statusFilter },
-      { getNextPageParam: (lastPage) => lastPage.nextCursor },
-    );
+  const { data } = api.admin.getAllContents.useQuery({
+    limit: 50,
+    type: "project",
+    status: statusFilter,
+  });
 
-  const deleteProject = api.admin.deleteProject.useMutation({
+  const deleteContent = api.admin.deleteContent.useMutation({
     onSuccess: () => {
-      void utils.admin.getAllProjects.invalidate();
+      void utils.admin.getAllContents.invalidate();
     },
   });
 
-  const projects = data?.pages.flatMap((p) => p.items) ?? [];
+  const projects = data?.items ?? [];
 
   return (
     <div className="space-y-6">
@@ -74,7 +74,7 @@ export default function AdminProjectsPage() {
                     {new Date(project.createdAt).toLocaleDateString("ko-KR")}
                   </span>
                   <span>·</span>
-                  <span>좋아요 {project._count.likes}</span>
+                  <span>좋아요 {project.likeCount}</span>
                 </div>
               </div>
               <Button
@@ -83,10 +83,10 @@ export default function AdminProjectsPage() {
                 className="text-destructive hover:text-destructive shrink-0"
                 onClick={() => {
                   if (confirm("정말 삭제하시겠습니까?")) {
-                    deleteProject.mutate({ id: project.id });
+                    deleteContent.mutate({ type: "project", id: project.id });
                   }
                 }}
-                disabled={deleteProject.isPending}
+                disabled={deleteContent.isPending}
               >
                 <Trash2 className="h-4 w-4" />
               </Button>
@@ -95,11 +95,6 @@ export default function AdminProjectsPage() {
         ))}
         {!projects.length && (
           <p className="text-center text-muted-foreground py-8">프로젝트가 없습니다.</p>
-        )}
-        {hasNextPage && (
-          <Button variant="outline" className="w-full" onClick={() => fetchNextPage()}>
-            더 보기
-          </Button>
         )}
       </div>
     </div>

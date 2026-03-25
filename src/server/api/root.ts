@@ -9,6 +9,7 @@ import { projectRouter } from "./routers/project";
 import { adminRouter } from "./routers/admin";
 import { authRouter } from "./routers/auth";
 import { userRouter } from "./routers/user";
+import { notificationRouter } from "./routers/notification";
 
 export const appRouter = createTRPCRouter({
   category: categoryRouter,
@@ -21,6 +22,7 @@ export const appRouter = createTRPCRouter({
   admin: adminRouter,
   auth: authRouter,
   user: userRouter,
+  notification: notificationRouter,
 });
 
 export type AppRouter = typeof appRouter;
