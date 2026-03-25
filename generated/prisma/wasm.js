@@ -133,7 +133,9 @@ exports.Prisma.UserScalarFieldEnum = {
 exports.Prisma.TopCategoryScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  slug: 'slug'
+  slug: 'slug',
+  icon: 'icon',
+  sortOrder: 'sortOrder'
 };
 
 exports.Prisma.CategoryScalarFieldEnum = {
@@ -141,6 +143,8 @@ exports.Prisma.CategoryScalarFieldEnum = {
   name: 'name',
   slug: 'slug',
   description: 'description',
+  icon: 'icon',
+  sortOrder: 'sortOrder',
   topCategoryId: 'topCategoryId'
 };
 

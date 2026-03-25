@@ -45,6 +45,8 @@ model TopCategory {
     id         String     @id @default(cuid())
     name       String
     slug       String     @unique
+    icon       String?
+    sortOrder  Int        @default(0)
     categories Category[]
 }
 
@@ -53,6 +55,8 @@ model Category {
     name          String
     slug          String      @unique
     description   String?
+    icon          String?
+    sortOrder     Int         @default(0)
     topCategoryId String
     topCategory   TopCategory @relation(fields: [topCategoryId], references: [id])
     tips          Tip[]

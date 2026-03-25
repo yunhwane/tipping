@@ -27,11 +27,25 @@ export function TipForm({ mode, initialData }: TipFormProps) {
   const [categoryId, setCategoryId] = useState(
     initialData?.categoryId ?? "",
   );
+  const [topCategoryId, setTopCategoryId] = useState("");
   const [tagInput, setTagInput] = useState(
     initialData?.tags.map((t) => t.name).join(", ") ?? "",
   );
 
-  const { data: categories } = api.category.getAll.useQuery();
+  const { data: topCategories } = api.category.getTopCategories.useQuery();
+
+  // 편집 모드: initialData의 categoryId로 topCategoryId 자동 설정
+  const resolvedTopCategoryId =
+    topCategoryId ||
+    (initialData?.categoryId
+      ? topCategories?.find((tc) =>
+          tc.categories.some((c) => c.id === initialData.categoryId),
+        )?.id ?? ""
+      : "");
+
+  const activeTopCategory = topCategories?.find(
+    (tc) => tc.id === resolvedTopCategoryId,
+  );
 
   const [submitted, setSubmitted] = useState(false);
 
@@ -109,7 +123,30 @@ export function TipForm({ mode, initialData }: TipFormProps) {
           />
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-3">
+          <div className="space-y-1.5">
+            <label className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground">
+              <FolderOpen className="h-3.5 w-3.5" />
+              분야
+            </label>
+            <select
+              value={resolvedTopCategoryId}
+              onChange={(e) => {
+                setTopCategoryId(e.target.value);
+                setCategoryId("");
+              }}
+              className="h-10 w-full rounded-lg border border-input bg-transparent px-3 text-sm outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+              required
+            >
+              <option value="">분야 선택</option>
+              {topCategories?.map((tc) => (
+                <option key={tc.id} value={tc.id}>
+                  {tc.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <div className="space-y-1.5">
             <label className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground">
               <FolderOpen className="h-3.5 w-3.5" />
@@ -120,9 +157,10 @@ export function TipForm({ mode, initialData }: TipFormProps) {
               onChange={(e) => setCategoryId(e.target.value)}
               className="h-10 w-full rounded-lg border border-input bg-transparent px-3 text-sm outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
               required
+              disabled={!resolvedTopCategoryId}
             >
               <option value="">카테고리 선택</option>
-              {categories?.map((cat) => (
+              {activeTopCategory?.categories.map((cat) => (
                 <option key={cat.id} value={cat.id}>
                   {cat.name}
                 </option>

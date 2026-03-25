@@ -23,49 +23,30 @@ interface TipCardProps {
   variant?: "default" | "compact";
 }
 
-const categoryStyle: Record<
-  string,
-  { bg: string; icon: string }
-> = {
-  frontend: {
-    bg: "bg-blue-100/80 text-blue-700 border-blue-200/60",
-    icon: "🎨",
-  },
-  backend: {
-    bg: "bg-emerald-100/80 text-emerald-700 border-emerald-200/60",
-    icon: "⚙️",
-  },
-  devops: {
-    bg: "bg-orange-100/80 text-orange-700 border-orange-200/60",
-    icon: "🚀",
-  },
-  database: {
-    bg: "bg-purple-100/80 text-purple-700 border-purple-200/60",
-    icon: "🗄️",
-  },
-  mobile: {
-    bg: "bg-pink-100/80 text-pink-700 border-pink-200/60",
-    icon: "📱",
-  },
-  "ai-ml": {
-    bg: "bg-indigo-100/80 text-indigo-700 border-indigo-200/60",
-    icon: "🤖",
-  },
-  etc: {
-    bg: "bg-gray-100/80 text-gray-600 border-gray-200/60",
-    icon: "💡",
-  },
-};
+const categoryPalette = [
+  { bg: "bg-blue-100/80 text-blue-700 border-blue-200/60", bar: "bg-blue-500" },
+  { bg: "bg-emerald-100/80 text-emerald-700 border-emerald-200/60", bar: "bg-emerald-500" },
+  { bg: "bg-orange-100/80 text-orange-700 border-orange-200/60", bar: "bg-orange-500" },
+  { bg: "bg-purple-100/80 text-purple-700 border-purple-200/60", bar: "bg-purple-500" },
+  { bg: "bg-pink-100/80 text-pink-700 border-pink-200/60", bar: "bg-pink-500" },
+  { bg: "bg-indigo-100/80 text-indigo-700 border-indigo-200/60", bar: "bg-indigo-500" },
+  { bg: "bg-teal-100/80 text-teal-700 border-teal-200/60", bar: "bg-teal-500" },
+  { bg: "bg-rose-100/80 text-rose-700 border-rose-200/60", bar: "bg-rose-500" },
+  { bg: "bg-amber-100/80 text-amber-700 border-amber-200/60", bar: "bg-amber-500" },
+  { bg: "bg-cyan-100/80 text-cyan-700 border-cyan-200/60", bar: "bg-cyan-500" },
+];
 
-const categoryBarColor: Record<string, string> = {
-  frontend: "bg-blue-500",
-  backend: "bg-emerald-500",
-  devops: "bg-orange-500",
-  database: "bg-purple-500",
-  mobile: "bg-pink-500",
-  "ai-ml": "bg-indigo-500",
-  etc: "bg-gray-400",
-};
+function hashSlug(slug: string): number {
+  let hash = 0;
+  for (let i = 0; i < slug.length; i++) {
+    hash = ((hash << 5) - hash + slug.charCodeAt(i)) | 0;
+  }
+  return Math.abs(hash);
+}
+
+function getCategoryStyle(slug: string) {
+  return categoryPalette[hashSlug(slug) % categoryPalette.length]!;
+}
 
 function getPreview(content: string) {
   return content
@@ -98,7 +79,7 @@ const statusConfig: Record<string, { label: string; className: string }> = {
 
 export function TipCard({ tip, showStatus = false, variant = "default" }: TipCardProps) {
   const router = useRouter();
-  const style = categoryStyle[tip.category.slug] ?? categoryStyle.etc!;
+  const style = getCategoryStyle(tip.category.slug);
   const isRejected = showStatus && tip.status === "REJECTED";
 
   if (variant === "compact") {
@@ -118,7 +99,6 @@ export function TipCard({ tip, showStatus = false, variant = "default" }: TipCar
                 style.bg,
               )}
             >
-              <span className="text-[10px]">{style.icon}</span>
               {tip.category.name}
             </span>
             <span className="flex items-center gap-0.5">
@@ -147,7 +127,7 @@ export function TipCard({ tip, showStatus = false, variant = "default" }: TipCar
           "h-1 w-full transition-all group-hover:h-1.5",
           isRejected
             ? "bg-red-500"
-            : (categoryBarColor[tip.category.slug] ?? "bg-gray-400"),
+            : style.bar,
         )}
       />
 
@@ -160,7 +140,6 @@ export function TipCard({ tip, showStatus = false, variant = "default" }: TipCar
               style.bg,
             )}
           >
-            <span className="text-sm leading-none">{style.icon}</span>
             {tip.category.name}
           </span>
           <span className="text-xs text-muted-foreground">
