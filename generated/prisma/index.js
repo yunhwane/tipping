@@ -254,7 +254,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/jeonyh/conductor/workspaces/tipping/denver/generated/prisma",
+      "value": "/Users/jeonyh/conductor/workspaces/tipping/san-jose/generated/prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -268,7 +268,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/Users/jeonyh/conductor/workspaces/tipping/denver/prisma/schema.prisma",
+    "sourceFilePath": "/Users/jeonyh/conductor/workspaces/tipping/san-jose/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -281,7 +281,7 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
-  "postinstall": false,
+  "postinstall": true,
   "inlineDatasources": {
     "db": {
       "url": {
