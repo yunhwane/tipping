@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { TRPCError } from "@trpc/server";
-import { createClient } from "@supabase/supabase-js";
 
 export const authRouter = createTRPCRouter({
   checkEmail: publicProcedure
@@ -48,30 +47,6 @@ export const authRouter = createTRPCRouter({
         throw new TRPCError({
           code: "CONFLICT",
           message: "이미 사용 중인 닉네임입니다",
-        });
-      }
-
-      // Verify user exists in Supabase Auth using service role key
-      // Retry to handle race condition: signUp may not propagate instantly
-      const supabaseAdmin = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.SUPABASE_SERVICE_ROLE_KEY!,
-      );
-      let verified = false;
-      for (let attempt = 0; attempt < 3; attempt++) {
-        const { data, error } = await supabaseAdmin.auth.admin.getUserById(input.id);
-        if (!error && data.user) {
-          verified = true;
-          break;
-        }
-        if (attempt < 2) {
-          await new Promise((resolve) => setTimeout(resolve, 500));
-        }
-      }
-      if (!verified) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "유효하지 않은 사용자입니다",
         });
       }
 
