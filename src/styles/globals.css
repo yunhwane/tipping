@@ -157,7 +157,19 @@
   }
 }
 
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @theme inline {
   --animate-collapse-down: collapse-down 200ms ease-out;
   --animate-collapse-up: collapse-up 200ms ease-out;
+  --animate-fade-in: fade-in 500ms ease-out;
 }
