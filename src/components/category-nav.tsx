@@ -14,7 +14,6 @@ export function CategoryNav() {
 
   if (!topCategories) return null;
 
-  // 현재 URL에서 활성 TopCategory 자동 감지
   const currentCategorySlug = pathname.startsWith("/category/")
     ? pathname.split("/")[2]
     : null;
@@ -31,8 +30,8 @@ export function CategoryNav() {
 
   return (
     <div className="space-y-3">
-      {/* TopCategory 탭 */}
-      <div className="flex gap-2">
+      {/* Segmented Control — TopCategory */}
+      <div className="inline-flex rounded-2xl bg-muted p-1.5">
         {topCategories.map((tc) => {
           const isActive = tc.slug === resolvedTopSlug;
           const totalTips = tc.categories.reduce(
@@ -44,21 +43,21 @@ export function CategoryNav() {
               key={tc.id}
               onClick={() => setActiveTopSlug(tc.slug)}
               className={cn(
-                "flex items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-semibold transition-colors",
+                "flex items-center gap-2 rounded-xl px-6 py-3 text-base font-semibold transition-all",
                 isActive
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-border bg-background hover:bg-muted",
+                  ? "bg-background text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground",
               )}
             >
-              {tc.icon && <DynamicIcon name={tc.icon} className="h-4 w-4" />}
+              {tc.icon && <DynamicIcon name={tc.icon} className="h-5 w-5" />}
               {tc.name}
               {totalTips > 0 && (
                 <span
                   className={cn(
-                    "rounded-full px-1.5 py-0.5 text-xs",
+                    "min-w-[1.5rem] rounded-full px-1.5 py-0.5 text-center text-xs font-medium",
                     isActive
-                      ? "bg-primary-foreground/20"
-                      : "bg-muted text-muted-foreground",
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground/60",
                   )}
                 >
                   {totalTips}
@@ -69,20 +68,9 @@ export function CategoryNav() {
         })}
       </div>
 
-      {/* 하위 Category 목록 */}
+      {/* Pill Chips — Sub-categories */}
       {activeTop && (
-        <div className="flex flex-wrap gap-2">
-          <Link
-            href="/tips"
-            className={cn(
-              "flex items-center gap-1.5 rounded-lg border px-3 py-2 text-sm font-medium transition-colors",
-              pathname === "/tips"
-                ? "border-primary/50 bg-primary/10 text-primary"
-                : "border-border bg-background hover:bg-muted",
-            )}
-          >
-            전체
-          </Link>
+        <div className="flex flex-wrap gap-1.5">
           {activeTop.categories.map((cat) => {
             const isActive = pathname === `/category/${cat.slug}`;
             return (
@@ -90,23 +78,23 @@ export function CategoryNav() {
                 key={cat.id}
                 href={`/category/${cat.slug}`}
                 className={cn(
-                  "flex items-center gap-1.5 rounded-lg border px-3 py-2 text-sm font-medium transition-colors",
+                  "flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-all",
                   isActive
-                    ? "border-primary/50 bg-primary/10 text-primary"
-                    : "border-border bg-background hover:bg-muted",
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground",
                 )}
               >
                 {cat.icon && (
-                  <DynamicIcon name={cat.icon} className="h-3.5 w-3.5" />
+                  <DynamicIcon name={cat.icon} className="h-3 w-3" />
                 )}
                 {cat.name}
                 {cat._count.tips > 0 && (
                   <span
                     className={cn(
-                      "rounded-full px-1.5 py-0.5 text-xs",
+                      "ml-0.5 text-[10px]",
                       isActive
-                        ? "bg-primary/20"
-                        : "bg-muted text-muted-foreground",
+                        ? "text-primary-foreground/70"
+                        : "text-muted-foreground/50",
                     )}
                   >
                     {cat._count.tips}

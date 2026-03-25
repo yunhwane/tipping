@@ -111,7 +111,7 @@ export default function TipDetailPage() {
           <Link href={`/category/${tip.category.slug}`}>
             <span
               className={cn(
-                "rounded-full px-3 py-1 text-xs leading-none font-medium ring-1 ring-inset transition-opacity hover:opacity-80",
+                "rounded-full px-4 py-1.5 text-sm font-semibold ring-1 ring-inset transition-opacity hover:opacity-80",
                 colorClass,
               )}
             >
