@@ -9,15 +9,33 @@ import { ensureApprovedTip } from "~/server/api/helpers/content-review";
 
 export const commentRouter = createTRPCRouter({
   getByTipId: publicProcedure
-    .input(z.object({ tipId: z.string() }))
+    .input(
+      z.object({
+        tipId: z.string(),
+        limit: z.number().min(1).max(100).default(20),
+        cursor: z.string().nullish(),
+      }),
+    )
     .query(async ({ ctx, input }) => {
-      return ctx.db.comment.findMany({
-        where: { tipId: input.tipId },
+      const { tipId, limit, cursor } = input;
+
+      const items = await ctx.db.comment.findMany({
+        take: limit + 1,
+        cursor: cursor ? { id: cursor } : undefined,
+        where: { tipId },
         include: {
           author: { select: { id: true, name: true, image: true } },
         },
         orderBy: { createdAt: "asc" },
       });
+
+      let nextCursor: string | undefined = undefined;
+      if (items.length > limit) {
+        const nextItem = items.pop();
+        nextCursor = nextItem!.id;
+      }
+
+      return { items, nextCursor };
     }),
 
   create: protectedProcedure

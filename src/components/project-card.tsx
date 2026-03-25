@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
@@ -41,11 +42,13 @@ export function ProjectCard({ project, showStatus = false }: ProjectCardProps) {
         isRejected && "border-red-200",
       )}>
         {project.imageUrl && (
-          <div className="aspect-video overflow-hidden rounded-t-lg">
-            <img
+          <div className="relative aspect-video overflow-hidden rounded-t-lg">
+            <Image
               src={project.imageUrl}
               alt={project.title}
-              className="h-full w-full object-cover"
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              className="object-cover"
             />
           </div>
         )}

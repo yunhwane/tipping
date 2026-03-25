@@ -17,7 +17,15 @@ export function CommentSection({ tipId }: CommentSectionProps) {
   const [content, setContent] = useState("");
   const utils = api.useUtils();
 
-  const { data: comments } = api.comment.getByTipId.useQuery({ tipId });
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    api.comment.getByTipId.useInfiniteQuery(
+      { tipId, limit: 20 },
+      {
+        getNextPageParam: (lastPage) => lastPage.nextCursor,
+      },
+    );
+
+  const comments = data?.pages.flatMap((page) => page.items) ?? [];
 
   const createComment = api.comment.create.useMutation({
     onSuccess: () => {
@@ -44,7 +52,7 @@ export function CommentSection({ tipId }: CommentSectionProps) {
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-semibold">
-        댓글 {comments?.length ? `(${comments.length})` : ""}
+        댓글 {comments.length > 0 ? `(${comments.length}${hasNextPage ? "+" : ""})` : ""}
       </h3>
 
       {session && (
@@ -68,7 +76,7 @@ export function CommentSection({ tipId }: CommentSectionProps) {
       )}
 
       <div className="space-y-3">
-        {comments?.map((comment) => (
+        {comments.map((comment) => (
           <div key={comment.id} className="flex gap-3 rounded-lg border p-3">
             <Avatar className="h-8 w-8">
               <AvatarImage
@@ -105,6 +113,19 @@ export function CommentSection({ tipId }: CommentSectionProps) {
           </div>
         ))}
       </div>
+
+      {hasNextPage && (
+        <div className="flex justify-center">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => fetchNextPage()}
+            disabled={isFetchingNextPage}
+          >
+            {isFetchingNextPage ? "로딩 중..." : "댓글 더보기"}
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
