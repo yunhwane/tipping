@@ -18,7 +18,7 @@ interface ProjectCardProps {
     createdAt: Date;
     status?: string;
     rejectionReason?: string | null;
-    author: { id: string; name: string | null; image: string | null };
+    author: { id: string; nickname: string; image: string | null };
     tags: { id: string; name: string }[];
     _count: { likes: number };
   };
@@ -87,13 +87,13 @@ export function ProjectCard({ project, showStatus = false }: ProjectCardProps) {
             <Avatar className="h-5 w-5">
               <AvatarImage
                 src={project.author.image ?? ""}
-                alt={project.author.name ?? ""}
+                alt={project.author.nickname}
               />
               <AvatarFallback className="text-[10px]">
-                {project.author.name?.charAt(0) ?? "U"}
+                {project.author.nickname.charAt(0)}
               </AvatarFallback>
             </Avatar>
-            <span>{project.author.name}</span>
+            <span>{project.author.nickname}</span>
           </div>
         </CardHeader>
         <CardContent>

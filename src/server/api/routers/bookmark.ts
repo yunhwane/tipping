@@ -77,7 +77,7 @@ export const bookmarkRouter = createTRPCRouter({
         include: {
           tip: {
             include: {
-              author: { select: { id: true, name: true, image: true } },
+              author: { select: { id: true, nickname: true, image: true } },
               category: true,
               tags: true,
               _count: { select: { likes: true, comments: true } },

@@ -7,7 +7,7 @@ import { api } from "~/trpc/react";
 interface AuthUser {
   id: string;
   email: string;
-  name?: string | null;
+  nickname?: string | null;
   image?: string | null;
   role?: string;
 }
@@ -45,7 +45,7 @@ export function useAuth(): AuthSession {
     if (!supabaseUserId) return { user: null, status: "unauthenticated" as const };
     if (profile) {
       return {
-        user: { id: supabaseUserId, email: supabaseEmail ?? profile.email, name: profile.name, image: profile.image, role: profile.role },
+        user: { id: supabaseUserId, email: supabaseEmail ?? profile.email, nickname: profile.nickname, image: profile.image, role: profile.role },
         status: "authenticated" as const,
       };
     }

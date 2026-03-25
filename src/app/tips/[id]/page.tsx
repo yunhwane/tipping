@@ -129,15 +129,15 @@ export default function TipDetailPage() {
             <Avatar className="h-10 w-10 ring-2 ring-background">
               <AvatarImage
                 src={tip.author.image ?? ""}
-                alt={tip.author.name ?? ""}
+                alt={tip.author.nickname ?? ""}
               />
               <AvatarFallback className="bg-primary/10 text-primary">
-                {tip.author.name?.charAt(0) ?? "U"}
+                {tip.author.nickname?.charAt(0) ?? "U"}
               </AvatarFallback>
             </Avatar>
             <div>
               <span className="text-sm font-semibold">
-                {tip.author.name}
+                {tip.author.nickname}
               </span>
               <div className="flex items-center gap-3 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1">

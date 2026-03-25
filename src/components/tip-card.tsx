@@ -14,7 +14,7 @@ interface TipCardProps {
     createdAt: Date;
     status?: string;
     rejectionReason?: string | null;
-    author: { id: string; name: string | null; image: string | null };
+    author: { id: string; nickname: string; image: string | null };
     category: { name: string; slug: string };
     tags: { id: string; name: string }[];
     _count: { likes: number; comments: number };
@@ -211,14 +211,14 @@ export function TipCard({ tip, showStatus = false, variant = "default" }: TipCar
             <Avatar className="h-6 w-6 ring-2 ring-background">
               <AvatarImage
                 src={tip.author.image ?? ""}
-                alt={tip.author.name ?? ""}
+                alt={tip.author.nickname}
               />
               <AvatarFallback className="text-[10px] bg-muted">
-                {tip.author.name?.charAt(0) ?? "U"}
+                {tip.author.nickname.charAt(0)}
               </AvatarFallback>
             </Avatar>
             <span className="text-xs font-medium text-muted-foreground">
-              {tip.author.name}
+              {tip.author.nickname}
             </span>
           </div>
 

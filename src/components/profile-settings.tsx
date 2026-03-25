@@ -46,7 +46,7 @@ export function ProfileSettings({
   // Initialize from profile data
   useEffect(() => {
     if (profile) {
-      setName(profile.name ?? "");
+      setName(profile.nickname ?? "");
       setBio((profile.bio as string) ?? "");
       setLinks(
         Array.isArray(profile.links)
@@ -89,7 +89,7 @@ export function ProfileSettings({
     }
 
     updateProfile.mutate({
-      name: trimmedName,
+      nickname: trimmedName,
       ...(selectedAvatar ? { image: selectedAvatar } : {}),
       bio: bio,
       links: links.filter((l) => l.label.trim() && l.url.trim()),
@@ -98,7 +98,7 @@ export function ProfileSettings({
 
   const currentImage = selectedAvatar ?? profile?.image;
   const hasProfileChanges =
-    name.trim() !== (profile?.name ?? "") ||
+    name.trim() !== (profile?.nickname ?? "") ||
     (selectedAvatar !== null && selectedAvatar !== profile?.image) ||
     bio !== ((profile?.bio as string) ?? "") ||
     JSON.stringify(links) !==

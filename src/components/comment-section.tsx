@@ -81,16 +81,16 @@ export function CommentSection({ tipId }: CommentSectionProps) {
             <Avatar className="h-8 w-8">
               <AvatarImage
                 src={comment.author.image ?? ""}
-                alt={comment.author.name ?? ""}
+                alt={comment.author.nickname}
               />
               <AvatarFallback className="text-xs">
-                {comment.author.name?.charAt(0) ?? "U"}
+                {comment.author.nickname.charAt(0)}
               </AvatarFallback>
             </Avatar>
             <div className="flex-1">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">
-                  {comment.author.name}
+                  {comment.author.nickname}
                 </span>
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-muted-foreground">

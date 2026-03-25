@@ -52,10 +52,10 @@ export function Header() {
                 <Avatar className="h-9 w-9">
                   <AvatarImage
                     src={session.image ?? ""}
-                    alt={session.name ?? ""}
+                    alt={session.nickname ?? ""}
                   />
                   <AvatarFallback className="bg-amber-100 text-amber-700 text-sm font-semibold">
-                    {session.name?.charAt(0) ?? "U"}
+                    {session.nickname?.charAt(0) ?? "U"}
                   </AvatarFallback>
                 </Avatar>
               </DropdownMenuTrigger>

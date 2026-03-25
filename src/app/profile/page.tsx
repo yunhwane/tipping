@@ -30,7 +30,7 @@ export default function ProfilePage() {
   if (status === "loading") return null;
   if (!session) redirect("/auth/signin");
 
-  const displayName = profile?.name ?? session.name;
+  const displayName = profile?.nickname ?? session.nickname;
   const displayImage = profile?.image ?? session.image;
   const bio = profile?.bio as string | null;
   const links = (profile?.links ?? []) as { label: string; url: string }[];

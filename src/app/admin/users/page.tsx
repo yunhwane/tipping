@@ -37,14 +37,14 @@ export default function AdminUsersPage() {
             <Card key={user.id}>
               <CardContent className="flex items-center gap-4 py-4">
                 <Avatar className="h-10 w-10">
-                  <AvatarImage src={user.image ?? ""} alt={user.name ?? ""} />
+                  <AvatarImage src={user.image ?? ""} alt={user.nickname ?? ""} />
                   <AvatarFallback>
-                    {user.name?.charAt(0) ?? "U"}
+                    {user.nickname?.charAt(0) ?? "U"}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="font-medium">{user.name}</span>
+                    <span className="font-medium">{user.nickname}</span>
                     <Badge
                       variant={user.role === "ADMIN" ? "default" : "secondary"}
                     >
@@ -67,7 +67,7 @@ export default function AdminUsersPage() {
                       const newRole = user.role === "ADMIN" ? "USER" : "ADMIN";
                       if (
                         confirm(
-                          `${user.name}의 역할을 ${newRole}로 변경하시겠습니까?`,
+                          `${user.nickname}의 역할을 ${newRole}로 변경하시겠습니까?`,
                         )
                       ) {
                         updateRole.mutate({ userId: user.id, role: newRole });

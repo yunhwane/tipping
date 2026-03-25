@@ -105,14 +105,14 @@ export default function ProjectDetailPage() {
             <Avatar className="h-8 w-8">
               <AvatarImage
                 src={project.author.image ?? ""}
-                alt={project.author.name ?? ""}
+                alt={project.author.nickname ?? ""}
               />
               <AvatarFallback>
-                {project.author.name?.charAt(0) ?? "U"}
+                {project.author.nickname?.charAt(0) ?? "U"}
               </AvatarFallback>
             </Avatar>
             <span className="text-sm font-medium">
-              {project.author.name}
+              {project.author.nickname}
             </span>
           </div>
           <div className="flex items-center gap-1 text-sm text-muted-foreground">
