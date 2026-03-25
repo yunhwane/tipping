@@ -78,6 +78,7 @@ model User {
     bookmarks     Bookmark[]
     projects      Project[]
     projectLikes  ProjectLike[]
+    notifications Notification[]
 }
 
 model TopCategory {
@@ -193,4 +194,19 @@ model ProjectLike {
     project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
     @@id([userId, projectId])
+}
+
+model Notification {
+    id          String   @id @default(cuid())
+    userId      String
+    type        String   // CONTENT_APPROVED, CONTENT_REJECTED
+    message     String
+    contentType String?  // "tip" | "project"
+    contentId   String?
+    read        Boolean  @default(false)
+    createdAt   DateTime @default(now())
+    user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId, read])
+    @@index([userId, createdAt])
 }

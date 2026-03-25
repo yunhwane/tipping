@@ -5,6 +5,7 @@ import {
   protectedProcedure,
 } from "~/server/api/trpc";
 import { TRPCError } from "@trpc/server";
+import { checkContentAccess } from "~/server/api/helpers/content-review";
 
 export const tipRouter = createTRPCRouter({
   getAll: publicProcedure
@@ -75,14 +76,7 @@ export const tipRouter = createTRPCRouter({
         throw new TRPCError({ code: "NOT_FOUND", message: "Tip not found" });
       }
 
-      // Access control: non-APPROVED content only visible to author or ADMIN
-      if (tip.status !== "APPROVED") {
-        const userId = ctx.session?.user?.id;
-        const userRole = ctx.session?.user?.role;
-        if (tip.authorId !== userId && userRole !== "ADMIN") {
-          throw new TRPCError({ code: "NOT_FOUND", message: "Tip not found" });
-        }
-      }
+      checkContentAccess(tip, ctx.session);
 
       // Increment view count
       await ctx.db.tip.update({
@@ -210,16 +204,22 @@ export const tipRouter = createTRPCRouter({
         throw new TRPCError({ code: "FORBIDDEN" });
       }
 
+      // APPROVED 상태는 수정해도 유지 (사후 관리 방식)
+      // REJECTED인 경우에만 PENDING으로 재제출
+      const newStatus = tip.status === "REJECTED" ? "PENDING" : tip.status;
+
       return ctx.db.tip.update({
         where: { id: input.id },
         data: {
           title: input.title,
           content: input.content,
           categoryId: input.categoryId,
-          status: "PENDING",
-          rejectionReason: null,
-          reviewedAt: null,
-          reviewedBy: null,
+          status: newStatus,
+          ...(tip.status === "REJECTED" && {
+            rejectionReason: null,
+            reviewedAt: null,
+            reviewedBy: null,
+          }),
           tags: {
             set: [],
             connectOrCreate: input.tagNames.map((name) => ({
