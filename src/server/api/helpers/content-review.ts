@@ -25,12 +25,12 @@ export async function ensureApprovedTip(db: PrismaClient, tipId: string) {
  */
 export function checkContentAccess(
   content: { status: string; authorId: string },
-  session: { user: { id: string; role?: string } } | null,
+  user: { id: string; role: string } | null,
 ) {
   if (content.status === "APPROVED") return;
 
-  const userId = session?.user?.id;
-  const userRole = session?.user?.role;
+  const userId = user?.id;
+  const userRole = user?.role;
   if (content.authorId !== userId && userRole !== "ADMIN") {
     throw new TRPCError({ code: "NOT_FOUND", message: "Content not found" });
   }

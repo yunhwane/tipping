@@ -1,19 +1,19 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { useAuth } from "~/hooks/use-auth";
 import { redirect } from "next/navigation";
 import { api } from "~/trpc/react";
 import { TipForm } from "~/components/tip-form";
 
 export default function EditTipPage() {
   const params = useParams<{ id: string }>();
-  const { data: session, status } = useSession();
+  const { user: session, status } = useAuth();
   const { data: tip } = api.tip.getById.useQuery({ id: params.id });
 
   if (status === "loading" || !tip) return null;
-  if (!session) redirect("/api/auth/signin");
-  if (tip.author.id !== session.user.id) redirect(`/tips/${params.id}`);
+  if (!session) redirect("/auth/signin");
+  if (tip.author.id !== session.id) redirect(`/tips/${params.id}`);
 
   return (
     <div className="mx-auto max-w-3xl">

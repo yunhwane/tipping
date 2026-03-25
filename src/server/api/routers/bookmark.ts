@@ -14,7 +14,7 @@ export const bookmarkRouter = createTRPCRouter({
       const existing = await ctx.db.bookmark.findUnique({
         where: {
           userId_tipId: {
-            userId: ctx.session.user.id,
+            userId: ctx.user.id,
             tipId: input.tipId,
           },
         },
@@ -24,7 +24,7 @@ export const bookmarkRouter = createTRPCRouter({
         await ctx.db.bookmark.delete({
           where: {
             userId_tipId: {
-              userId: ctx.session.user.id,
+              userId: ctx.user.id,
               tipId: input.tipId,
             },
           },
@@ -34,7 +34,7 @@ export const bookmarkRouter = createTRPCRouter({
 
       await ctx.db.bookmark.create({
         data: {
-          userId: ctx.session.user.id,
+          userId: ctx.user.id,
           tipId: input.tipId,
         },
       });
@@ -47,7 +47,7 @@ export const bookmarkRouter = createTRPCRouter({
       const bookmark = await ctx.db.bookmark.findUnique({
         where: {
           userId_tipId: {
-            userId: ctx.session.user.id,
+            userId: ctx.user.id,
             tipId: input.tipId,
           },
         },
@@ -68,10 +68,10 @@ export const bookmarkRouter = createTRPCRouter({
       const items = await ctx.db.bookmark.findMany({
         take: limit + 1,
         cursor: cursor
-          ? { userId_tipId: { userId: ctx.session.user.id, tipId: cursor } }
+          ? { userId_tipId: { userId: ctx.user.id, tipId: cursor } }
           : undefined,
         where: {
-          userId: ctx.session.user.id,
+          userId: ctx.user.id,
           tip: { status: "APPROVED" },
         },
         include: {

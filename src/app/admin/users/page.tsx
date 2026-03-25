@@ -1,7 +1,7 @@
 "use client";
 
 import { api } from "~/trpc/react";
-import { useSession } from "next-auth/react";
+import { useAuth } from "~/hooks/use-auth";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
@@ -9,7 +9,7 @@ import { Badge } from "~/components/ui/badge";
 import { Shield, ShieldOff } from "lucide-react";
 
 export default function AdminUsersPage() {
-  const { data: session } = useSession();
+  const { user: session } = useAuth();
   const utils = api.useUtils();
 
   const { data, fetchNextPage, hasNextPage } =
@@ -32,7 +32,7 @@ export default function AdminUsersPage() {
 
       <div className="space-y-3">
         {users.map((user) => {
-          const isSelf = user.id === session?.user.id;
+          const isSelf = user.id === session?.id;
           return (
             <Card key={user.id}>
               <CardContent className="flex items-center gap-4 py-4">

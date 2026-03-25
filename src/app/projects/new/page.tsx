@@ -1,14 +1,14 @@
 "use client";
 
-import { useSession } from "next-auth/react";
+import { useAuth } from "~/hooks/use-auth";
 import { redirect } from "next/navigation";
 import { ProjectForm } from "~/components/project-form";
 
 export default function NewProjectPage() {
-  const { data: session, status } = useSession();
+  const { user: session, status } = useAuth();
 
   if (status === "loading") return null;
-  if (!session) redirect("/api/auth/signin");
+  if (!session) redirect("/auth/signin");
 
   return (
     <div className="mx-auto max-w-3xl">

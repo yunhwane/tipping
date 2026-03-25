@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
-import { useSession } from "next-auth/react";
+import { useState, useEffect } from "react";
+import { useAuth } from "~/hooks/use-auth";
 import { api } from "~/trpc/react";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
@@ -10,16 +10,11 @@ import { Separator } from "~/components/ui/separator";
 import { cn } from "~/lib/utils";
 import {
   Check,
-  ChevronDown,
-  KeyRound,
   Camera,
-  Eye,
-  EyeOff,
   CircleAlert,
   Trash2,
   Plus,
 } from "lucide-react";
-import { Collapsible } from "@base-ui/react/collapsible";
 
 const AVATAR_SEEDS = [
   "Felix", "Aneka", "Milo", "Sasha", "Luna", "Orion",
@@ -30,129 +25,23 @@ function getAvatarUrl(seed: string) {
   return `https://api.dicebear.com/9.x/avataaars/svg?seed=${seed}`;
 }
 
-/* ── Password Strength helpers ── */
-interface PasswordCheck {
-  label: string;
-  met: boolean;
-}
-
-function usePasswordStrength(password: string) {
-  return useMemo(() => {
-    const checks: PasswordCheck[] = [
-      { label: "8자 이상", met: password.length >= 8 },
-      { label: "영문 포함", met: /[a-zA-Z]/.test(password) },
-      { label: "숫자 포함", met: /\d/.test(password) },
-    ];
-    const score = checks.filter((c) => c.met).length;
-    const strength =
-      score === 0
-        ? "none"
-        : score === 1
-          ? "weak"
-          : score === 2
-            ? "medium"
-            : "strong";
-    return { checks, score, strength };
-  }, [password]);
-}
-
-/* ── Password Input with show/hide ── */
-function PasswordInput({
-  id,
-  value,
-  onChange,
-  placeholder,
-}: {
-  id: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  placeholder: string;
-}) {
-  const [visible, setVisible] = useState(false);
-  return (
-    <div className="relative">
-      <Input
-        id={id}
-        type={visible ? "text" : "password"}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        className="pr-9"
-      />
-      <button
-        type="button"
-        tabIndex={-1}
-        onClick={() => setVisible((v) => !v)}
-        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
-      >
-        {visible ? (
-          <EyeOff className="h-3.5 w-3.5" />
-        ) : (
-          <Eye className="h-3.5 w-3.5" />
-        )}
-      </button>
-    </div>
-  );
-}
-
-/* ── Strength Bar ── */
-function StrengthBar({ strength }: { strength: string }) {
-  const segments = 3;
-  const filled =
-    strength === "strong" ? 3 : strength === "medium" ? 2 : strength === "weak" ? 1 : 0;
-  const color =
-    strength === "strong"
-      ? "bg-emerald-500"
-      : strength === "medium"
-        ? "bg-amber-500"
-        : strength === "weak"
-          ? "bg-red-400"
-          : "bg-muted";
-
-  return (
-    <div className="flex gap-1">
-      {Array.from({ length: segments }).map((_, i) => (
-        <div
-          key={i}
-          className={cn(
-            "h-1 flex-1 rounded-full transition-all duration-300",
-            i < filled ? color : "bg-muted",
-          )}
-        />
-      ))}
-    </div>
-  );
-}
-
 /* ── Main Component ── */
 export function ProfileSettings({
   onProfileUpdate,
 }: {
   onProfileUpdate?: () => void;
 }) {
-  const { update: updateSession } = useSession();
+  const { user: _authUser } = useAuth();
   const { data: profile } = api.user.getProfile.useQuery();
 
   const [name, setName] = useState("");
   const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
   const [bio, setBio] = useState("");
   const [links, setLinks] = useState<{ label: string; url: string }[]>([]);
-  const [passwordOpen, setPasswordOpen] = useState(false);
-
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-
   const [profileMessage, setProfileMessage] = useState<{
     type: "success" | "error";
     text: string;
   } | null>(null);
-  const [passwordMessage, setPasswordMessage] = useState<{
-    type: "success" | "error";
-    text: string;
-  } | null>(null);
-
-  const { checks, strength } = usePasswordStrength(newPassword);
 
   // Initialize from profile data
   useEffect(() => {
@@ -178,31 +67,14 @@ export function ProfileSettings({
   const utils = api.useUtils();
 
   const updateProfile = api.user.updateProfile.useMutation({
-    onSuccess: async (data) => {
+    onSuccess: async () => {
       setProfileMessage({ type: "success", text: "프로필이 저장되었습니다" });
-      await updateSession({ name: data.name, image: data.image });
       await utils.user.getProfile.invalidate();
       onProfileUpdate?.();
       setTimeout(() => setProfileMessage(null), 3000);
     },
     onError: (error) => {
       setProfileMessage({ type: "error", text: error.message });
-    },
-  });
-
-  const changePassword = api.user.changePassword.useMutation({
-    onSuccess: () => {
-      setPasswordMessage({
-        type: "success",
-        text: "비밀번호가 변경되었습니다",
-      });
-      setCurrentPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
-      setTimeout(() => setPasswordMessage(null), 3000);
-    },
-    onError: (error) => {
-      setPasswordMessage({ type: "error", text: error.message });
     },
   });
 
@@ -224,39 +96,6 @@ export function ProfileSettings({
     });
   };
 
-  const handlePasswordChange = () => {
-    if (!currentPassword) {
-      setPasswordMessage({
-        type: "error",
-        text: "현재 비밀번호를 입력해주세요",
-      });
-      return;
-    }
-    if (newPassword.length < 8) {
-      setPasswordMessage({
-        type: "error",
-        text: "새 비밀번호는 8자 이상이어야 합니다",
-      });
-      return;
-    }
-    if (!/^(?=.*[a-zA-Z])(?=.*\d)/.test(newPassword)) {
-      setPasswordMessage({
-        type: "error",
-        text: "비밀번호는 영문과 숫자를 포함해야 합니다",
-      });
-      return;
-    }
-    if (newPassword !== confirmPassword) {
-      setPasswordMessage({
-        type: "error",
-        text: "새 비밀번호가 일치하지 않습니다",
-      });
-      return;
-    }
-
-    changePassword.mutate({ currentPassword, newPassword });
-  };
-
   const currentImage = selectedAvatar ?? profile?.image;
   const hasProfileChanges =
     name.trim() !== (profile?.name ?? "") ||
@@ -266,12 +105,6 @@ export function ProfileSettings({
       JSON.stringify(
         Array.isArray(profile?.links) ? profile.links : [],
       );
-
-  // Password confirm match indicator
-  const passwordsMatch =
-    confirmPassword.length > 0 && newPassword === confirmPassword;
-  const passwordsMismatch =
-    confirmPassword.length > 0 && newPassword !== confirmPassword;
 
   return (
     <div className="mx-auto max-w-xl space-y-5">
@@ -495,175 +328,6 @@ export function ProfileSettings({
         </div>
       </section>
 
-      {/* ── Password Section (Collapsible) ── */}
-      <Collapsible.Root open={passwordOpen} onOpenChange={setPasswordOpen}>
-        <section className="overflow-hidden rounded-xl border border-border/60 bg-card shadow-sm transition-shadow hover:shadow-md">
-          <Collapsible.Trigger className="flex w-full items-center justify-between border-b bg-muted/30 px-5 py-3 text-left transition-colors hover:bg-muted/50">
-            <div className="flex items-center gap-2">
-              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-muted">
-                <KeyRound className="h-3.5 w-3.5 text-muted-foreground" />
-              </div>
-              <h2 className="text-sm font-semibold">비밀번호 변경</h2>
-            </div>
-            <ChevronDown
-              className={cn(
-                "h-4 w-4 text-muted-foreground transition-transform duration-200",
-                passwordOpen && "rotate-180",
-              )}
-            />
-          </Collapsible.Trigger>
-
-          <Collapsible.Panel className="overflow-hidden data-[ending-style]:animate-collapse-up data-[starting-style]:animate-collapse-up animate-collapse-down">
-            <div className="space-y-5 p-5">
-              {/* Current Password */}
-              <div className="space-y-3">
-                <label
-                  htmlFor="current-password"
-                  className="text-sm font-medium"
-                >
-                  현재 비밀번호
-                </label>
-                <PasswordInput
-                  id="current-password"
-                  value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                  placeholder="현재 비밀번호를 입력하세요"
-                />
-              </div>
-
-              <Separator className="my-1" />
-
-              {/* New Password */}
-              <div className="space-y-3">
-                <label htmlFor="new-password" className="text-sm font-medium">
-                  새 비밀번호
-                </label>
-                <PasswordInput
-                  id="new-password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="새 비밀번호를 입력하세요"
-                />
-
-                {/* Strength Bar + Checks */}
-                {newPassword.length > 0 && (
-                  <div className="space-y-1.5 pt-1">
-                    <StrengthBar strength={strength} />
-                    <div className="flex flex-wrap gap-x-3 gap-y-1">
-                      {checks.map((check) => (
-                        <span
-                          key={check.label}
-                          className={cn(
-                            "flex items-center gap-1 text-xs transition-colors duration-200",
-                            check.met
-                              ? "text-emerald-600 dark:text-emerald-400"
-                              : "text-muted-foreground",
-                          )}
-                        >
-                          <Check
-                            className={cn(
-                              "h-3 w-3 transition-all duration-200",
-                              check.met
-                                ? "scale-100 opacity-100"
-                                : "scale-75 opacity-40",
-                            )}
-                            strokeWidth={check.met ? 3 : 2}
-                          />
-                          {check.label}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Confirm Password */}
-              <div className="space-y-3">
-                <label
-                  htmlFor="confirm-password"
-                  className="text-sm font-medium"
-                >
-                  새 비밀번호 확인
-                </label>
-                <PasswordInput
-                  id="confirm-password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="새 비밀번호를 다시 입력하세요"
-                />
-                {/* Match indicator */}
-                {(passwordsMatch || passwordsMismatch) && (
-                  <p
-                    className={cn(
-                      "flex items-center gap-1 pt-0.5 text-xs transition-colors",
-                      passwordsMatch
-                        ? "text-emerald-600 dark:text-emerald-400"
-                        : "text-red-500",
-                    )}
-                  >
-                    {passwordsMatch ? (
-                      <>
-                        <Check className="h-3 w-3" strokeWidth={3} />
-                        비밀번호가 일치합니다
-                      </>
-                    ) : (
-                      <>
-                        <CircleAlert className="h-3 w-3" />
-                        비밀번호가 일치하지 않습니다
-                      </>
-                    )}
-                  </p>
-                )}
-              </div>
-
-              {/* Password Message */}
-              {passwordMessage && (
-                <div
-                  className={cn(
-                    "flex items-center gap-2 rounded-lg px-3 py-2 text-sm",
-                    passwordMessage.type === "success"
-                      ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400"
-                      : "bg-red-50 text-destructive dark:bg-red-950/30",
-                  )}
-                >
-                  {passwordMessage.type === "success" ? (
-                    <Check className="h-4 w-4 shrink-0" />
-                  ) : (
-                    <CircleAlert className="h-4 w-4 shrink-0" />
-                  )}
-                  {passwordMessage.text}
-                </div>
-              )}
-
-              <Button
-                onClick={handlePasswordChange}
-                disabled={
-                  changePassword.isPending ||
-                  !currentPassword ||
-                  !passwordsMatch ||
-                  strength !== "strong"
-                }
-                className={cn(
-                  "w-full transition-all duration-200",
-                  currentPassword && passwordsMatch && strength === "strong"
-                    ? "bg-amber-500 shadow-sm hover:bg-amber-600 hover:shadow-md"
-                    : "",
-                )}
-              >
-                {changePassword.isPending ? (
-                  "변경 중..."
-                ) : passwordMessage?.type === "success" ? (
-                  <span className="flex items-center gap-1.5">
-                    <Check className="h-4 w-4" /> 변경 완료
-                  </span>
-                ) : (
-                  "비밀번호 변경"
-                )}
-              </Button>
-            </div>
-          </Collapsible.Panel>
-        </section>
-      </Collapsible.Root>
     </div>
   );
 }

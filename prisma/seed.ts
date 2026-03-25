@@ -1,10 +1,6 @@
 import { PrismaClient } from "../generated/prisma";
-import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
-
-// 테스트용 비밀번호: "test1234"
-const TEST_PASSWORD = bcrypt.hashSync("test1234", 12);
 
 async function main() {
   // === 상위 카테고리 ===
@@ -36,14 +32,15 @@ async function main() {
   }
 
   // === 테스트 유저 ===
+  // Note: With Supabase Auth, user IDs come from Supabase.
+  // For seeding, we use deterministic UUIDs.
   const user1 = await prisma.user.upsert({
     where: { email: "dev1@tipping.test" },
-    update: { role: "ADMIN", password: TEST_PASSWORD, emailVerified: new Date() },
+    update: { role: "ADMIN" },
     create: {
+      id: "00000000-0000-0000-0000-000000000001",
       name: "김개발",
       email: "dev1@tipping.test",
-      password: TEST_PASSWORD,
-      emailVerified: new Date(),
       image: "https://api.dicebear.com/9.x/avataaars/svg?seed=dev1",
       role: "ADMIN",
     },
@@ -51,24 +48,22 @@ async function main() {
 
   const user2 = await prisma.user.upsert({
     where: { email: "dev2@tipping.test" },
-    update: { password: TEST_PASSWORD, emailVerified: new Date() },
+    update: {},
     create: {
+      id: "00000000-0000-0000-0000-000000000002",
       name: "이프론트",
       email: "dev2@tipping.test",
-      password: TEST_PASSWORD,
-      emailVerified: new Date(),
       image: "https://api.dicebear.com/9.x/avataaars/svg?seed=dev2",
     },
   });
 
   const user3 = await prisma.user.upsert({
     where: { email: "dev3@tipping.test" },
-    update: { password: TEST_PASSWORD, emailVerified: new Date() },
+    update: {},
     create: {
+      id: "00000000-0000-0000-0000-000000000003",
       name: "박백엔드",
       email: "dev3@tipping.test",
-      password: TEST_PASSWORD,
-      emailVerified: new Date(),
       image: "https://api.dicebear.com/9.x/avataaars/svg?seed=dev3",
     },
   });

@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession } from "next-auth/react";
+import { useAuth } from "~/hooks/use-auth";
 import { api } from "~/trpc/react";
 import { Button } from "~/components/ui/button";
 import { Bookmark } from "lucide-react";
@@ -11,7 +11,7 @@ interface BookmarkButtonProps {
 }
 
 export function BookmarkButton({ tipId }: BookmarkButtonProps) {
-  const { data: session } = useSession();
+  const { user: session } = useAuth();
   const utils = api.useUtils();
 
   const { data: status } = api.bookmark.getStatus.useQuery(

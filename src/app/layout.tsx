@@ -4,7 +4,6 @@ import { type Metadata } from "next";
 import { Geist } from "next/font/google";
 
 import { TRPCReactProvider } from "~/trpc/react";
-import { Providers } from "~/components/providers";
 import { Header } from "~/components/header";
 
 export const metadata: Metadata = {
@@ -25,10 +24,8 @@ export default function RootLayout({
     <html lang="ko" className={`${geist.variable}`}>
       <body>
         <TRPCReactProvider>
-          <Providers>
-            <Header />
-            <main className="container mx-auto px-4 py-8">{children}</main>
-          </Providers>
+          <Header />
+          <main className="container mx-auto px-4 py-8">{children}</main>
         </TRPCReactProvider>
       </body>
     </html>

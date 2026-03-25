@@ -57,7 +57,7 @@ export const projectRouter = createTRPCRouter({
         throw new TRPCError({ code: "NOT_FOUND", message: "Project not found" });
       }
 
-      checkContentAccess(project, ctx.session);
+      checkContentAccess(project, ctx.user);
 
       // Increment view count
       await ctx.db.project.update({
@@ -81,7 +81,7 @@ export const projectRouter = createTRPCRouter({
       const items = await ctx.db.project.findMany({
         take: limit + 1,
         cursor: cursor ? { id: cursor } : undefined,
-        where: { authorId: ctx.session.user.id },
+        where: { authorId: ctx.user.id },
         orderBy: { createdAt: "desc" },
         include: {
           author: { select: { id: true, name: true, image: true } },
@@ -116,7 +116,7 @@ export const projectRouter = createTRPCRouter({
           description: input.description,
           url: input.url,
           imageUrl: input.imageUrl,
-          authorId: ctx.session.user.id,
+          authorId: ctx.user.id,
           status: "PENDING",
           tags: {
             connectOrCreate: input.tagNames.map((name) => ({
@@ -143,7 +143,7 @@ export const projectRouter = createTRPCRouter({
       const project = await ctx.db.project.findUnique({
         where: { id: input.id },
       });
-      if (!project || project.authorId !== ctx.session.user.id) {
+      if (!project || project.authorId !== ctx.user.id) {
         throw new TRPCError({ code: "FORBIDDEN" });
       }
 
@@ -181,7 +181,7 @@ export const projectRouter = createTRPCRouter({
       const project = await ctx.db.project.findUnique({
         where: { id: input.id },
       });
-      if (!project || project.authorId !== ctx.session.user.id) {
+      if (!project || project.authorId !== ctx.user.id) {
         throw new TRPCError({ code: "FORBIDDEN" });
       }
       return ctx.db.project.delete({ where: { id: input.id } });
@@ -202,7 +202,7 @@ export const projectRouter = createTRPCRouter({
       const existing = await ctx.db.projectLike.findUnique({
         where: {
           userId_projectId: {
-            userId: ctx.session.user.id,
+            userId: ctx.user.id,
             projectId: input.projectId,
           },
         },
@@ -212,7 +212,7 @@ export const projectRouter = createTRPCRouter({
         await ctx.db.projectLike.delete({
           where: {
             userId_projectId: {
-              userId: ctx.session.user.id,
+              userId: ctx.user.id,
               projectId: input.projectId,
             },
           },
@@ -222,7 +222,7 @@ export const projectRouter = createTRPCRouter({
 
       await ctx.db.projectLike.create({
         data: {
-          userId: ctx.session.user.id,
+          userId: ctx.user.id,
           projectId: input.projectId,
         },
       });

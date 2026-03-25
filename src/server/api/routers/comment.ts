@@ -34,7 +34,7 @@ export const commentRouter = createTRPCRouter({
         data: {
           content: input.content,
           tipId: input.tipId,
-          authorId: ctx.session.user.id,
+          authorId: ctx.user.id,
         },
       });
     }),
@@ -45,7 +45,7 @@ export const commentRouter = createTRPCRouter({
       const comment = await ctx.db.comment.findUnique({
         where: { id: input.id },
       });
-      if (!comment || comment.authorId !== ctx.session.user.id) {
+      if (!comment || comment.authorId !== ctx.user.id) {
         throw new TRPCError({ code: "FORBIDDEN" });
       }
       return ctx.db.comment.delete({ where: { id: input.id } });

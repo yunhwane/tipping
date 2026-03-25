@@ -208,7 +208,7 @@ export const adminRouter = createTRPCRouter({
         id: input.id,
         action: input.action,
         rejectionReason: input.rejectionReason,
-        reviewerId: ctx.session.user.id,
+        reviewerId: ctx.user.id,
       });
     }),
 
@@ -242,7 +242,7 @@ export const adminRouter = createTRPCRouter({
             id: item.id,
             action: input.action,
             rejectionReason: input.rejectionReason,
-            reviewerId: ctx.session.user.id,
+            reviewerId: ctx.user.id,
           }),
         ),
       );
@@ -318,7 +318,7 @@ export const adminRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      if (input.userId === ctx.session.user.id) {
+      if (input.userId === ctx.user.id) {
         throw new TRPCError({ code: "BAD_REQUEST", message: "Cannot change your own role" });
       }
 

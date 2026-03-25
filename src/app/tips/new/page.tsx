@@ -1,16 +1,16 @@
 "use client";
 
-import { useSession } from "next-auth/react";
+import { useAuth } from "~/hooks/use-auth";
 import { redirect } from "next/navigation";
 import { TipForm } from "~/components/tip-form";
 import { Lightbulb, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 export default function NewTipPage() {
-  const { data: session, status } = useSession();
+  const { user: session, status } = useAuth();
 
   if (status === "loading") return null;
-  if (!session) redirect("/api/auth/signin");
+  if (!session) redirect("/auth/signin");
 
   return (
     <div className="mx-auto max-w-3xl py-4">

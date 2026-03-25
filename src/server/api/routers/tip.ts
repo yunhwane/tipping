@@ -76,7 +76,7 @@ export const tipRouter = createTRPCRouter({
         throw new TRPCError({ code: "NOT_FOUND", message: "Tip not found" });
       }
 
-      checkContentAccess(tip, ctx.session);
+      checkContentAccess(tip, ctx.user);
 
       // Increment view count
       await ctx.db.tip.update({
@@ -142,7 +142,7 @@ export const tipRouter = createTRPCRouter({
       const items = await ctx.db.tip.findMany({
         take: limit + 1,
         cursor: cursor ? { id: cursor } : undefined,
-        where: { authorId: ctx.session.user.id },
+        where: { authorId: ctx.user.id },
         orderBy: { createdAt: "desc" },
         include: {
           author: { select: { id: true, name: true, image: true } },
@@ -175,7 +175,7 @@ export const tipRouter = createTRPCRouter({
         data: {
           title: input.title,
           content: input.content,
-          authorId: ctx.session.user.id,
+          authorId: ctx.user.id,
           categoryId: input.categoryId,
           status: "PENDING",
           tags: {
@@ -200,7 +200,7 @@ export const tipRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const tip = await ctx.db.tip.findUnique({ where: { id: input.id } });
-      if (!tip || tip.authorId !== ctx.session.user.id) {
+      if (!tip || tip.authorId !== ctx.user.id) {
         throw new TRPCError({ code: "FORBIDDEN" });
       }
 
@@ -235,7 +235,7 @@ export const tipRouter = createTRPCRouter({
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const tip = await ctx.db.tip.findUnique({ where: { id: input.id } });
-      if (!tip || tip.authorId !== ctx.session.user.id) {
+      if (!tip || tip.authorId !== ctx.user.id) {
         throw new TRPCError({ code: "FORBIDDEN" });
       }
 
