@@ -45,5 +45,8 @@ yarn-error.log*
 # turbo
 .turbo
 
+# prisma generated client (platform-specific, must be generated per environment)
+/generated
+
 # idea files
 .idea
