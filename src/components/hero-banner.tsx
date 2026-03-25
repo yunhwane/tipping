@@ -179,12 +179,12 @@ export function HeroBanner() {
   const PrimaryIcon = slide.primaryLink.icon;
 
   return (
-    <section className="relative overflow-hidden rounded-2xl">
+    <section className="relative overflow-x-clip rounded-2xl">
       {/* 슬라이드 */}
       <div
         key={current}
         className={cn(
-          "relative flex min-h-[360px] items-center justify-center bg-gradient-to-br px-6 pb-14 text-center sm:min-h-[400px] sm:px-12",
+          "relative flex min-h-[420px] items-center justify-center bg-gradient-to-br px-6 pt-10 pb-16 text-center sm:min-h-[460px] sm:px-12",
           slide.bg,
           "animate-in fade-in duration-500",
           direction === "right" ? "slide-in-from-right-8" : "slide-in-from-left-8",
