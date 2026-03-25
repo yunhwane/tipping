@@ -6,6 +6,8 @@ import {
   LatestSectionClient,
 } from "~/components/home-sections";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   // 서버에서 prefetch — 클라이언트 React Query 캐시에 주입됨
   void api.tip.getPopular({});
