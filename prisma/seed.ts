@@ -4,29 +4,44 @@ const prisma = new PrismaClient();
 
 async function main() {
   // === 상위 카테고리 ===
-  const itDev = await prisma.topCategory.upsert({
-    where: { slug: "it-dev" },
-    update: {},
-    create: { name: "IT/개발", slug: "it-dev" },
-  });
+  const topCategories = [
+    { name: "IT", slug: "it", icon: "Monitor", sortOrder: 0 },
+    { name: "Design", slug: "design", icon: "Palette", sortOrder: 1 },
+  ];
+
+  const topCatMap: Record<string, string> = {};
+  for (const tc of topCategories) {
+    const created = await prisma.topCategory.upsert({
+      where: { slug: tc.slug },
+      update: { name: tc.name, icon: tc.icon, sortOrder: tc.sortOrder },
+      create: tc,
+    });
+    topCatMap[tc.slug] = created.id;
+  }
 
   // === 하위 카테고리 ===
   const categories = [
-    { name: "Frontend", slug: "frontend", description: "프론트엔드 개발 팁" },
-    { name: "Backend", slug: "backend", description: "백엔드 개발 팁" },
-    { name: "DevOps", slug: "devops", description: "DevOps & 인프라 팁" },
-    { name: "Database", slug: "database", description: "데이터베이스 팁" },
-    { name: "Mobile", slug: "mobile", description: "모바일 개발 팁" },
-    { name: "AI/ML", slug: "ai-ml", description: "AI/ML 팁" },
-    { name: "기타", slug: "etc", description: "기타 IT 관련 팁" },
+    // IT
+    { name: "Frontend", slug: "frontend", description: "프론트엔드 개발 팁", icon: "Globe", sortOrder: 0, topSlug: "it" },
+    { name: "Backend", slug: "backend", description: "백엔드 개발 팁", icon: "Server", sortOrder: 1, topSlug: "it" },
+    { name: "DevOps", slug: "devops", description: "DevOps & 인프라 팁", icon: "Container", sortOrder: 2, topSlug: "it" },
+    { name: "Database", slug: "database", description: "데이터베이스 팁", icon: "Database", sortOrder: 3, topSlug: "it" },
+    { name: "Mobile", slug: "mobile", description: "모바일 개발 팁", icon: "Smartphone", sortOrder: 4, topSlug: "it" },
+    { name: "AI/ML", slug: "ai-ml", description: "AI/ML 팁", icon: "Brain", sortOrder: 5, topSlug: "it" },
+    { name: "기타", slug: "etc", description: "기타 IT 관련 팁", icon: "MoreHorizontal", sortOrder: 6, topSlug: "it" },
+    // Design
+    { name: "UI/UX", slug: "ui-ux", description: "UI/UX 디자인 팁", icon: "Layout", sortOrder: 0, topSlug: "design" },
+    { name: "Graphic", slug: "graphic", description: "그래픽 디자인 팁", icon: "Image", sortOrder: 1, topSlug: "design" },
+    { name: "Product Design", slug: "product-design", description: "프로덕트 디자인 팁", icon: "Figma", sortOrder: 2, topSlug: "design" },
   ];
 
   const catMap: Record<string, string> = {};
   for (const cat of categories) {
+    const { topSlug, ...catData } = cat;
     const created = await prisma.category.upsert({
       where: { slug: cat.slug },
-      update: {},
-      create: { ...cat, topCategoryId: itDev.id },
+      update: { name: cat.name, icon: cat.icon, sortOrder: cat.sortOrder },
+      create: { ...catData, topCategoryId: topCatMap[topSlug]! },
     });
     catMap[cat.slug] = created.id;
   }

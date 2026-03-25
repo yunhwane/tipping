@@ -8,7 +8,10 @@ export const categoryRouter = createTRPCRouter({
         topCategory: true,
         _count: { select: { tips: true } },
       },
-      orderBy: { name: "asc" },
+      orderBy: [
+        { topCategory: { sortOrder: "asc" } },
+        { sortOrder: "asc" },
+      ],
     });
   }),
 
@@ -20,4 +23,18 @@ export const categoryRouter = createTRPCRouter({
         include: { topCategory: true },
       });
     }),
+
+  getTopCategories: publicProcedure.query(async ({ ctx }) => {
+    return ctx.db.topCategory.findMany({
+      include: {
+        categories: {
+          include: {
+            _count: { select: { tips: true } },
+          },
+          orderBy: { sortOrder: "asc" },
+        },
+      },
+      orderBy: { sortOrder: "asc" },
+    });
+  }),
 });

@@ -3359,46 +3359,76 @@ export namespace Prisma {
 
   export type AggregateTopCategory = {
     _count: TopCategoryCountAggregateOutputType | null
+    _avg: TopCategoryAvgAggregateOutputType | null
+    _sum: TopCategorySumAggregateOutputType | null
     _min: TopCategoryMinAggregateOutputType | null
     _max: TopCategoryMaxAggregateOutputType | null
+  }
+
+  export type TopCategoryAvgAggregateOutputType = {
+    sortOrder: number | null
+  }
+
+  export type TopCategorySumAggregateOutputType = {
+    sortOrder: number | null
   }
 
   export type TopCategoryMinAggregateOutputType = {
     id: string | null
     name: string | null
     slug: string | null
+    icon: string | null
+    sortOrder: number | null
   }
 
   export type TopCategoryMaxAggregateOutputType = {
     id: string | null
     name: string | null
     slug: string | null
+    icon: string | null
+    sortOrder: number | null
   }
 
   export type TopCategoryCountAggregateOutputType = {
     id: number
     name: number
     slug: number
+    icon: number
+    sortOrder: number
     _all: number
   }
 
+
+  export type TopCategoryAvgAggregateInputType = {
+    sortOrder?: true
+  }
+
+  export type TopCategorySumAggregateInputType = {
+    sortOrder?: true
+  }
 
   export type TopCategoryMinAggregateInputType = {
     id?: true
     name?: true
     slug?: true
+    icon?: true
+    sortOrder?: true
   }
 
   export type TopCategoryMaxAggregateInputType = {
     id?: true
     name?: true
     slug?: true
+    icon?: true
+    sortOrder?: true
   }
 
   export type TopCategoryCountAggregateInputType = {
     id?: true
     name?: true
     slug?: true
+    icon?: true
+    sortOrder?: true
     _all?: true
   }
 
@@ -3440,6 +3470,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: TopCategoryAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TopCategorySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: TopCategoryMinAggregateInputType
@@ -3470,6 +3512,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: TopCategoryCountAggregateInputType | true
+    _avg?: TopCategoryAvgAggregateInputType
+    _sum?: TopCategorySumAggregateInputType
     _min?: TopCategoryMinAggregateInputType
     _max?: TopCategoryMaxAggregateInputType
   }
@@ -3478,7 +3522,11 @@ export namespace Prisma {
     id: string
     name: string
     slug: string
+    icon: string | null
+    sortOrder: number
     _count: TopCategoryCountAggregateOutputType | null
+    _avg: TopCategoryAvgAggregateOutputType | null
+    _sum: TopCategorySumAggregateOutputType | null
     _min: TopCategoryMinAggregateOutputType | null
     _max: TopCategoryMaxAggregateOutputType | null
   }
@@ -3501,6 +3549,8 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     slug?: boolean
+    icon?: boolean
+    sortOrder?: boolean
     categories?: boolean | TopCategory$categoriesArgs<ExtArgs>
     _count?: boolean | TopCategoryCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["topCategory"]>
@@ -3509,21 +3559,27 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     slug?: boolean
+    icon?: boolean
+    sortOrder?: boolean
   }, ExtArgs["result"]["topCategory"]>
 
   export type TopCategorySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
     slug?: boolean
+    icon?: boolean
+    sortOrder?: boolean
   }, ExtArgs["result"]["topCategory"]>
 
   export type TopCategorySelectScalar = {
     id?: boolean
     name?: boolean
     slug?: boolean
+    icon?: boolean
+    sortOrder?: boolean
   }
 
-  export type TopCategoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug", ExtArgs["result"]["topCategory"]>
+  export type TopCategoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "icon" | "sortOrder", ExtArgs["result"]["topCategory"]>
   export type TopCategoryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     categories?: boolean | TopCategory$categoriesArgs<ExtArgs>
     _count?: boolean | TopCategoryCountOutputTypeDefaultArgs<ExtArgs>
@@ -3540,6 +3596,8 @@ export namespace Prisma {
       id: string
       name: string
       slug: string
+      icon: string | null
+      sortOrder: number
     }, ExtArgs["result"]["topCategory"]>
     composites: {}
   }
@@ -3967,6 +4025,8 @@ export namespace Prisma {
     readonly id: FieldRef<"TopCategory", 'String'>
     readonly name: FieldRef<"TopCategory", 'String'>
     readonly slug: FieldRef<"TopCategory", 'String'>
+    readonly icon: FieldRef<"TopCategory", 'String'>
+    readonly sortOrder: FieldRef<"TopCategory", 'Int'>
   }
     
 
@@ -4403,8 +4463,18 @@ export namespace Prisma {
 
   export type AggregateCategory = {
     _count: CategoryCountAggregateOutputType | null
+    _avg: CategoryAvgAggregateOutputType | null
+    _sum: CategorySumAggregateOutputType | null
     _min: CategoryMinAggregateOutputType | null
     _max: CategoryMaxAggregateOutputType | null
+  }
+
+  export type CategoryAvgAggregateOutputType = {
+    sortOrder: number | null
+  }
+
+  export type CategorySumAggregateOutputType = {
+    sortOrder: number | null
   }
 
   export type CategoryMinAggregateOutputType = {
@@ -4412,6 +4482,8 @@ export namespace Prisma {
     name: string | null
     slug: string | null
     description: string | null
+    icon: string | null
+    sortOrder: number | null
     topCategoryId: string | null
   }
 
@@ -4420,6 +4492,8 @@ export namespace Prisma {
     name: string | null
     slug: string | null
     description: string | null
+    icon: string | null
+    sortOrder: number | null
     topCategoryId: string | null
   }
 
@@ -4428,16 +4502,28 @@ export namespace Prisma {
     name: number
     slug: number
     description: number
+    icon: number
+    sortOrder: number
     topCategoryId: number
     _all: number
   }
 
+
+  export type CategoryAvgAggregateInputType = {
+    sortOrder?: true
+  }
+
+  export type CategorySumAggregateInputType = {
+    sortOrder?: true
+  }
 
   export type CategoryMinAggregateInputType = {
     id?: true
     name?: true
     slug?: true
     description?: true
+    icon?: true
+    sortOrder?: true
     topCategoryId?: true
   }
 
@@ -4446,6 +4532,8 @@ export namespace Prisma {
     name?: true
     slug?: true
     description?: true
+    icon?: true
+    sortOrder?: true
     topCategoryId?: true
   }
 
@@ -4454,6 +4542,8 @@ export namespace Prisma {
     name?: true
     slug?: true
     description?: true
+    icon?: true
+    sortOrder?: true
     topCategoryId?: true
     _all?: true
   }
@@ -4496,6 +4586,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: CategoryAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CategorySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: CategoryMinAggregateInputType
@@ -4526,6 +4628,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: CategoryCountAggregateInputType | true
+    _avg?: CategoryAvgAggregateInputType
+    _sum?: CategorySumAggregateInputType
     _min?: CategoryMinAggregateInputType
     _max?: CategoryMaxAggregateInputType
   }
@@ -4535,8 +4639,12 @@ export namespace Prisma {
     name: string
     slug: string
     description: string | null
+    icon: string | null
+    sortOrder: number
     topCategoryId: string
     _count: CategoryCountAggregateOutputType | null
+    _avg: CategoryAvgAggregateOutputType | null
+    _sum: CategorySumAggregateOutputType | null
     _min: CategoryMinAggregateOutputType | null
     _max: CategoryMaxAggregateOutputType | null
   }
@@ -4560,6 +4668,8 @@ export namespace Prisma {
     name?: boolean
     slug?: boolean
     description?: boolean
+    icon?: boolean
+    sortOrder?: boolean
     topCategoryId?: boolean
     topCategory?: boolean | TopCategoryDefaultArgs<ExtArgs>
     tips?: boolean | Category$tipsArgs<ExtArgs>
@@ -4571,6 +4681,8 @@ export namespace Prisma {
     name?: boolean
     slug?: boolean
     description?: boolean
+    icon?: boolean
+    sortOrder?: boolean
     topCategoryId?: boolean
     topCategory?: boolean | TopCategoryDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["category"]>
@@ -4580,6 +4692,8 @@ export namespace Prisma {
     name?: boolean
     slug?: boolean
     description?: boolean
+    icon?: boolean
+    sortOrder?: boolean
     topCategoryId?: boolean
     topCategory?: boolean | TopCategoryDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["category"]>
@@ -4589,10 +4703,12 @@ export namespace Prisma {
     name?: boolean
     slug?: boolean
     description?: boolean
+    icon?: boolean
+    sortOrder?: boolean
     topCategoryId?: boolean
   }
 
-  export type CategoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "description" | "topCategoryId", ExtArgs["result"]["category"]>
+  export type CategoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "description" | "icon" | "sortOrder" | "topCategoryId", ExtArgs["result"]["category"]>
   export type CategoryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     topCategory?: boolean | TopCategoryDefaultArgs<ExtArgs>
     tips?: boolean | Category$tipsArgs<ExtArgs>
@@ -4616,6 +4732,8 @@ export namespace Prisma {
       name: string
       slug: string
       description: string | null
+      icon: string | null
+      sortOrder: number
       topCategoryId: string
     }, ExtArgs["result"]["category"]>
     composites: {}
@@ -5046,6 +5164,8 @@ export namespace Prisma {
     readonly name: FieldRef<"Category", 'String'>
     readonly slug: FieldRef<"Category", 'String'>
     readonly description: FieldRef<"Category", 'String'>
+    readonly icon: FieldRef<"Category", 'String'>
+    readonly sortOrder: FieldRef<"Category", 'Int'>
     readonly topCategoryId: FieldRef<"Category", 'String'>
   }
     
@@ -14416,7 +14536,9 @@ export namespace Prisma {
   export const TopCategoryScalarFieldEnum: {
     id: 'id',
     name: 'name',
-    slug: 'slug'
+    slug: 'slug',
+    icon: 'icon',
+    sortOrder: 'sortOrder'
   };
 
   export type TopCategoryScalarFieldEnum = (typeof TopCategoryScalarFieldEnum)[keyof typeof TopCategoryScalarFieldEnum]
@@ -14427,6 +14549,8 @@ export namespace Prisma {
     name: 'name',
     slug: 'slug',
     description: 'description',
+    icon: 'icon',
+    sortOrder: 'sortOrder',
     topCategoryId: 'topCategoryId'
   };
 
@@ -14774,6 +14898,8 @@ export namespace Prisma {
     id?: StringFilter<"TopCategory"> | string
     name?: StringFilter<"TopCategory"> | string
     slug?: StringFilter<"TopCategory"> | string
+    icon?: StringNullableFilter<"TopCategory"> | string | null
+    sortOrder?: IntFilter<"TopCategory"> | number
     categories?: CategoryListRelationFilter
   }
 
@@ -14781,6 +14907,8 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
+    icon?: SortOrderInput | SortOrder
+    sortOrder?: SortOrder
     categories?: CategoryOrderByRelationAggregateInput
   }
 
@@ -14791,6 +14919,8 @@ export namespace Prisma {
     OR?: TopCategoryWhereInput[]
     NOT?: TopCategoryWhereInput | TopCategoryWhereInput[]
     name?: StringFilter<"TopCategory"> | string
+    icon?: StringNullableFilter<"TopCategory"> | string | null
+    sortOrder?: IntFilter<"TopCategory"> | number
     categories?: CategoryListRelationFilter
   }, "id" | "slug">
 
@@ -14798,9 +14928,13 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
+    icon?: SortOrderInput | SortOrder
+    sortOrder?: SortOrder
     _count?: TopCategoryCountOrderByAggregateInput
+    _avg?: TopCategoryAvgOrderByAggregateInput
     _max?: TopCategoryMaxOrderByAggregateInput
     _min?: TopCategoryMinOrderByAggregateInput
+    _sum?: TopCategorySumOrderByAggregateInput
   }
 
   export type TopCategoryScalarWhereWithAggregatesInput = {
@@ -14810,6 +14944,8 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"TopCategory"> | string
     name?: StringWithAggregatesFilter<"TopCategory"> | string
     slug?: StringWithAggregatesFilter<"TopCategory"> | string
+    icon?: StringNullableWithAggregatesFilter<"TopCategory"> | string | null
+    sortOrder?: IntWithAggregatesFilter<"TopCategory"> | number
   }
 
   export type CategoryWhereInput = {
@@ -14820,6 +14956,8 @@ export namespace Prisma {
     name?: StringFilter<"Category"> | string
     slug?: StringFilter<"Category"> | string
     description?: StringNullableFilter<"Category"> | string | null
+    icon?: StringNullableFilter<"Category"> | string | null
+    sortOrder?: IntFilter<"Category"> | number
     topCategoryId?: StringFilter<"Category"> | string
     topCategory?: XOR<TopCategoryScalarRelationFilter, TopCategoryWhereInput>
     tips?: TipListRelationFilter
@@ -14830,6 +14968,8 @@ export namespace Prisma {
     name?: SortOrder
     slug?: SortOrder
     description?: SortOrderInput | SortOrder
+    icon?: SortOrderInput | SortOrder
+    sortOrder?: SortOrder
     topCategoryId?: SortOrder
     topCategory?: TopCategoryOrderByWithRelationInput
     tips?: TipOrderByRelationAggregateInput
@@ -14843,6 +14983,8 @@ export namespace Prisma {
     NOT?: CategoryWhereInput | CategoryWhereInput[]
     name?: StringFilter<"Category"> | string
     description?: StringNullableFilter<"Category"> | string | null
+    icon?: StringNullableFilter<"Category"> | string | null
+    sortOrder?: IntFilter<"Category"> | number
     topCategoryId?: StringFilter<"Category"> | string
     topCategory?: XOR<TopCategoryScalarRelationFilter, TopCategoryWhereInput>
     tips?: TipListRelationFilter
@@ -14853,10 +14995,14 @@ export namespace Prisma {
     name?: SortOrder
     slug?: SortOrder
     description?: SortOrderInput | SortOrder
+    icon?: SortOrderInput | SortOrder
+    sortOrder?: SortOrder
     topCategoryId?: SortOrder
     _count?: CategoryCountOrderByAggregateInput
+    _avg?: CategoryAvgOrderByAggregateInput
     _max?: CategoryMaxOrderByAggregateInput
     _min?: CategoryMinOrderByAggregateInput
+    _sum?: CategorySumOrderByAggregateInput
   }
 
   export type CategoryScalarWhereWithAggregatesInput = {
@@ -14867,6 +15013,8 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"Category"> | string
     slug?: StringWithAggregatesFilter<"Category"> | string
     description?: StringNullableWithAggregatesFilter<"Category"> | string | null
+    icon?: StringNullableWithAggregatesFilter<"Category"> | string | null
+    sortOrder?: IntWithAggregatesFilter<"Category"> | number
     topCategoryId?: StringWithAggregatesFilter<"Category"> | string
   }
 
@@ -15500,6 +15648,8 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    icon?: string | null
+    sortOrder?: number
     categories?: CategoryCreateNestedManyWithoutTopCategoryInput
   }
 
@@ -15507,6 +15657,8 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    icon?: string | null
+    sortOrder?: number
     categories?: CategoryUncheckedCreateNestedManyWithoutTopCategoryInput
   }
 
@@ -15514,6 +15666,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
     categories?: CategoryUpdateManyWithoutTopCategoryNestedInput
   }
 
@@ -15521,6 +15675,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
     categories?: CategoryUncheckedUpdateManyWithoutTopCategoryNestedInput
   }
 
@@ -15528,18 +15684,24 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    icon?: string | null
+    sortOrder?: number
   }
 
   export type TopCategoryUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
   }
 
   export type TopCategoryUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
   }
 
   export type CategoryCreateInput = {
@@ -15547,6 +15709,8 @@ export namespace Prisma {
     name: string
     slug: string
     description?: string | null
+    icon?: string | null
+    sortOrder?: number
     topCategory: TopCategoryCreateNestedOneWithoutCategoriesInput
     tips?: TipCreateNestedManyWithoutCategoryInput
   }
@@ -15556,6 +15720,8 @@ export namespace Prisma {
     name: string
     slug: string
     description?: string | null
+    icon?: string | null
+    sortOrder?: number
     topCategoryId: string
     tips?: TipUncheckedCreateNestedManyWithoutCategoryInput
   }
@@ -15565,6 +15731,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
     topCategory?: TopCategoryUpdateOneRequiredWithoutCategoriesNestedInput
     tips?: TipUpdateManyWithoutCategoryNestedInput
   }
@@ -15574,6 +15742,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
     topCategoryId?: StringFieldUpdateOperationsInput | string
     tips?: TipUncheckedUpdateManyWithoutCategoryNestedInput
   }
@@ -15583,6 +15753,8 @@ export namespace Prisma {
     name: string
     slug: string
     description?: string | null
+    icon?: string | null
+    sortOrder?: number
     topCategoryId: string
   }
 
@@ -15591,6 +15763,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
   }
 
   export type CategoryUncheckedUpdateManyInput = {
@@ -15598,6 +15772,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
     topCategoryId?: StringFieldUpdateOperationsInput | string
   }
 
@@ -16367,6 +16543,17 @@ export namespace Prisma {
     _max?: NestedEnumRoleFilter<$PrismaModel>
   }
 
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
   export type CategoryListRelationFilter = {
     every?: CategoryWhereInput
     some?: CategoryWhereInput
@@ -16381,18 +16568,48 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
+    icon?: SortOrder
+    sortOrder?: SortOrder
+  }
+
+  export type TopCategoryAvgOrderByAggregateInput = {
+    sortOrder?: SortOrder
   }
 
   export type TopCategoryMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
+    icon?: SortOrder
+    sortOrder?: SortOrder
   }
 
   export type TopCategoryMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
+    icon?: SortOrder
+    sortOrder?: SortOrder
+  }
+
+  export type TopCategorySumOrderByAggregateInput = {
+    sortOrder?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type TopCategoryScalarRelationFilter = {
@@ -16405,7 +16622,13 @@ export namespace Prisma {
     name?: SortOrder
     slug?: SortOrder
     description?: SortOrder
+    icon?: SortOrder
+    sortOrder?: SortOrder
     topCategoryId?: SortOrder
+  }
+
+  export type CategoryAvgOrderByAggregateInput = {
+    sortOrder?: SortOrder
   }
 
   export type CategoryMaxOrderByAggregateInput = {
@@ -16413,6 +16636,8 @@ export namespace Prisma {
     name?: SortOrder
     slug?: SortOrder
     description?: SortOrder
+    icon?: SortOrder
+    sortOrder?: SortOrder
     topCategoryId?: SortOrder
   }
 
@@ -16421,7 +16646,13 @@ export namespace Prisma {
     name?: SortOrder
     slug?: SortOrder
     description?: SortOrder
+    icon?: SortOrder
+    sortOrder?: SortOrder
     topCategoryId?: SortOrder
+  }
+
+  export type CategorySumOrderByAggregateInput = {
+    sortOrder?: SortOrder
   }
 
   export type TagCountOrderByAggregateInput = {
@@ -16437,17 +16668,6 @@ export namespace Prisma {
   export type TagMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-  }
-
-  export type IntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
   }
 
   export type EnumContentStatusFilter<$PrismaModel = never> = {
@@ -16550,22 +16770,6 @@ export namespace Prisma {
 
   export type TipSumOrderByAggregateInput = {
     viewCount?: SortOrder
-  }
-
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type EnumContentStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -17131,6 +17335,14 @@ export namespace Prisma {
     connect?: CategoryWhereUniqueInput | CategoryWhereUniqueInput[]
   }
 
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type CategoryUpdateManyWithoutTopCategoryNestedInput = {
     create?: XOR<CategoryCreateWithoutTopCategoryInput, CategoryUncheckedCreateWithoutTopCategoryInput> | CategoryCreateWithoutTopCategoryInput[] | CategoryUncheckedCreateWithoutTopCategoryInput[]
     connectOrCreate?: CategoryCreateOrConnectWithoutTopCategoryInput | CategoryCreateOrConnectWithoutTopCategoryInput[]
@@ -17355,14 +17567,6 @@ export namespace Prisma {
     connectOrCreate?: BookmarkCreateOrConnectWithoutTipInput | BookmarkCreateOrConnectWithoutTipInput[]
     createMany?: BookmarkCreateManyTipInputEnvelope
     connect?: BookmarkWhereUniqueInput | BookmarkWhereUniqueInput[]
-  }
-
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type EnumContentStatusFieldUpdateOperationsInput = {
@@ -17851,6 +18055,33 @@ export namespace Prisma {
     _max?: NestedEnumRoleFilter<$PrismaModel>
   }
 
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
   export type NestedEnumContentStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.ContentStatus | EnumContentStatusFieldRefInput<$PrismaModel>
     in?: $Enums.ContentStatus[] | ListEnumContentStatusFieldRefInput<$PrismaModel>
@@ -17878,33 +18109,6 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
-  }
-
-  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
-  }
-
-  export type NestedFloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type NestedEnumContentStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -18368,6 +18572,8 @@ export namespace Prisma {
     name: string
     slug: string
     description?: string | null
+    icon?: string | null
+    sortOrder?: number
     tips?: TipCreateNestedManyWithoutCategoryInput
   }
 
@@ -18376,6 +18582,8 @@ export namespace Prisma {
     name: string
     slug: string
     description?: string | null
+    icon?: string | null
+    sortOrder?: number
     tips?: TipUncheckedCreateNestedManyWithoutCategoryInput
   }
 
@@ -18413,6 +18621,8 @@ export namespace Prisma {
     name?: StringFilter<"Category"> | string
     slug?: StringFilter<"Category"> | string
     description?: StringNullableFilter<"Category"> | string | null
+    icon?: StringNullableFilter<"Category"> | string | null
+    sortOrder?: IntFilter<"Category"> | number
     topCategoryId?: StringFilter<"Category"> | string
   }
 
@@ -18420,12 +18630,16 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    icon?: string | null
+    sortOrder?: number
   }
 
   export type TopCategoryUncheckedCreateWithoutCategoriesInput = {
     id?: string
     name: string
     slug: string
+    icon?: string | null
+    sortOrder?: number
   }
 
   export type TopCategoryCreateOrConnectWithoutCategoriesInput = {
@@ -18494,12 +18708,16 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
   }
 
   export type TopCategoryUncheckedUpdateWithoutCategoriesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
   }
 
   export type TipUpsertWithWhereUniqueWithoutCategoryInput = {
@@ -18672,6 +18890,8 @@ export namespace Prisma {
     name: string
     slug: string
     description?: string | null
+    icon?: string | null
+    sortOrder?: number
     topCategory: TopCategoryCreateNestedOneWithoutCategoriesInput
   }
 
@@ -18680,6 +18900,8 @@ export namespace Prisma {
     name: string
     slug: string
     description?: string | null
+    icon?: string | null
+    sortOrder?: number
     topCategoryId: string
   }
 
@@ -18828,6 +19050,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
     topCategory?: TopCategoryUpdateOneRequiredWithoutCategoriesNestedInput
   }
 
@@ -18836,6 +19060,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
     topCategoryId?: StringFieldUpdateOperationsInput | string
   }
 
@@ -20069,6 +20295,8 @@ export namespace Prisma {
     name: string
     slug: string
     description?: string | null
+    icon?: string | null
+    sortOrder?: number
   }
 
   export type CategoryUpdateWithoutTopCategoryInput = {
@@ -20076,6 +20304,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
     tips?: TipUpdateManyWithoutCategoryNestedInput
   }
 
@@ -20084,6 +20314,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
     tips?: TipUncheckedUpdateManyWithoutCategoryNestedInput
   }
 
@@ -20092,6 +20324,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
   }
 
   export type TipCreateManyCategoryInput = {
