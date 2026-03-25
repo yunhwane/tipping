@@ -83,7 +83,7 @@ export async function reviewContent(
   const message =
     action === "approve"
       ? `"${content.title}" 이(가) 승인되었습니다.`
-      : `"${content.title}" 이(가) 반려되었습니다. 사유: ${rejectionReason}`;
+      : `"${content.title}" 이(가) 반려되었습니다.`;
 
   return db.$transaction([
     (model as typeof db.tip).update({ where: { id }, data }),
