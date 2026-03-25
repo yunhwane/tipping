@@ -7,6 +7,7 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Lightbulb, Loader2, CheckCircle, Mail, Lock, User, AlertCircle, ArrowLeft } from "lucide-react";
 import { api } from "~/trpc/react";
+import { env } from "~/env";
 
 export default function SignUpPage() {
   const [name, setName] = useState("");
@@ -25,7 +26,14 @@ export default function SignUpPage() {
     setLoading(true);
     try {
       const supabase = createClient();
-      const { data, error: signUpError } = await supabase.auth.signUp({ email, password, options: { data: { name } } });
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { name },
+          emailRedirectTo: `${env.NEXT_PUBLIC_APP_URL}/auth/callback`,
+        },
+      });
       if (signUpError) { setError(signUpError.message); return; }
       if (data.user) {
         await syncUser.mutateAsync({ id: data.user.id, email, name });

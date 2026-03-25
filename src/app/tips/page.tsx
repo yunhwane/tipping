@@ -6,7 +6,7 @@ import { api } from "~/trpc/react";
 import { TipCard } from "~/components/tip-card";
 import { CategoryNav } from "~/components/category-nav";
 import { Button } from "~/components/ui/button";
-import { TrendingUp, Clock, Loader2 } from "lucide-react";
+import { TrendingUp, Clock, Loader2, AlertCircle } from "lucide-react";
 import { cn } from "~/lib/utils";
 
 function TipsContent() {
@@ -113,7 +113,7 @@ function TipsContent() {
       {tips?.length === 0 && (
         <div className="flex flex-col items-center gap-3 py-16">
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted">
-            <Clock className="h-8 w-8 text-muted-foreground" />
+            <AlertCircle className="h-8 w-8 text-muted-foreground" />
           </div>
           <p className="text-lg font-medium text-muted-foreground">
             {q ? "검색 결과가 없습니다" : "아직 팁이 없습니다"}
