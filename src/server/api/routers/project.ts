@@ -26,7 +26,7 @@ export const projectRouter = createTRPCRouter({
         where: { status: "APPROVED" },
         orderBy: { createdAt: "desc" },
         include: {
-          author: { select: { id: true, name: true, image: true } },
+          author: { select: { id: true, nickname: true, image: true } },
           tags: true,
           _count: { select: { likes: true } },
         },
@@ -47,7 +47,7 @@ export const projectRouter = createTRPCRouter({
       const project = await ctx.db.project.findUnique({
         where: { id: input.id },
         include: {
-          author: { select: { id: true, name: true, image: true } },
+          author: { select: { id: true, nickname: true, image: true } },
           tags: true,
           _count: { select: { likes: true } },
         },
@@ -84,7 +84,7 @@ export const projectRouter = createTRPCRouter({
         where: { authorId: ctx.user.id },
         orderBy: { createdAt: "desc" },
         include: {
-          author: { select: { id: true, name: true, image: true } },
+          author: { select: { id: true, nickname: true, image: true } },
           tags: true,
           _count: { select: { likes: true } },
         },

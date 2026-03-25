@@ -17,14 +17,14 @@ export const adminRouter = createTRPCRouter({
     const recentUsers = await ctx.db.user.findMany({
       take: 5,
       orderBy: { id: "desc" },
-      select: { id: true, name: true, email: true, image: true, role: true },
+      select: { id: true, nickname: true, email: true, image: true, role: true },
     });
 
     const recentTips = await ctx.db.tip.findMany({
       take: 5,
       orderBy: { createdAt: "desc" },
       include: {
-        author: { select: { id: true, name: true, image: true } },
+        author: { select: { id: true, nickname: true, image: true } },
       },
     });
 
@@ -32,7 +32,7 @@ export const adminRouter = createTRPCRouter({
       take: 5,
       orderBy: { createdAt: "desc" },
       include: {
-        author: { select: { id: true, name: true, image: true } },
+        author: { select: { id: true, nickname: true, image: true } },
       },
     });
 
@@ -70,7 +70,7 @@ export const adminRouter = createTRPCRouter({
               orderBy: { createdAt: "asc" },
               take: limit,
               include: {
-                author: { select: { id: true, name: true, image: true } },
+                author: { select: { id: true, nickname: true, image: true } },
                 category: true,
                 tags: true,
               },
@@ -82,7 +82,7 @@ export const adminRouter = createTRPCRouter({
               orderBy: { createdAt: "asc" },
               take: limit,
               include: {
-                author: { select: { id: true, name: true, image: true } },
+                author: { select: { id: true, nickname: true, image: true } },
                 tags: true,
               },
             })
@@ -140,7 +140,7 @@ export const adminRouter = createTRPCRouter({
               where: statusFilter,
               orderBy: { createdAt: "desc" },
               include: {
-                author: { select: { id: true, name: true, image: true } },
+                author: { select: { id: true, nickname: true, image: true } },
                 category: true,
                 tags: true,
                 _count: { select: { likes: true, comments: true } },
@@ -153,7 +153,7 @@ export const adminRouter = createTRPCRouter({
               where: statusFilter,
               orderBy: { createdAt: "desc" },
               include: {
-                author: { select: { id: true, name: true, image: true } },
+                author: { select: { id: true, nickname: true, image: true } },
                 tags: true,
                 _count: { select: { likes: true } },
               },
@@ -293,7 +293,7 @@ export const adminRouter = createTRPCRouter({
         orderBy: { id: "desc" },
         select: {
           id: true,
-          name: true,
+          nickname: true,
           email: true,
           image: true,
           role: true,

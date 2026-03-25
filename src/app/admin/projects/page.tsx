@@ -65,10 +65,10 @@ export default function AdminProjectsPage() {
                   <Avatar className="h-5 w-5">
                     <AvatarImage src={project.author.image ?? ""} />
                     <AvatarFallback className="text-[10px]">
-                      {project.author.name?.charAt(0) ?? "U"}
+                      {project.author.nickname?.charAt(0) ?? "U"}
                     </AvatarFallback>
                   </Avatar>
-                  <span>{project.author.name}</span>
+                  <span>{project.author.nickname}</span>
                   <span>·</span>
                   <span>
                     {new Date(project.createdAt).toLocaleDateString("ko-KR")}

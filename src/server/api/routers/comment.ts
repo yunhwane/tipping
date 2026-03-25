@@ -24,7 +24,7 @@ export const commentRouter = createTRPCRouter({
         cursor: cursor ? { id: cursor } : undefined,
         where: { tipId },
         include: {
-          author: { select: { id: true, name: true, image: true } },
+          author: { select: { id: true, nickname: true, image: true } },
         },
         orderBy: { createdAt: "asc" },
       });

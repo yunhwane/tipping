@@ -54,7 +54,7 @@ async function main() {
     update: { role: "ADMIN" },
     create: {
       id: "00000000-0000-0000-0000-000000000001",
-      name: "김개발",
+      nickname: "김개발",
       email: "dev1@tipping.test",
       image: "https://api.dicebear.com/9.x/avataaars/svg?seed=dev1",
       role: "ADMIN",
@@ -66,7 +66,7 @@ async function main() {
     update: {},
     create: {
       id: "00000000-0000-0000-0000-000000000002",
-      name: "이프론트",
+      nickname: "이프론트",
       email: "dev2@tipping.test",
       image: "https://api.dicebear.com/9.x/avataaars/svg?seed=dev2",
     },
@@ -77,7 +77,7 @@ async function main() {
     update: {},
     create: {
       id: "00000000-0000-0000-0000-000000000003",
-      name: "박백엔드",
+      nickname: "박백엔드",
       email: "dev3@tipping.test",
       image: "https://api.dicebear.com/9.x/avataaars/svg?seed=dev3",
     },

@@ -65,10 +65,10 @@ export default function AdminTipsPage() {
                   <Avatar className="h-5 w-5">
                     <AvatarImage src={tip.author.image ?? ""} />
                     <AvatarFallback className="text-[10px]">
-                      {tip.author.name?.charAt(0) ?? "U"}
+                      {tip.author.nickname?.charAt(0) ?? "U"}
                     </AvatarFallback>
                   </Avatar>
-                  <span>{tip.author.name}</span>
+                  <span>{tip.author.nickname}</span>
                   <span>·</span>
                   <span>
                     {new Date(tip.createdAt).toLocaleDateString("ko-KR")}

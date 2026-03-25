@@ -59,13 +59,13 @@ export default function AdminDashboardPage() {
             {stats.recentUsers.map((user) => (
               <div key={user.id} className="flex items-center gap-3">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src={user.image ?? ""} alt={user.name ?? ""} />
+                  <AvatarImage src={user.image ?? ""} alt={user.nickname} />
                   <AvatarFallback className="text-xs">
-                    {user.name?.charAt(0) ?? "U"}
+                    {user.nickname.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">{user.name}</p>
+                  <p className="text-sm font-medium truncate">{user.nickname}</p>
                   <p className="text-xs text-muted-foreground truncate">
                     {user.email}
                   </p>

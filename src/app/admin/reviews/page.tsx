@@ -220,10 +220,10 @@ export default function ReviewsPage() {
                     <Avatar className="h-5 w-5">
                       <AvatarImage src={item.author.image ?? ""} />
                       <AvatarFallback className="text-[10px]">
-                        {item.author.name?.charAt(0) ?? "U"}
+                        {item.author.nickname.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
-                    <span>{item.author.name}</span>
+                    <span>{item.author.nickname}</span>
                     <span>·</span>
                     <span>
                       {new Date(item.createdAt).toLocaleDateString("ko-KR")}

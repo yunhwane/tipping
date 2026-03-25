@@ -16,7 +16,7 @@ interface ProjectShowcaseCardProps {
     createdAt: Date;
     status?: string;
     rejectionReason?: string | null;
-    author: { id: string; name: string | null; image: string | null };
+    author: { id: string; nickname: string; image: string | null };
     tags: { id: string; name: string }[];
     _count: { likes: number };
   };

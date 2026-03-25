@@ -9,12 +9,12 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
   const supabase = await createClient();
   const { data: { user: supabaseUser } } = await supabase.auth.getUser();
 
-  let user: { id: string; name: string | null; email: string; image: string | null; role: string } | null = null;
+  let user: { id: string; nickname: string; email: string; image: string | null; role: string } | null = null;
 
   if (supabaseUser) {
     const dbUser = await db.user.findUnique({
       where: { id: supabaseUser.id },
-      select: { id: true, name: true, email: true, image: true, role: true },
+      select: { id: true, nickname: true, email: true, image: true, role: true },
     });
     user = dbUser;
   }

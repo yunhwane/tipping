@@ -41,7 +41,7 @@ export const tipRouter = createTRPCRouter({
         where,
         orderBy,
         include: {
-          author: { select: { id: true, name: true, image: true } },
+          author: { select: { id: true, nickname: true, image: true } },
           category: true,
           tags: true,
           _count: { select: { likes: true, comments: true } },
@@ -63,7 +63,7 @@ export const tipRouter = createTRPCRouter({
       const tip = await ctx.db.tip.findUnique({
         where: { id: input.id },
         include: {
-          author: { select: { id: true, name: true, image: true } },
+          author: { select: { id: true, nickname: true, image: true } },
           category: true,
           tags: true,
           _count: {
@@ -99,7 +99,7 @@ export const tipRouter = createTRPCRouter({
         where: { status: "APPROVED" },
         orderBy: [{ likes: { _count: "desc" } }, { viewCount: "desc" }],
         include: {
-          author: { select: { id: true, name: true, image: true } },
+          author: { select: { id: true, nickname: true, image: true } },
           category: true,
           tags: true,
           _count: { select: { likes: true, comments: true } },
@@ -119,7 +119,7 @@ export const tipRouter = createTRPCRouter({
           ],
         },
         include: {
-          author: { select: { id: true, name: true, image: true } },
+          author: { select: { id: true, nickname: true, image: true } },
           category: true,
           tags: true,
           _count: { select: { likes: true, comments: true } },
@@ -145,7 +145,7 @@ export const tipRouter = createTRPCRouter({
         where: { authorId: ctx.user.id },
         orderBy: { createdAt: "desc" },
         include: {
-          author: { select: { id: true, name: true, image: true } },
+          author: { select: { id: true, nickname: true, image: true } },
           category: true,
           tags: true,
           _count: { select: { likes: true, comments: true } },
