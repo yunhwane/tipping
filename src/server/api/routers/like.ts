@@ -15,7 +15,7 @@ export const likeRouter = createTRPCRouter({
       const existing = await ctx.db.like.findUnique({
         where: {
           userId_tipId: {
-            userId: ctx.session.user.id,
+            userId: ctx.user.id,
             tipId: input.tipId,
           },
         },
@@ -25,7 +25,7 @@ export const likeRouter = createTRPCRouter({
         await ctx.db.like.delete({
           where: {
             userId_tipId: {
-              userId: ctx.session.user.id,
+              userId: ctx.user.id,
               tipId: input.tipId,
             },
           },
@@ -35,7 +35,7 @@ export const likeRouter = createTRPCRouter({
 
       await ctx.db.like.create({
         data: {
-          userId: ctx.session.user.id,
+          userId: ctx.user.id,
           tipId: input.tipId,
         },
       });
@@ -48,7 +48,7 @@ export const likeRouter = createTRPCRouter({
       const like = await ctx.db.like.findUnique({
         where: {
           userId_tipId: {
-            userId: ctx.session.user.id,
+            userId: ctx.user.id,
             tipId: input.tipId,
           },
         },

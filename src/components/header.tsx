@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useSession, signOut } from "next-auth/react";
+import { useAuth, signOut } from "~/hooks/use-auth";
 import { Button } from "~/components/ui/button";
 import {
   DropdownMenu,
@@ -15,7 +15,7 @@ import { Lightbulb, LogIn, UserPlus } from "lucide-react";
 import { NotificationBell } from "./notification-bell";
 
 export function Header() {
-  const { data: session } = useSession();
+  const { user: session } = useAuth();
 
   return (
     <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -51,11 +51,11 @@ export function Header() {
               <DropdownMenuTrigger className="relative h-9 w-9 rounded-full">
                 <Avatar className="h-9 w-9">
                   <AvatarImage
-                    src={session.user.image ?? ""}
-                    alt={session.user.name ?? ""}
+                    src={session.image ?? ""}
+                    alt={session.name ?? ""}
                   />
                   <AvatarFallback className="bg-amber-100 text-amber-700 text-sm font-semibold">
-                    {session.user.name?.charAt(0) ?? "U"}
+                    {session.name?.charAt(0) ?? "U"}
                   </AvatarFallback>
                 </Avatar>
               </DropdownMenuTrigger>
@@ -69,7 +69,7 @@ export function Header() {
                 <DropdownMenuItem>
                   <Link href="/projects/new" className="w-full">프로젝트 등록</Link>
                 </DropdownMenuItem>
-                {session.user.role === "ADMIN" && (
+                {session.role === "ADMIN" && (
                   <DropdownMenuItem>
                     <Link href="/admin" className="w-full">관리자</Link>
                   </DropdownMenuItem>

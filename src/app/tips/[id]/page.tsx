@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { useAuth } from "~/hooks/use-auth";
 import { api } from "~/trpc/react";
 import { Button, buttonVariants } from "~/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
@@ -27,7 +27,7 @@ const categoryColors: Record<string, string> = {
 export default function TipDetailPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
-  const { data: session } = useSession();
+  const { user: session } = useAuth();
 
   const { data: tip } = api.tip.getById.useQuery({ id: params.id });
 
@@ -43,7 +43,7 @@ export default function TipDetailPage() {
     );
   }
 
-  const isAuthor = session?.user.id === tip.author.id;
+  const isAuthor = session?.id === tip.author.id;
   const colorClass =
     categoryColors[tip.category.slug] ?? categoryColors.etc;
 

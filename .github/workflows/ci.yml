@@ -29,5 +29,5 @@ jobs:
         run: npm run build
         env:
           DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy
-          AUTH_SECRET: ci-dummy-secret
+          DIRECT_URL: postgresql://dummy:dummy@localhost:5432/dummy
           SKIP_ENV_VALIDATION: true

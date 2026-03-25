@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useSession } from "next-auth/react";
+import { useAuth } from "~/hooks/use-auth";
 import { redirect } from "next/navigation";
 import { api } from "~/trpc/react";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 
 export default function ProfilePage() {
-  const { data: session, status } = useSession();
+  const { user: session, status } = useAuth();
   const { data: profile } = api.user.getProfile.useQuery(undefined, {
     enabled: !!session,
   });
@@ -28,10 +28,10 @@ export default function ProfilePage() {
   });
 
   if (status === "loading") return null;
-  if (!session) redirect("/api/auth/signin");
+  if (!session) redirect("/auth/signin");
 
-  const displayName = profile?.name ?? session.user.name;
-  const displayImage = profile?.image ?? session.user.image;
+  const displayName = profile?.name ?? session.name;
+  const displayImage = profile?.image ?? session.image;
   const bio = profile?.bio as string | null;
   const links = (profile?.links ?? []) as { label: string; url: string }[];
 

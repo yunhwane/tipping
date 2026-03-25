@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useSession } from "next-auth/react";
+import { useAuth } from "~/hooks/use-auth";
 import { api } from "~/trpc/react";
 import { Button } from "~/components/ui/button";
 import { Textarea } from "~/components/ui/textarea";
@@ -13,7 +13,7 @@ interface CommentSectionProps {
 }
 
 export function CommentSection({ tipId }: CommentSectionProps) {
-  const { data: session } = useSession();
+  const { user: session } = useAuth();
   const [content, setContent] = useState("");
   const utils = api.useUtils();
 
@@ -88,7 +88,7 @@ export function CommentSection({ tipId }: CommentSectionProps) {
                   <span className="text-xs text-muted-foreground">
                     {new Date(comment.createdAt).toLocaleDateString("ko-KR")}
                   </span>
-                  {session?.user.id === comment.author.id && (
+                  {session?.id === comment.author.id && (
                     <Button
                       variant="ghost"
                       size="sm"

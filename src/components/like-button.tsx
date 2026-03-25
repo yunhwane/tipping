@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession } from "next-auth/react";
+import { useAuth } from "~/hooks/use-auth";
 import { api } from "~/trpc/react";
 import { Button } from "~/components/ui/button";
 import { Heart } from "lucide-react";
@@ -12,7 +12,7 @@ interface LikeButtonProps {
 }
 
 export function LikeButton({ tipId, initialCount }: LikeButtonProps) {
-  const { data: session } = useSession();
+  const { user: session } = useAuth();
   const utils = api.useUtils();
 
   const { data: status } = api.like.getStatus.useQuery(

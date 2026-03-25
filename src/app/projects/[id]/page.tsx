@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { useAuth } from "~/hooks/use-auth";
 import { api } from "~/trpc/react";
 import { Button, buttonVariants } from "~/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
@@ -14,7 +14,7 @@ import Link from "next/link";
 export default function ProjectDetailPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
-  const { data: session } = useSession();
+  const { user: session } = useAuth();
 
   const { data: project } = api.project.getById.useQuery({ id: params.id });
   const utils = api.useUtils();
@@ -37,7 +37,7 @@ export default function ProjectDetailPage() {
     );
   }
 
-  const isAuthor = session?.user.id === project.author.id;
+  const isAuthor = session?.id === project.author.id;
 
   const statusConfig: Record<string, { label: string; className: string }> = {
     PENDING: { label: "검수 대기", className: "bg-yellow-100 text-yellow-800 border-yellow-300" },

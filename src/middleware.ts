@@ -1,27 +1,24 @@
-import { auth } from "~/server/auth";
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { updateSession } from "~/lib/supabase/middleware";
 
-export default auth((req) => {
-  const { pathname } = req.nextUrl;
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  const { user, supabaseResponse } = await updateSession(request);
 
-  // Only protect /admin routes
   if (pathname.startsWith("/admin")) {
-    // Not logged in → redirect to signin
-    if (!req.auth) {
-      const signInUrl = new URL("/auth/signin", req.url);
+    if (!user) {
+      const signInUrl = new URL("/auth/signin", request.url);
       signInUrl.searchParams.set("callbackUrl", pathname);
       return NextResponse.redirect(signInUrl);
     }
-
-    // Not ADMIN → redirect to home
-    if (req.auth.user.role !== "ADMIN") {
-      return NextResponse.redirect(new URL("/", req.url));
-    }
   }
 
-  return NextResponse.next();
-});
+  return supabaseResponse;
+}
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+  ],
 };
