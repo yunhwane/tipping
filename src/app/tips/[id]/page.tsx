@@ -10,7 +10,7 @@ import { LikeButton } from "~/components/like-button";
 import { BookmarkButton } from "~/components/bookmark-button";
 import { CommentSection } from "~/components/comment-section";
 import { MarkdownContent } from "~/components/markdown-content";
-import { Eye, Pencil, Trash2, Calendar, ArrowLeft } from "lucide-react";
+import { Eye, Pencil, Trash2, Calendar, ArrowLeft, AlertTriangle } from "lucide-react";
 import { cn } from "~/lib/utils";
 import Link from "next/link";
 
@@ -63,16 +63,45 @@ export default function TipDetailPage() {
         팁 목록
       </Link>
 
-      {/* 비공개 상태 배너 */}
-      {tip.status !== "APPROVED" && statusConfig[tip.status] && (
-        <div className={cn("mb-4 rounded-lg border px-4 py-3 text-sm", statusConfig[tip.status]!.className)}>
-          <span className="font-medium">{statusConfig[tip.status]!.label}</span>
-          {tip.status === "REJECTED" && tip.rejectionReason && (
-            <span> — {tip.rejectionReason}</span>
-          )}
-          {tip.status === "PENDING" && (
-            <span> — 관리자 검수 후 공개됩니다.</span>
-          )}
+      {/* 검수 대기 배너 */}
+      {tip.status === "PENDING" && (
+        <div className="mb-4 rounded-lg border border-yellow-300 bg-yellow-100 px-4 py-3 text-sm text-yellow-800">
+          <span className="font-medium">검수 대기</span>
+          <span> — 관리자 검수 후 공개됩니다.</span>
+        </div>
+      )}
+
+      {/* 반려 배너 — 알럿 스타일 + 인라인 CTA */}
+      {tip.status === "REJECTED" && (
+        <div className="mb-4 rounded-xl border border-red-200 bg-gradient-to-br from-red-50 to-rose-50 px-5 py-4">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1">
+              <div className="flex items-center gap-1.5 mb-2">
+                <AlertTriangle className="h-4 w-4 text-red-500" />
+                <span className="text-sm font-bold text-red-600">이 글은 반려되었습니다</span>
+              </div>
+              {tip.rejectionReason && (
+                <p className="text-sm leading-relaxed text-gray-700">{tip.rejectionReason}</p>
+              )}
+              {tip.reviewedAt && (
+                <p className="mt-2 text-xs text-gray-400">
+                  {new Date(tip.reviewedAt).toLocaleDateString("ko-KR", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}{" "}검수
+                </p>
+              )}
+            </div>
+            {isAuthor && (
+              <Link
+                href={`/tips/${tip.id}/edit`}
+                className={cn(buttonVariants({ size: "sm" }), "shrink-0")}
+              >
+                수정하기 →
+              </Link>
+            )}
+          </div>
         </div>
       )}
 

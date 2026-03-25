@@ -1,7 +1,9 @@
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Card, CardContent } from "~/components/ui/card";
 import { TagBadge } from "./tag-badge";
 import { Heart, Eye, ExternalLink } from "lucide-react";
+import { cn } from "~/lib/utils";
 
 interface ProjectShowcaseCardProps {
   project: {
@@ -31,8 +33,14 @@ export function ProjectShowcaseCard({
   project,
   showStatus = false,
 }: ProjectShowcaseCardProps) {
+  const router = useRouter();
+  const isRejected = showStatus && project.status === "REJECTED";
+
   return (
-    <Card className="overflow-hidden transition-shadow hover:shadow-md">
+    <Card className={cn(
+      "overflow-hidden transition-shadow hover:shadow-md",
+      isRejected && "border-red-200",
+    )}>
       {/* Image Area */}
       <Link href={`/projects/${project.id}`}>
         <div className="aspect-video overflow-hidden">
@@ -70,14 +78,27 @@ export function ProjectShowcaseCard({
           )}
         </div>
 
-        {/* Rejection Reason */}
-        {showStatus &&
-          project.status === "REJECTED" &&
-          project.rejectionReason && (
-            <p className="text-xs text-red-600">
-              사유: {project.rejectionReason}
-            </p>
-          )}
+        {/* Rejection Reason — 강조 박스 + 수정 CTA */}
+        {isRejected && (
+          <div className="space-y-2">
+            {project.rejectionReason && (
+              <div className="rounded-lg border border-red-200 bg-red-50/50 px-3 py-2">
+                <p className="text-xs font-medium text-red-600 mb-0.5">반려 사유</p>
+                <p className="text-xs leading-relaxed text-gray-600 line-clamp-2">{project.rejectionReason}</p>
+              </div>
+            )}
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                router.push(`/projects/${project.id}/edit`);
+              }}
+              className="w-full rounded-lg bg-blue-500 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-blue-600"
+            >
+              수정하기
+            </button>
+          </div>
+        )}
 
         {/* Description */}
         <p className="line-clamp-2 text-sm text-muted-foreground">

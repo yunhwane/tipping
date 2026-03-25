@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { TagBadge } from "./tag-badge";
-import { Heart, MessageCircle, Eye, ArrowUpRight } from "lucide-react";
+import { Heart, MessageCircle, Eye, ArrowUpRight, Pencil } from "lucide-react";
 import { cn } from "~/lib/utils";
+import { useRouter } from "next/navigation";
 
 interface TipCardProps {
   tip: {
@@ -96,7 +97,9 @@ const statusConfig: Record<string, { label: string; className: string }> = {
 };
 
 export function TipCard({ tip, showStatus = false, variant = "default" }: TipCardProps) {
+  const router = useRouter();
   const style = categoryStyle[tip.category.slug] ?? categoryStyle.etc!;
+  const isRejected = showStatus && tip.status === "REJECTED";
 
   if (variant === "compact") {
     return (
@@ -131,13 +134,20 @@ export function TipCard({ tip, showStatus = false, variant = "default" }: TipCar
   return (
     <Link
       href={`/tips/${tip.id}`}
-      className="group relative flex flex-col overflow-hidden rounded-xl border bg-card transition-all duration-200 hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5"
+      className={cn(
+        "group relative flex flex-col overflow-hidden rounded-xl border bg-card transition-all duration-200 hover:-translate-y-0.5",
+        isRejected
+          ? "border-red-200 hover:border-red-300 hover:shadow-lg hover:shadow-red-100/50"
+          : "hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5",
+      )}
     >
       {/* 상단 컬러 바 */}
       <div
         className={cn(
           "h-1 w-full transition-all group-hover:h-1.5",
-          categoryBarColor[tip.category.slug] ?? "bg-gray-400",
+          isRejected
+            ? "bg-red-500"
+            : (categoryBarColor[tip.category.slug] ?? "bg-gray-400"),
         )}
       />
 
@@ -164,14 +174,36 @@ export function TipCard({ tip, showStatus = false, variant = "default" }: TipCar
         </h3>
 
         {/* 상태 뱃지 */}
-        {showStatus && tip.status && statusConfig[tip.status] && (
-          <div className="mt-2 space-y-1">
+        {showStatus && tip.status && statusConfig[tip.status] && !isRejected && (
+          <div className="mt-2">
             <span className={cn("rounded-full px-2 py-0.5 text-xs font-medium", statusConfig[tip.status]!.className)}>
               {statusConfig[tip.status]!.label}
             </span>
-            {tip.status === "REJECTED" && tip.rejectionReason && (
-              <p className="text-xs text-red-600">사유: {tip.rejectionReason}</p>
+          </div>
+        )}
+
+        {/* 반려 상태 — 사유 박스 + 수정 CTA */}
+        {isRejected && (
+          <div className="mt-3 space-y-2">
+            <span className="inline-flex items-center gap-1 rounded-full border border-red-200 bg-red-50 px-2.5 py-0.5 text-xs font-semibold text-red-600">
+              반려
+            </span>
+            {tip.rejectionReason && (
+              <div className="rounded-lg border border-red-200 bg-red-50/50 px-3 py-2">
+                <p className="text-xs font-medium text-red-600 mb-0.5">반려 사유</p>
+                <p className="text-xs leading-relaxed text-gray-600 line-clamp-2">{tip.rejectionReason}</p>
+              </div>
             )}
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                router.push(`/tips/${tip.id}/edit`);
+              }}
+              className="w-full rounded-lg bg-blue-500 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-blue-600"
+            >
+              수정하기
+            </button>
           </div>
         )}
 

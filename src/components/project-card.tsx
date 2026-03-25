@@ -1,8 +1,10 @@
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { TagBadge } from "./tag-badge";
 import { Heart, Eye } from "lucide-react";
+import { cn } from "~/lib/utils";
 
 interface ProjectCardProps {
   project: {
@@ -29,9 +31,15 @@ const statusConfig: Record<string, { label: string; className: string }> = {
 };
 
 export function ProjectCard({ project, showStatus = false }: ProjectCardProps) {
+  const router = useRouter();
+  const isRejected = showStatus && project.status === "REJECTED";
+
   return (
     <Link href={`/projects/${project.id}`}>
-      <Card className="transition-shadow hover:shadow-md">
+      <Card className={cn(
+        "transition-shadow hover:shadow-md",
+        isRejected && "border-red-200",
+      )}>
         {project.imageUrl && (
           <div className="aspect-video overflow-hidden rounded-t-lg">
             <img
@@ -52,8 +60,25 @@ export function ProjectCard({ project, showStatus = false }: ProjectCardProps) {
               </span>
             )}
           </div>
-          {showStatus && project.status === "REJECTED" && project.rejectionReason && (
-            <p className="text-xs text-red-600 mt-1">사유: {project.rejectionReason}</p>
+          {isRejected && (
+            <div className="mt-1 space-y-2">
+              {project.rejectionReason && (
+                <div className="rounded-lg border border-red-200 bg-red-50/50 px-3 py-2">
+                  <p className="text-xs font-medium text-red-600 mb-0.5">반려 사유</p>
+                  <p className="text-xs leading-relaxed text-gray-600 line-clamp-2">{project.rejectionReason}</p>
+                </div>
+              )}
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  router.push(`/projects/${project.id}/edit`);
+                }}
+                className="w-full rounded-lg bg-blue-500 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-blue-600"
+              >
+                수정하기
+              </button>
+            </div>
           )}
           <div className="flex items-center gap-1 text-xs text-muted-foreground">
             <Avatar className="h-5 w-5">
