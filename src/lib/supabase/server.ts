@@ -24,7 +24,6 @@ export async function createClient() {
                 path: "/",
                 sameSite: "lax",
                 secure: isProduction,
-                httpOnly: true,
               }),
             );
           } catch {
