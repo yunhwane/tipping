@@ -26,7 +26,7 @@ export function LikeButton({ tipId, initialCount }: LikeButtonProps) {
     onSuccess: () => {
       void utils.like.getStatus.invalidate({ tipId });
       void utils.like.getCount.invalidate({ tipId });
-      void utils.tip.getById.invalidate({ id: tipId });
+      void utils.tip.invalidate();
     },
   });
 

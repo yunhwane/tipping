@@ -31,14 +31,14 @@ export function CommentSection({ tipId }: CommentSectionProps) {
     onSuccess: () => {
       setContent("");
       void utils.comment.getByTipId.invalidate({ tipId });
-      void utils.tip.getById.invalidate({ id: tipId });
+      void utils.tip.invalidate();
     },
   });
 
   const deleteComment = api.comment.delete.useMutation({
     onSuccess: () => {
       void utils.comment.getByTipId.invalidate({ tipId });
-      void utils.tip.getById.invalidate({ id: tipId });
+      void utils.tip.invalidate();
     },
   });
 
