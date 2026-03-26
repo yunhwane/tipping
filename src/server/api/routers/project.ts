@@ -63,7 +63,7 @@ export const projectRouter = createTRPCRouter({
         throw new TRPCError({ code: "NOT_FOUND", message: "Project not found" });
       }
 
-      checkContentAccess(project, ctx.user);
+      checkContentAccess(project, await ctx.getUser());
 
       // Fire-and-forget: 응답 차단 없이 비동기 증가
       void ctx.db.project.update({

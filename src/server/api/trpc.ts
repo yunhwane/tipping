@@ -5,21 +5,28 @@ import { ZodError } from "zod";
 import { createClient } from "~/lib/supabase/server";
 import { db } from "~/server/db";
 
+type DbUser = { id: string; nickname: string; email: string; image: string | null; role: string };
+
 export const createTRPCContext = async (opts: { headers: Headers }) => {
   const supabase = await createClient();
   const { data: { user: supabaseUser } } = await supabase.auth.getUser();
 
-  let user: { id: string; nickname: string; email: string; image: string | null; role: string } | null = null;
-
-  if (supabaseUser) {
-    const dbUser = await db.user.findUnique({
+  // Lazy user getter — DB 조회는 실제로 호출될 때만 수행
+  let cachedUser: DbUser | null | undefined;
+  const getUser = async (): Promise<DbUser | null> => {
+    if (cachedUser !== undefined) return cachedUser;
+    if (!supabaseUser) {
+      cachedUser = null;
+      return null;
+    }
+    cachedUser = await db.user.findUnique({
       where: { id: supabaseUser.id },
       select: { id: true, nickname: true, email: true, image: true, role: true },
     });
-    user = dbUser;
-  }
+    return cachedUser;
+  };
 
-  return { db, user, supabase, ...opts };
+  return { db, supabaseUser, getUser, supabase, ...opts };
 };
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
@@ -56,11 +63,14 @@ export const publicProcedure = t.procedure.use(timingMiddleware);
 
 export const protectedProcedure = t.procedure
   .use(timingMiddleware)
-  .use(({ ctx, next }) => {
-    if (!ctx.user) {
+  .use(async ({ ctx, next }) => {
+    const user = await ctx.getUser();
+
+    if (!user) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
-    return next({ ctx: { user: ctx.user } });
+
+    return next({ ctx: { user } });
   });
 
 export const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
