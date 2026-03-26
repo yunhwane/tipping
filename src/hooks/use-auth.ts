@@ -23,10 +23,6 @@ export function useAuth(): AuthSession {
 
   useEffect(() => {
     const supabase = createClient();
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setSupabaseUserId(user?.id ?? null);
-      setSupabaseEmail(user?.email ?? null);
-    });
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSupabaseUserId(session?.user?.id ?? null);
       setSupabaseEmail(session?.user?.email ?? null);
