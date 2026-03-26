@@ -22,7 +22,7 @@ export default function ProjectDetailPage() {
 
   const toggleLike = api.project.toggleLike.useMutation({
     onSuccess: () => {
-      void utils.project.getById.invalidate({ id: params.id });
+      void utils.project.invalidate();
     },
   });
 
