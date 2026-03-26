@@ -6,7 +6,8 @@ import {
   LatestSectionClient,
 } from "~/components/home-sections";
 
-export const dynamic = "force-dynamic";
+// 60초마다 ISR 재생성 — force-dynamic 대비 TTFB 대폭 개선
+export const revalidate = 60;
 
 export default async function Home() {
   // 서버에서 prefetch — 클라이언트 React Query 캐시에 주입됨
