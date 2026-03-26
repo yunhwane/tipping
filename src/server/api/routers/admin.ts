@@ -2,6 +2,7 @@ import { z } from "zod";
 import { createTRPCRouter, adminProcedure } from "~/server/api/trpc";
 import { TRPCError } from "@trpc/server";
 import { reviewContent } from "~/server/api/helpers/content-review";
+import { createAdminClient } from "~/lib/supabase/server";
 
 export const adminRouter = createTRPCRouter({
   getDashboardStats: adminProcedure.query(async ({ ctx }) => {
@@ -282,15 +283,28 @@ export const adminRouter = createTRPCRouter({
       z.object({
         limit: z.number().min(1).max(50).default(20),
         cursor: z.string().nullish(),
+        role: z.enum(["USER", "ADMIN"]).optional(),
+        emailVerified: z.enum(["verified", "unverified"]).optional(),
+        search: z.string().optional(),
       }),
     )
     .query(async ({ ctx, input }) => {
-      const { limit, cursor } = input;
+      const { limit, cursor, role, emailVerified, search } = input;
+
+      const where: Record<string, unknown> = {};
+      if (role) where.role = role;
+      if (search) {
+        where.OR = [
+          { nickname: { contains: search, mode: "insensitive" } },
+          { email: { contains: search, mode: "insensitive" } },
+        ];
+      }
 
       const items = await ctx.db.user.findMany({
         take: limit + 1,
         cursor: cursor ? { id: cursor } : undefined,
         orderBy: { id: "desc" },
+        where,
         select: {
           id: true,
           nickname: true,
@@ -307,7 +321,43 @@ export const adminRouter = createTRPCRouter({
         nextCursor = nextItem!.id;
       }
 
-      return { items, nextCursor };
+      // Supabase Admin API로 auth 정보 병합
+      const supabaseAdmin = createAdminClient();
+      const userIds = items.map((u) => u.id);
+      const authMap = new Map<string, { emailConfirmedAt: string | null; lastSignInAt: string | null; createdAt: string }>();
+
+      if (userIds.length > 0) {
+        const { data: authData } = await supabaseAdmin.auth.admin.listUsers({
+          perPage: 1000,
+        });
+
+        if (authData?.users) {
+          for (const au of authData.users) {
+            if (userIds.includes(au.id)) {
+              authMap.set(au.id, {
+                emailConfirmedAt: au.email_confirmed_at ?? null,
+                lastSignInAt: au.last_sign_in_at ?? null,
+                createdAt: au.created_at,
+              });
+            }
+          }
+        }
+      }
+
+      const merged = items.map((u) => ({
+        ...u,
+        auth: authMap.get(u.id) ?? null,
+      }));
+
+      // emailVerified 필터 (auth 데이터 기반이므로 merge 후 필터링)
+      const filtered = emailVerified
+        ? merged.filter((u) => {
+            if (emailVerified === "verified") return !!u.auth?.emailConfirmedAt;
+            return !u.auth?.emailConfirmedAt;
+          })
+        : merged;
+
+      return { items: filtered, nextCursor };
     }),
 
   updateUserRole: adminProcedure
