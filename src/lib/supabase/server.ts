@@ -3,6 +3,8 @@ import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { env } from "~/env";
 
+const isProduction = process.env.NODE_ENV === "production";
+
 export async function createClient() {
   const cookieStore = await cookies();
 
@@ -17,7 +19,13 @@ export async function createClient() {
         setAll(cookiesToSet) {
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options),
+              cookieStore.set(name, value, {
+                ...options,
+                path: "/",
+                sameSite: "lax",
+                secure: isProduction,
+                httpOnly: true,
+              }),
             );
           } catch {
             // Called from Server Component — ignored, middleware handles refresh
