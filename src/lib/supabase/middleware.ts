@@ -25,7 +25,6 @@ export async function updateSession(request: NextRequest) {
               path: "/",
               sameSite: "lax",
               secure: isProduction,
-              httpOnly: true,
             }),
           );
         },
