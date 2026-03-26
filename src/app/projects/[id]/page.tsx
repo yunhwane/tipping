@@ -9,6 +9,7 @@ import { Separator } from "~/components/ui/separator";
 import { TagBadge } from "~/components/tag-badge";
 import { Heart, Eye, ExternalLink, Trash2, AlertTriangle, Pencil } from "lucide-react";
 import { cn } from "~/lib/utils";
+import { MarkdownContent } from "~/components/markdown-content";
 import Link from "next/link";
 
 export default function ProjectDetailPage() {
@@ -124,7 +125,7 @@ export default function ProjectDetailPage() {
 
       <Separator />
 
-      <div className="whitespace-pre-wrap">{project.description}</div>
+      <MarkdownContent content={project.description} />
 
       {project.tags.length > 0 && (
         <div className="flex flex-wrap gap-2">

@@ -5,9 +5,8 @@ import { useRouter } from "next/navigation";
 import { api } from "~/trpc/react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
-import { Textarea } from "~/components/ui/textarea";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { CheckCircle2, Tag, FolderOpen, Type, FileText } from "lucide-react";
+import { MarkdownEditor } from "~/components/markdown-editor";
+import { CheckCircle2, Tag, FolderOpen, Type } from "lucide-react";
 
 interface TipFormProps {
   mode: "create" | "edit";
@@ -184,41 +183,13 @@ export function TipForm({ mode, initialData }: TipFormProps) {
       </div>
 
       {/* 에디터 */}
-      <div className="rounded-2xl border bg-card shadow-sm shadow-black/5 overflow-hidden">
-        <Tabs defaultValue="write">
-          <div className="flex items-center justify-between border-b px-5 py-3">
-            <label className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground">
-              <FileText className="h-3.5 w-3.5" />
-              내용
-            </label>
-            <TabsList>
-              <TabsTrigger value="write">작성</TabsTrigger>
-              <TabsTrigger value="preview">미리보기</TabsTrigger>
-            </TabsList>
-          </div>
-          <div className="p-5">
-            <TabsContent value="write" className="mt-0">
-              <Textarea
-                placeholder="마크다운으로 팁을 작성하세요..."
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                rows={18}
-                className="font-mono text-sm border-0 shadow-none focus-visible:ring-0 p-0 resize-none"
-                required
-              />
-            </TabsContent>
-            <TabsContent value="preview" className="mt-0">
-              <div className="prose prose-sm min-h-[400px] max-w-none rounded-lg border border-dashed p-5 dark:prose-invert">
-                {content || (
-                  <span className="text-muted-foreground">
-                    미리보기할 내용이 없습니다
-                  </span>
-                )}
-              </div>
-            </TabsContent>
-          </div>
-        </Tabs>
-      </div>
+      <MarkdownEditor
+        value={content}
+        onChange={setContent}
+        placeholder="마크다운으로 팁을 작성하세요..."
+        rows={18}
+        required
+      />
 
       {/* 하단 액션 */}
       <div className="flex items-center justify-between rounded-2xl border bg-card px-5 py-4 shadow-sm shadow-black/5">

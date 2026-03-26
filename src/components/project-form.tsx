@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { api } from "~/trpc/react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
-import { Textarea } from "~/components/ui/textarea";
+import { MarkdownEditor } from "~/components/markdown-editor";
 
 interface ProjectFormProps {
   mode: "create" | "edit";
@@ -99,11 +99,12 @@ export function ProjectForm({ mode, initialData }: ProjectFormProps) {
         required
       />
 
-      <Textarea
-        placeholder="프로젝트 설명"
+      <MarkdownEditor
         value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        rows={5}
+        onChange={setDescription}
+        placeholder="마크다운으로 프로젝트를 설명하세요..."
+        label="프로젝트 설명"
+        rows={10}
         required
       />
 
