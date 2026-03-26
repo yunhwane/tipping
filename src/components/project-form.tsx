@@ -106,6 +106,7 @@ export function ProjectForm({ mode, initialData }: ProjectFormProps) {
         label="프로젝트 설명"
         rows={10}
         required
+        bucket="projects"
       />
 
       <Input
