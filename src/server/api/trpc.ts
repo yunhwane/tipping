@@ -9,24 +9,35 @@ type DbUser = { id: string; nickname: string; email: string; image: string | nul
 
 export const createTRPCContext = async (opts: { headers: Headers }) => {
   const supabase = await createClient();
-  const { data: { user: supabaseUser } } = await supabase.auth.getUser();
+
+  // Lazy auth — Supabase Auth API 호출을 protectedProcedure에서만 수행
+  type SupabaseUser = { id: string; email?: string };
+  let cachedSupabaseUser: SupabaseUser | null | undefined;
+  const getSupabaseUser = async (): Promise<SupabaseUser | null> => {
+    if (cachedSupabaseUser !== undefined) return cachedSupabaseUser;
+    const { data: { user } } = await supabase.auth.getUser();
+    cachedSupabaseUser = user;
+    return user;
+  };
 
   // Lazy user getter — DB 조회는 실제로 호출될 때만 수행
   let cachedUser: DbUser | null | undefined;
   const getUser = async (): Promise<DbUser | null> => {
     if (cachedUser !== undefined) return cachedUser;
+    const supabaseUser = await getSupabaseUser();
     if (!supabaseUser) {
       cachedUser = null;
       return null;
     }
-    cachedUser = await db.user.findUnique({
+    const user = await db.user.findUnique({
       where: { id: supabaseUser.id },
       select: { id: true, nickname: true, email: true, image: true, role: true },
     });
-    return cachedUser;
+    cachedUser = user;
+    return user;
   };
 
-  return { db, supabaseUser, getUser, supabase, ...opts };
+  return { db, getUser, supabase, ...opts };
 };
 
 const t = initTRPC.context<typeof createTRPCContext>().create({

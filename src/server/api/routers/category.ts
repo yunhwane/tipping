@@ -6,7 +6,7 @@ export const categoryRouter = createTRPCRouter({
     return ctx.db.category.findMany({
       include: {
         topCategory: true,
-        _count: { select: { tips: true } },
+        _count: { select: { tips: { where: { status: "APPROVED" } } } },
       },
       orderBy: [
         { topCategory: { sortOrder: "asc" } },
@@ -29,7 +29,7 @@ export const categoryRouter = createTRPCRouter({
       include: {
         categories: {
           include: {
-            _count: { select: { tips: true } },
+            _count: { select: { tips: { where: { status: "APPROVED" } } } },
           },
           orderBy: { sortOrder: "asc" },
         },
