@@ -1,176 +1,183 @@
 generator client {
-    provider = "prisma-client-js"
-    output   = "../generated/prisma"
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
 }
 
 datasource db {
-    provider  = "postgresql"
-    url       = env("DATABASE_URL")
-    directUrl = env("DIRECT_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // === Enums ===
 
 enum Role {
-    USER
-    ADMIN
+  USER
+  ADMIN
 }
 
 enum ContentStatus {
-    PENDING
-    APPROVED
-    REJECTED
+  PENDING
+  APPROVED
+  REJECTED
 }
 
 // === 도메인 모델 ===
 
 model User {
-    id            String        @id
-    nickname      String        @unique
-    email         String        @unique
-    image         String?
-    bio           String?
-    links         Json?
-    role          Role          @default(USER)
-    tips          Tip[]
-    comments      Comment[]
-    likes         Like[]
-    bookmarks     Bookmark[]
-    projects      Project[]
-    projectLikes  ProjectLike[]
-    notifications Notification[]
+  id            String         @id
+  nickname      String         @unique
+  email         String         @unique
+  image         String?
+  bio           String?
+  links         Json?
+  role          Role           @default(USER)
+  tips          Tip[]
+  comments      Comment[]
+  likes         Like[]
+  bookmarks     Bookmark[]
+  projects      Project[]
+  projectLikes  ProjectLike[]
+  notifications Notification[]
 }
 
 model TopCategory {
-    id         String     @id @default(cuid())
-    name       String
-    slug       String     @unique
-    icon       String?
-    sortOrder  Int        @default(0)
-    categories Category[]
+  id         String     @id @default(cuid())
+  name       String
+  slug       String     @unique
+  icon       String?
+  sortOrder  Int        @default(0)
+  categories Category[]
 }
 
 model Category {
-    id            String      @id @default(cuid())
-    name          String
-    slug          String      @unique
-    description   String?
-    icon          String?
-    sortOrder     Int         @default(0)
-    topCategoryId String
-    topCategory   TopCategory @relation(fields: [topCategoryId], references: [id])
-    tips          Tip[]
+  id            String      @id @default(cuid())
+  name          String
+  slug          String      @unique
+  description   String?
+  icon          String?
+  sortOrder     Int         @default(0)
+  topCategoryId String
+  topCategory   TopCategory @relation(fields: [topCategoryId], references: [id])
+  tips          Tip[]
+
+  @@index([topCategoryId])
 }
 
 model Tag {
-    id       String    @id @default(cuid())
-    name     String    @unique
-    tips     Tip[]     @relation("TipTags")
-    projects Project[] @relation("ProjectTags")
+  id       String    @id @default(cuid())
+  name     String    @unique
+  tips     Tip[]     @relation("TipTags")
+  projects Project[] @relation("ProjectTags")
 }
 
 model Tip {
-    id              String        @id @default(cuid())
-    title           String
-    content         String        @db.Text
-    viewCount       Int           @default(0)
-    status          ContentStatus @default(PENDING)
-    rejectionReason String?
-    reviewedAt      DateTime?
-    reviewedBy      String?
-    createdAt       DateTime      @default(now())
-    updatedAt       DateTime      @updatedAt
-    authorId        String
-    categoryId      String
-    author          User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
-    category        Category      @relation(fields: [categoryId], references: [id])
-    tags            Tag[]         @relation("TipTags")
-    comments        Comment[]
-    likes           Like[]
-    bookmarks       Bookmark[]
+  id              String        @id @default(cuid())
+  title           String
+  content         String        @db.Text
+  viewCount       Int           @default(0)
+  status          ContentStatus @default(PENDING)
+  rejectionReason String?
+  reviewedAt      DateTime?
+  reviewedBy      String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  authorId        String
+  categoryId      String
+  author          User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  category        Category      @relation(fields: [categoryId], references: [id])
+  tags            Tag[]         @relation("TipTags")
+  comments        Comment[]
+  likes           Like[]
+  bookmarks       Bookmark[]
 
-    @@index([authorId])
-    @@index([categoryId])
-    @@index([createdAt])
-    @@index([status, createdAt])
+  @@index([authorId])
+  @@index([categoryId])
+  @@index([createdAt])
+  @@index([status, createdAt])
 }
 
 model Comment {
-    id        String   @id @default(cuid())
-    content   String
-    createdAt DateTime @default(now())
-    authorId  String
-    tipId     String
-    author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
-    tip       Tip      @relation(fields: [tipId], references: [id], onDelete: Cascade)
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+  authorId  String
+  tipId     String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  tip       Tip      @relation(fields: [tipId], references: [id], onDelete: Cascade)
 
-    @@index([tipId])
+  @@index([tipId, createdAt])
+  @@index([authorId])
 }
 
 model Like {
-    userId    String
-    tipId     String
-    createdAt DateTime @default(now())
-    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-    tip       Tip      @relation(fields: [tipId], references: [id], onDelete: Cascade)
+  userId    String
+  tipId     String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tip       Tip      @relation(fields: [tipId], references: [id], onDelete: Cascade)
 
-    @@id([userId, tipId])
+  @@id([userId, tipId])
+  @@index([tipId])
 }
 
 model Bookmark {
-    userId    String
-    tipId     String
-    createdAt DateTime @default(now())
-    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-    tip       Tip      @relation(fields: [tipId], references: [id], onDelete: Cascade)
+  userId    String
+  tipId     String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tip       Tip      @relation(fields: [tipId], references: [id], onDelete: Cascade)
 
-    @@id([userId, tipId])
+  @@id([userId, tipId])
+  @@index([userId, createdAt])
 }
 
 model Project {
-    id              String        @id @default(cuid())
-    title           String
-    description     String        @db.Text
-    url             String?
-    imageUrl        String?
-    viewCount       Int           @default(0)
-    status          ContentStatus @default(PENDING)
-    rejectionReason String?
-    reviewedAt      DateTime?
-    reviewedBy      String?
-    createdAt       DateTime      @default(now())
-    updatedAt       DateTime      @updatedAt
-    authorId        String
-    author          User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
-    tags            Tag[]         @relation("ProjectTags")
-    likes           ProjectLike[]
+  id              String        @id @default(cuid())
+  title           String
+  description     String        @db.Text
+  url             String?
+  imageUrl        String?
+  viewCount       Int           @default(0)
+  status          ContentStatus @default(PENDING)
+  rejectionReason String?
+  reviewedAt      DateTime?
+  reviewedBy      String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  authorId        String
+  author          User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  tags            Tag[]         @relation("ProjectTags")
+  likes           ProjectLike[]
 
-    @@index([authorId])
-    @@index([createdAt])
-    @@index([status, createdAt])
+  @@index([authorId])
+  @@index([createdAt])
+  @@index([status, createdAt])
+  @@index([status, viewCount])
 }
 
 model ProjectLike {
-    userId    String
-    projectId String
-    createdAt DateTime @default(now())
-    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-    project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  userId    String
+  projectId String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
-    @@id([userId, projectId])
+  @@id([userId, projectId])
+  @@index([projectId])
 }
 
 model Notification {
-    id          String   @id @default(cuid())
-    userId      String
-    type        String   // CONTENT_APPROVED, CONTENT_REJECTED
-    message     String
-    contentType String?  // "tip" | "project"
-    contentId   String?
-    read        Boolean  @default(false)
-    createdAt   DateTime @default(now())
-    user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id          String   @id @default(cuid())
+  userId      String
+  type        String // CONTENT_APPROVED, CONTENT_REJECTED
+  message     String
+  contentType String? // "tip" | "project"
+  contentId   String?
+  read        Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@index([userId, read])
-    @@index([userId, createdAt])
+  @@index([userId, read])
+  @@index([userId, createdAt])
 }
