@@ -9,6 +9,7 @@ import {
   Lightbulb,
   FolderKanban,
   Users,
+  Tags,
 } from "lucide-react";
 
 const navItems = [
@@ -16,6 +17,7 @@ const navItems = [
   { href: "/admin/reviews", label: "검수 대기", icon: ClipboardCheck },
   { href: "/admin/tips", label: "팁 관리", icon: Lightbulb },
   { href: "/admin/projects", label: "프로젝트 관리", icon: FolderKanban },
+  { href: "/admin/categories", label: "카테고리 관리", icon: Tags },
   { href: "/admin/users", label: "유저 관리", icon: Users },
 ];
 
