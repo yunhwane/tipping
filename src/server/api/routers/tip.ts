@@ -85,8 +85,7 @@ export const tipRouter = createTRPCRouter({
 
       checkContentAccess(tip, await ctx.getUser());
 
-      // Fire-and-forget: 응답 차단 없이 비동기 증가
-      void ctx.db.tip.update({
+      await ctx.db.tip.update({
         where: { id: input.id },
         data: { viewCount: { increment: 1 } },
       });
