@@ -27,11 +27,12 @@ export const tipRouter = createTRPCRouter({
         ...(tagName && { tags: { some: { name: tagName } } }),
       };
 
+      // viewCount 기반 정렬 — likes COUNT 서브쿼리 제거, 인덱스 활용
       const orderBy =
         sortBy === "popular"
           ? [
-              { likes: { _count: "desc" as const } },
               { viewCount: "desc" as const },
+              { createdAt: "desc" as const },
             ]
           : [{ createdAt: "desc" as const }];
 
@@ -54,7 +55,13 @@ export const tipRouter = createTRPCRouter({
         nextCursor = nextItem!.id;
       }
 
-      return { items, nextCursor };
+      return {
+        items: items.map((item) => ({
+          ...item,
+          content: item.content.slice(0, 200),
+        })),
+        nextCursor,
+      };
     }),
 
   getById: publicProcedure
@@ -78,8 +85,8 @@ export const tipRouter = createTRPCRouter({
 
       checkContentAccess(tip, ctx.user);
 
-      // Increment view count
-      await ctx.db.tip.update({
+      // Fire-and-forget: 응답 차단 없이 비동기 증가
+      void ctx.db.tip.update({
         where: { id: input.id },
         data: { viewCount: { increment: 1 } },
       });
@@ -94,10 +101,10 @@ export const tipRouter = createTRPCRouter({
         .default({}),
     )
     .query(async ({ ctx, input }) => {
-      return ctx.db.tip.findMany({
+      const items = await ctx.db.tip.findMany({
         take: input.limit,
         where: { status: "APPROVED" },
-        orderBy: [{ likes: { _count: "desc" } }, { viewCount: "desc" }],
+        orderBy: [{ viewCount: "desc" }, { createdAt: "desc" }],
         include: {
           author: { select: { id: true, nickname: true, image: true } },
           category: true,
@@ -105,12 +112,16 @@ export const tipRouter = createTRPCRouter({
           _count: { select: { likes: true, comments: true } },
         },
       });
+      return items.map((item) => ({
+        ...item,
+        content: item.content.slice(0, 200),
+      }));
     }),
 
   search: publicProcedure
     .input(z.object({ query: z.string().min(1) }))
     .query(async ({ ctx, input }) => {
-      return ctx.db.tip.findMany({
+      const items = await ctx.db.tip.findMany({
         where: {
           status: "APPROVED",
           OR: [
@@ -127,6 +138,10 @@ export const tipRouter = createTRPCRouter({
         orderBy: { createdAt: "desc" },
         take: 50,
       });
+      return items.map((item) => ({
+        ...item,
+        content: item.content.slice(0, 200),
+      }));
     }),
 
   getMyTips: protectedProcedure
@@ -158,7 +173,13 @@ export const tipRouter = createTRPCRouter({
         nextCursor = nextItem!.id;
       }
 
-      return { items, nextCursor };
+      return {
+        items: items.map((item) => ({
+          ...item,
+          content: item.content.slice(0, 200),
+        })),
+        nextCursor,
+      };
     }),
 
   create: protectedProcedure

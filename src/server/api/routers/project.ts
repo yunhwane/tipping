@@ -38,7 +38,13 @@ export const projectRouter = createTRPCRouter({
         nextCursor = nextItem!.id;
       }
 
-      return { items, nextCursor };
+      return {
+        items: items.map((item) => ({
+          ...item,
+          description: item.description.slice(0, 300),
+        })),
+        nextCursor,
+      };
     }),
 
   getById: publicProcedure
@@ -59,8 +65,8 @@ export const projectRouter = createTRPCRouter({
 
       checkContentAccess(project, ctx.user);
 
-      // Increment view count
-      await ctx.db.project.update({
+      // Fire-and-forget: 응답 차단 없이 비동기 증가
+      void ctx.db.project.update({
         where: { id: input.id },
         data: { viewCount: { increment: 1 } },
       });
@@ -96,7 +102,13 @@ export const projectRouter = createTRPCRouter({
         nextCursor = nextItem!.id;
       }
 
-      return { items, nextCursor };
+      return {
+        items: items.map((item) => ({
+          ...item,
+          description: item.description.slice(0, 300),
+        })),
+        nextCursor,
+      };
     }),
 
   create: protectedProcedure

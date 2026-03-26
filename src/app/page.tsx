@@ -6,12 +6,12 @@ import {
   LatestSectionClient,
 } from "~/components/home-sections";
 
-export const dynamic = "force-dynamic";
-
 export default async function Home() {
-  // 서버에서 prefetch — 클라이언트 React Query 캐시에 주입됨
-  void api.tip.getPopular({});
-  void api.tip.getAll({ limit: 6, sortBy: "latest" });
+  // await하면 Next.js가 headers() 호출을 감지하여 자동으로 dynamic 페이지로 처리
+  await Promise.all([
+    api.tip.getPopular({}).catch(() => {}),
+    api.tip.getAll({ limit: 6, sortBy: "latest" }).catch(() => {}),
+  ]);
 
   return (
     <HydrateClient>
