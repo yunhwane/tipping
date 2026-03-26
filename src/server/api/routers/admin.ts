@@ -375,4 +375,108 @@ export const adminRouter = createTRPCRouter({
         data: { role: input.role },
       });
     }),
+
+  // --- 카테고리 관리 ---
+
+  getCategories: adminProcedure.query(async ({ ctx }) => {
+    return ctx.db.topCategory.findMany({
+      orderBy: { sortOrder: "asc" },
+      include: {
+        categories: {
+          orderBy: { sortOrder: "asc" },
+          include: { _count: { select: { tips: true } } },
+        },
+      },
+    });
+  }),
+
+  createTopCategory: adminProcedure
+    .input(
+      z.object({
+        name: z.string().min(1).max(50),
+        slug: z.string().min(1).max(50).regex(/^[a-z0-9-]+$/),
+        icon: z.string().max(50).optional(),
+        sortOrder: z.number().int().min(0).default(0),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.topCategory.create({ data: input });
+    }),
+
+  updateTopCategory: adminProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        name: z.string().min(1).max(50),
+        slug: z.string().min(1).max(50).regex(/^[a-z0-9-]+$/),
+        icon: z.string().max(50).optional(),
+        sortOrder: z.number().int().min(0),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { id, ...data } = input;
+      return ctx.db.topCategory.update({ where: { id }, data });
+    }),
+
+  deleteTopCategory: adminProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const childCount = await ctx.db.category.count({
+        where: { topCategoryId: input.id },
+      });
+      if (childCount > 0) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "하위 카테고리가 있어 삭제할 수 없습니다.",
+        });
+      }
+      return ctx.db.topCategory.delete({ where: { id: input.id } });
+    }),
+
+  createCategory: adminProcedure
+    .input(
+      z.object({
+        name: z.string().min(1).max(50),
+        slug: z.string().min(1).max(50).regex(/^[a-z0-9-]+$/),
+        description: z.string().max(200).optional(),
+        icon: z.string().max(50).optional(),
+        sortOrder: z.number().int().min(0).default(0),
+        topCategoryId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.category.create({ data: input });
+    }),
+
+  updateCategory: adminProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        name: z.string().min(1).max(50),
+        slug: z.string().min(1).max(50).regex(/^[a-z0-9-]+$/),
+        description: z.string().max(200).optional(),
+        icon: z.string().max(50).optional(),
+        sortOrder: z.number().int().min(0),
+        topCategoryId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { id, ...data } = input;
+      return ctx.db.category.update({ where: { id }, data });
+    }),
+
+  deleteCategory: adminProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const tipCount = await ctx.db.tip.count({
+        where: { categoryId: input.id },
+      });
+      if (tipCount > 0) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "팁이 있는 카테고리는 삭제할 수 없습니다.",
+        });
+      }
+      return ctx.db.category.delete({ where: { id: input.id } });
+    }),
 });
