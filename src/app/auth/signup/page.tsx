@@ -5,7 +5,7 @@ import Link from "next/link";
 import { createClient } from "~/lib/supabase/client";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
-import { Lightbulb, Loader2, CheckCircle, Mail, Lock, User, AlertCircle, ArrowLeft, Check, X } from "lucide-react";
+import { Lightbulb, Loader2, CheckCircle, Mail, Lock, AlertCircle, ArrowLeft, Check, X } from "lucide-react";
 import { api } from "~/trpc/react";
 import { env } from "~/env";
 
@@ -19,7 +19,6 @@ function useDebounce<T>(value: T, delay: number): T {
 }
 
 export default function SignUpPage() {
-  const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
@@ -28,14 +27,7 @@ export default function SignUpPage() {
   const [success, setSuccess] = useState(false);
   const syncUser = api.auth.syncUser.useMutation();
 
-  const debouncedNickname = useDebounce(nickname.trim(), 500);
   const debouncedEmail = useDebounce(email.trim(), 500);
-
-  const { data: nicknameCheck, isFetching: nicknameChecking } =
-    api.auth.checkNickname.useQuery(
-      { nickname: debouncedNickname },
-      { enabled: debouncedNickname.length >= 2 },
-    );
 
   const { data: emailCheck, isFetching: emailChecking } =
     api.auth.checkEmail.useQuery(
@@ -51,10 +43,6 @@ export default function SignUpPage() {
       setError("비밀번호가 일치하지 않습니다.");
       return;
     }
-    if (nicknameCheck && !nicknameCheck.available) {
-      setError("이미 사용 중인 닉네임입니다.");
-      return;
-    }
     if (emailCheck && !emailCheck.available) {
       setError("이미 가입된 이메일입니다.");
       return;
@@ -67,13 +55,12 @@ export default function SignUpPage() {
         email,
         password,
         options: {
-          data: { nickname },
           emailRedirectTo: `${env.NEXT_PUBLIC_APP_URL}/auth/callback`,
         },
       });
       if (signUpError) { setError(signUpError.message); return; }
       if (data.user) {
-        await syncUser.mutateAsync({ id: data.user.id, email, nickname });
+        await syncUser.mutateAsync({ id: data.user.id, email });
       }
       setSuccess(true);
     } catch {
@@ -126,37 +113,6 @@ export default function SignUpPage() {
               </div>
             )}
             <div className="space-y-1.5">
-              <label htmlFor="nickname" className="text-sm font-medium">닉네임</label>
-              <div className="relative">
-                <User className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  id="nickname"
-                  type="text"
-                  placeholder="2~20자 닉네임"
-                  value={nickname}
-                  onChange={(e) => setNickname(e.target.value)}
-                  required
-                  minLength={2}
-                  maxLength={20}
-                  className="h-10 pl-9 pr-9"
-                />
-                {debouncedNickname.length >= 2 && (
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                    {nicknameChecking ? (
-                      <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-                    ) : nicknameCheck?.available ? (
-                      <Check className="h-4 w-4 text-green-500" />
-                    ) : (
-                      <X className="h-4 w-4 text-red-500" />
-                    )}
-                  </div>
-                )}
-              </div>
-              {debouncedNickname.length >= 2 && !nicknameChecking && nicknameCheck && !nicknameCheck.available && (
-                <p className="text-xs text-red-500">이미 사용 중인 닉네임입니다</p>
-              )}
-            </div>
-            <div className="space-y-1.5">
               <label htmlFor="email" className="text-sm font-medium">이메일</label>
               <div className="relative">
                 <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -202,7 +158,7 @@ export default function SignUpPage() {
             <Button
               type="submit"
               className="h-10 w-full bg-amber-500 font-semibold text-white hover:bg-amber-600"
-              disabled={loading || (nicknameCheck !== undefined && !nicknameCheck.available) || (emailCheck !== undefined && !emailCheck.available)}
+              disabled={loading || (emailCheck !== undefined && !emailCheck.available)}
             >
               {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}회원가입
             </Button>

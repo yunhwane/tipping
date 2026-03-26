@@ -17,8 +17,7 @@ import {
 } from "lucide-react";
 
 const AVATAR_SEEDS = [
-  "Felix", "Aneka", "Milo", "Sasha", "Luna", "Orion",
-  "Pepper", "Zoe", "Kai", "Nova", "Remy", "Indie",
+  "Felix", "Aneka", "Milo", "Sasha", "Luna", "Orion", "Pepper", "Zoe",
 ];
 
 function getAvatarUrl(seed: string) {
@@ -134,7 +133,7 @@ export function ProfileSettings({
           </div>
 
           {/* Avatar Grid */}
-          <div className="grid grid-cols-6 gap-3">
+          <div className="grid grid-cols-4 gap-3">
             {AVATAR_SEEDS.map((seed) => {
               const url = getAvatarUrl(seed);
               const isSelected = selectedAvatar === url;
