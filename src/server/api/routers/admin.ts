@@ -321,25 +321,23 @@ export const adminRouter = createTRPCRouter({
         nextCursor = nextItem!.id;
       }
 
-      // Supabase Admin API로 auth 정보 병합
+      // Supabase Admin API로 auth 정보 병합 (개별 조회로 최적화)
       const supabaseAdmin = createAdminClient();
-      const userIds = items.map((u) => u.id);
       const authMap = new Map<string, { emailConfirmedAt: string | null; lastSignInAt: string | null; createdAt: string }>();
 
-      if (userIds.length > 0) {
-        const { data: authData } = await supabaseAdmin.auth.admin.listUsers({
-          perPage: 1000,
-        });
+      if (items.length > 0) {
+        const authResults = await Promise.allSettled(
+          items.map((u) => supabaseAdmin.auth.admin.getUserById(u.id)),
+        );
 
-        if (authData?.users) {
-          for (const au of authData.users) {
-            if (userIds.includes(au.id)) {
-              authMap.set(au.id, {
-                emailConfirmedAt: au.email_confirmed_at ?? null,
-                lastSignInAt: au.last_sign_in_at ?? null,
-                createdAt: au.created_at,
-              });
-            }
+        for (const result of authResults) {
+          if (result.status === "fulfilled" && result.value.data.user) {
+            const au = result.value.data.user;
+            authMap.set(au.id, {
+              emailConfirmedAt: au.email_confirmed_at ?? null,
+              lastSignInAt: au.last_sign_in_at ?? null,
+              createdAt: au.created_at,
+            });
           }
         }
       }

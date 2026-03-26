@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "~/components/ui/card";
@@ -43,12 +44,14 @@ export function ProjectShowcaseCard({
     )}>
       {/* Image Area */}
       <Link href={`/projects/${project.id}`}>
-        <div className="aspect-video overflow-hidden">
+        <div className="relative aspect-video overflow-hidden">
           {project.imageUrl ? (
-            <img
+            <Image
               src={project.imageUrl}
               alt={project.title}
-              className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className="object-cover transition-transform duration-300 hover:scale-105"
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-amber-50 to-orange-100">
