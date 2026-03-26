@@ -12,7 +12,14 @@ import {
   List,
   ListOrdered,
   FileText,
+  ImagePlus,
+  Loader2,
 } from "lucide-react";
+import { uploadImage } from "~/lib/supabase/storage";
+import { useAuth } from "~/hooks/use-auth";
+
+const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+const MAX_SIZE = 5 * 1024 * 1024; // 5MB
 
 interface MarkdownEditorProps {
   value: string;
@@ -21,6 +28,7 @@ interface MarkdownEditorProps {
   rows?: number;
   required?: boolean;
   label?: string;
+  bucket?: "tips" | "projects";
 }
 
 type ToolbarAction = {
@@ -130,9 +138,84 @@ export function MarkdownEditor({
   rows = 18,
   required = false,
   label = "내용",
+  bucket = "tips",
 }: MarkdownEditorProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const valueRef = useRef(value);
+  valueRef.current = value;
   const [activeTab, setActiveTab] = useState("write");
+  const [isUploading, setIsUploading] = useState(false);
+  const { user } = useAuth();
+
+  const handleImageUpload = useCallback(
+    async (file: File) => {
+      if (!user?.id) return;
+      if (!ALLOWED_TYPES.includes(file.type)) {
+        alert("이미지 파일만 업로드할 수 있습니다. (JPEG, PNG, GIF, WebP)");
+        return;
+      }
+      if (file.size > MAX_SIZE) {
+        alert("파일 크기는 5MB 이하여야 합니다.");
+        return;
+      }
+
+      const textarea = textareaRef.current;
+      const cursorPos = textarea?.selectionStart ?? value.length;
+      const placeholder = `![업로드 중...]()`;
+
+      // Insert placeholder at cursor
+      const before = value.slice(0, cursorPos);
+      const after = value.slice(cursorPos);
+      onChange(before + placeholder + after);
+
+      setIsUploading(true);
+      try {
+        const url = await uploadImage(bucket, user.id, file);
+        onChange(valueRef.current.replace(placeholder, `![image](${url})`));
+      } catch {
+        onChange(valueRef.current.replace(placeholder, ""));
+        alert("이미지 업로드에 실패했습니다.");
+      } finally {
+        setIsUploading(false);
+      }
+    },
+    [user?.id, value, onChange, bucket],
+  );
+
+  const handleDrop = useCallback(
+    (e: React.DragEvent<HTMLTextAreaElement>) => {
+      const files = Array.from(e.dataTransfer.files);
+      const imageFile = files.find((f) => f.type.startsWith("image/"));
+      if (imageFile) {
+        e.preventDefault();
+        void handleImageUpload(imageFile);
+      }
+    },
+    [handleImageUpload],
+  );
+
+  const handlePaste = useCallback(
+    (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+      const items = Array.from(e.clipboardData.items);
+      const imageItem = items.find((item) => item.type.startsWith("image/"));
+      if (imageItem) {
+        e.preventDefault();
+        const file = imageItem.getAsFile();
+        if (file) void handleImageUpload(file);
+      }
+    },
+    [handleImageUpload],
+  );
+
+  const handleFileSelect = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) void handleImageUpload(file);
+      e.target.value = "";
+    },
+    [handleImageUpload],
+  );
 
   const handleToolbarAction = useCallback(
     (action: ToolbarAction["action"]) => {
@@ -196,6 +279,27 @@ export function MarkdownEditor({
                 {item.icon}
               </button>
             ))}
+            <div className="mx-1 h-4 w-px bg-border" />
+            <button
+              type="button"
+              title="이미지 업로드"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isUploading}
+              className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-50"
+            >
+              {isUploading ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <ImagePlus className="h-3.5 w-3.5" />
+              )}
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/gif,image/webp"
+              onChange={handleFileSelect}
+              className="hidden"
+            />
           </div>
         )}
 
@@ -207,6 +311,9 @@ export function MarkdownEditor({
               value={value}
               onChange={(e) => onChange(e.target.value)}
               onKeyDown={handleKeyDown}
+              onDrop={handleDrop}
+              onDragOver={(e) => e.preventDefault()}
+              onPaste={handlePaste}
               rows={rows}
               className="font-mono text-sm border-0 shadow-none focus-visible:ring-0 p-0 resize-none"
               required={required}

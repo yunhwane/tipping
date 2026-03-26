@@ -189,6 +189,7 @@ export function TipForm({ mode, initialData }: TipFormProps) {
         placeholder="마크다운으로 팁을 작성하세요..."
         rows={18}
         required
+        bucket="tips"
       />
 
       {/* 하단 액션 */}
